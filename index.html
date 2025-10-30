@@ -5,361 +5,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ЦВЕТОФОР — приём заказов тюльпанов</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-  <!-- Fallback favicon (заменится на logo.png скриптом ниже) -->
-  <link id="fav" rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect fill="white" width="64" height="64"/><path d="M32 42c6-6 10-12 10-18 0-6-4-10-10-10s-10 4-10 10c0 6 4 12 10 18z" fill="%23ff6fa5"/><path d="M32 60c0-10-3-18-9-24" stroke="%232BB24C" stroke-width="4" fill="none"/><path d="M32 60c0-10 3-18 9-24" stroke="%232BB24C" stroke-width="4" fill="none"/></svg>'/>
+  <link id="fav" rel="icon" href="logo.png">
   <style>
-    :root{
-      --brand-primary:#2BB24C; --brand-accent:#FFD400; --brand-danger:#E53935;
-      --border:#e5e7eb; --pink-1:#ffe8f2; --pink-2:#fff0f7; --text:#0f172a; --muted:#6b7280;
-    }
+    :root{--brand-primary:#2BB24C;--border:#e5e7eb;--pink-1:#ffe8f2;--pink-2:#fff0f7;--text:#0f172a;--muted:#6b7280;}
     *{box-sizing:border-box}
-    body{margin:0;font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);
-      background:linear-gradient(to bottom,var(--pink-1),var(--pink-2));}
-    a{color:inherit;text-decoration:none}
+    body{margin:0;font-family:Montserrat,system-ui;color:var(--text);background:linear-gradient(to bottom,var(--pink-1),var(--pink-2));}
     .container{max-width:1120px;margin:0 auto;padding:0 16px}
-    /* Header */
-    .top{border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:10}
+    .top{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
     .top-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 0;gap:12px}
     .brand{display:flex;align-items:center;gap:12px}
-    .brand-logo{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:#fff;border:1px solid var(--border);overflow:hidden}
-    .brand-logo img,.brand-logo svg{width:30px;height:30px;object-fit:contain;display:block}
-    .brand-title{font-size:22px;font-weight:800;letter-spacing:.3px;line-height:1}
-    .brand-sub{font-size:12px;color:var(--muted)}
+    .brand-logo img{width:40px;height:40px;object-fit:contain}
     nav .link{padding:8px 12px;border-radius:12px;font-size:14px}
-    nav .link.active, nav .link:hover{background:#f3f4f6}
-    /* Cards */
+    nav .link.active,nav .link:hover{background:#f3f4f6}
     .card{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.03)}
     .pad{padding:16px}
     .thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:16px}
     .muted{color:var(--muted)}
     .btn{padding:10px 14px;border:1px solid var(--border);border-radius:14px;background:#fff;font-weight:600;cursor:pointer}
-    .btn:hover{background:#f9fafb}
     .btn-primary{background:var(--brand-primary);border-color:var(--brand-primary);color:#fff}
-    .btn-primary:hover{filter:brightness(0.95)}
     .qtybox{display:flex;align-items:center;gap:8px}
-    .qtybtn{width:36px;height:36px;border-radius:12px;border:1px solid var(--border);background:#fff;font-weight:700;font-size:18px;line-height:1;display:grid;place-items:center;cursor:pointer}
-    .qtybtn:active{transform:translateY(1px)}
+    .qtybtn{width:36px;height:36px;border-radius:12px;border:1px solid var(--border);background:#fff;font-weight:700;font-size:18px;display:grid;place-items:center}
     .qtyinput{width:96px;text-align:center;padding:10px 8px;border:1px solid var(--border);border-radius:12px;font-weight:600}
-    /* Grid */
     .grid{display:grid;gap:16px}
-    @media(min-width:720px){ .grid-cols-2{grid-template-columns:repeat(2,1fr)} }
-    @media(min-width:960px){ .grid-cols-3{grid-template-columns:repeat(3,1fr)} }
-    /* Footer */
-    footer{color:var(--muted);text-align:center;padding:24px 0;font-size:12px}
-    /* Toasts */
-    .toast-wrap{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:50}
-    .toast{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.08);padding:12px 14px;min-width:240px}
-    .toast.enter{animation:toastIn .35s ease-out}
-    .toast.exit{animation:toastOut .3s ease-in forwards}
-    @keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes toastOut{to{opacity:0;transform:translateY(10px)}}
-    /* Info blocks */
-    .about,.contacts{background:#fff;border:1px solid var(--border);border-radius:20px;padding:16px}
-    .ribbon{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-size:12px;background:rgba(43,178,76,.08);color:var(--brand-primary)}
-    .price-pill{border:1px solid currentColor;border-radius:999px;padding:2px 8px;font-size:12px}
+    @media(min-width:720px){.grid-cols-3{grid-template-columns:repeat(3,1fr)}}
+    footer{text-align:center;color:var(--muted);padding:20px 0;font-size:12px}
+    .toast-wrap{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px}
+    .toast{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.08);padding:12px 14px}
   </style>
 </head>
 <body>
-  <script>
-    // ===== CONFIG =====
-    const CONFIG = {
-      brand: { title:"ЦВЕТОФОР — приём заказов тюльпанов", logoUrl:"logo.png" }, // положи logo.png рядом
-      cityText: "г. Улан-Удэ",
-      address: "ул. Тобольская, 167 А",
-      phone: "+7 914 841 615",
-      cartStep: 20, // кратность
-      colors: [
-        { id:"yellow",        name:"Жёлтый",           price:25, color:"#f4d03f", img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop" },
-        { id:"white",         name:"Белый",            price:25, color:"#d1d5db", img:"https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop" },
-        { id:"cream",         name:"Кремовый",         price:26, color:"#fae7d7", img:"https://images.unsplash.com/photo-1528832636320-3a99f6fb0f58?q=80&w=1200&auto=format&fit=crop" },
-        { id:"pink",          name:"Розовый",          price:26, color:"#f8a5c2", img:"https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?q=80&w=1200&auto=format&fit=crop" },
-        { id:"red",           name:"Красный",          price:27, color:"#d7263d", img:"https://images.unsplash.com/photo-1456763961288-cde5f0a7c3fe?q=80&w=1200&auto=format&fit=crop" },
-        { id:"pink-lilac",    name:"Розово-сиреневый", price:27, color:"#c084fc", img:"https://images.unsplash.com/photo-1456763961288-cde5f0a7c3fe?q=80&w=1200&auto=format&fit=crop" },
-        { id:"white-lilac",   name:"Бело-сиреневый",   price:27, color:"#a78bfa", img:"https://images.unsplash.com/photo-1456763961288-cde5f0a7c3fe?q=80&w=1200&auto=format&fit=crop" },
-        { id:"orange",        name:"Оранжевый",        price:26, color:"#f59e0b", img:"https://images.unsplash.com/photo-1528832636320-3a99f6fb0f58?q=80&w=1200&auto=format&fit=crop" },
-        { id:"red-white",     name:"Красно-белый",     price:28, color:"#f87171", img:"https://images.unsplash.com/photo-1528832636320-3a99f6fb0f58?q=80&w=1200&auto=format&fit=crop" },
-        { id:"violet",        name:"Фиолетовый",       price:28, color:"#6a0dad", img:"https://images.unsplash.com/photo-1456763961288-cde5f0a7c3fe?q=80&w=1200&auto=format&fit=crop" },
-        { id:"white-pink",    name:"Бело-розовый",     price:27, color:"#fecdd3", img:"https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?q=80&w=1200&auto=format&fit=crop" },
-        { id:"double-yellow", name:"Махровый жёлтый",  price:30, color:"#facc15", img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop" },
-        { id:"double-pink",   name:"Махровый розовый", price:30, color:"#f472b6", img:"https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?q=80&w=1200&auto=format&fit=crop" },
-        { id:"mix",           name:"Микс",             price:26, color:"#22c55e", img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop" }
-      ],
-      aboutText: "Бренд «Цветофор» представлен на российском рынке более 12 лет. В собственных теплицах выращиваются тюльпаны из лучших голландских луковиц.",
-      aboutBullets: [
-        "Более 12 лет опыта.",
-        "Красивые крупные бутоны 5–7 см.",
-        "Отобранные, проверенные сорта.",
-        "Высокий стебель (45–60 см, в зависимости от сорта).",
-        "В ассортименте более 10 сочных и ярких расцветок.",
-        "Гибкие условия работы: договоры, удобные способы оплаты.",
-        "При предоплате фиксируем цену до получения товара.",
-        "Градация цен от количества заказа.",
-        "Минимальный заказ от 500 шт."
-      ],
-    };
-  </script>
-
-  <!-- HEADER -->
   <header class="top">
     <div class="container top-inner">
       <div class="brand">
-        <div class="brand-logo" id="logoBox" aria-hidden="true">
-          <!-- SVG-заглушка (заменится, если есть logo.png) -->
-          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect fill="#fff" width="64" height="64"/>
-            <path d="M32 42c6-6 10-12 10-18 0-6-4-10-10-10s-10 4-10 10c0 6 4 12 10 18z" fill="#ff6fa5"/>
-            <path d="M32 60c0-10-3-18-9-24" stroke="#2BB24C" stroke-width="4" fill="none"/>
-            <path d="M32 60c0-10 3-18 9-24" stroke="#2BB24C" stroke-width="4" fill="none"/>
-          </svg>
-        </div>
+        <div class="brand-logo"><img src="logo.png" alt="Цветофор"></div>
         <div>
-          <div class="brand-title" id="brandTitle">ЦВЕТОФОР — приём заказов тюльпанов</div>
-          <div class="brand-sub" id="brandSub">г. Улан-Удэ · Быстрая поставка · Гарантия свежести</div>
+          <div style="font-weight:800;font-size:22px;">ЦВЕТОФОР — приём заказов тюльпанов</div>
+          <div style="font-size:12px;color:var(--muted)">г. Улан-Удэ · Быстрая поставка · Гарантия свежести</div>
         </div>
       </div>
       <nav>
         <a class="link active" href="#catalog" onclick="navTo('catalog')">Каталог</a>
-        <a class="link" href="#checkout" onclick="navTo('checkout')">Корзина / Оформление</a>
+        <a class="link" href="#checkout" onclick="navTo('checkout')">Корзина</a>
       </nav>
     </div>
   </header>
 
-  <!-- TOASTS -->
-  <div class="toast-wrap" id="toasts"></div>
-
-  <!-- MAIN -->
   <main class="container" style="padding:16px">
-    <!-- HERO -->
     <section class="card pad" style="margin:12px 0 16px">
-      <div class="ribbon">Предзаказ на сезон • фиксируем цену</div>
-      <h1 style="margin:10px 0 6px;font-size:26px;font-weight:800;line-height:1.2">Тюльпаны оптом по цветам</h1>
-      <p class="muted" style="margin:0">Выберите цвет и количество (кратно 20), добавьте в корзину и отправьте заказ.</p>
+      <h1 style="font-size:26px;font-weight:800;margin:0">Тюльпаны оптом по цветам</h1>
+      <p class="muted">Выберите цвет и количество (кратно 20), добавьте в корзину и оформите заказ.</p>
     </section>
-
-    <!-- CATALOG -->
     <section id="catalogSection">
       <div class="grid grid-cols-3" id="catalogGrid"></div>
     </section>
-
-    <!-- ABOUT & CONTACTS -->
-    <section style="margin-top:16px" class="grid grid-cols-2">
-      <div class="about">
-        <h2 style="margin:0 0 8px;font-size:20px;font-weight:800">О компании</h2>
-        <p class="muted" id="aboutP" style="margin:6px 0 10px"></p>
-        <ul id="aboutUl" class="muted" style="margin:0 0 0 18px"></ul>
-      </div>
-      <div class="contacts">
-        <h2 style="margin:0 0 8px;font-size:20px;font-weight:800">Контакты</h2>
-        <div>📍 <b id="addr"></b></div>
-        <div>🏙️ <span id="city"></span></div>
-        <div>📞 <a id="tel" href="#">+7 914 841 615</a> <span class="muted">(WhatsApp / Telegram)</span></div>
-      </div>
-    </section>
   </main>
 
-  <!-- CHECKOUT -->
   <section id="checkoutSection" class="container" style="display:none;padding:16px">
     <div class="card pad">
-      <h2 style="margin:0 0 8px;font-size:20px;font-weight:800">Корзина / Оформление</h2>
-      <div id="cartBox" style="margin-top:8px"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+      <h2 style="font-size:20px;font-weight:800;margin:0 0 10px">Корзина / Оформление</h2>
+      <div id="cartBox"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px">
         <div class="muted">Итого: <b id="sumRur">0 ₽</b></div>
-        <div style="display:flex;gap:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn" onclick="navTo('catalog')">Вернуться к каталогу</button>
+          <a id="waBtn" class="btn" href="#" target="_blank" rel="noopener">Отправить в WhatsApp</a>
+          <a id="tgBtn" class="btn" href="#" target="_blank" rel="noopener">Отправить в Telegram</a>
           <button class="btn btn-primary" onclick="placeOrder()">Отправить заказ</button>
         </div>
       </div>
     </div>
   </section>
 
-  <footer>© <span id="year"></span> Цветофор · Быстрая поставка · Гарантия свежести</footer>
+  <div class="toast-wrap" id="toasts"></div>
+  <footer>© <span id="year"></span> Цветофор · Тобольская 167А · +7 914 841 615 (WhatsApp / Telegram)</footer>
 
   <script>
-    const money = n => new Intl.NumberFormat('ru-RU').format(n) + ' ₽';
-    const step  = CONFIG.cartStep || 20;
+    const CONFIG = {
+      phone:"+7 914 841 615",
+      waPhonePlain:"7914841615",
+      address:"ул. Тобольская, 167 А",
+      city:"г. Улан-Удэ",
+      step:20,
+      TELEGRAM_USERNAME:"flowerpot_03",
+      colors:[
+        {id:"yellow",name:"Жёлтый",price:25,img:"yellow.jpg"},
+        {id:"white",name:"Белый",price:25,img:"white.jpg"},
+        {id:"cream",name:"Кремовый",price:26,img:"cream.jpg"},
+        {id:"pink",name:"Розовый",price:26,img:"pink.jpg"},
+        {id:"red",name:"Красный",price:27,img:"red.jpg"},
+        {id:"pink-lilac",name:"Розово-сиреневый",price:27,img:"pink-lilac.jpg"},
+        {id:"white-lilac",name:"Бело-сиреневый",price:27,img:"white-lilac.jpg"},
+        {id:"orange",name:"Оранжевый",price:26,img:"orange.jpg"},
+        {id:"red-white",name:"Красно-белый",price:28,img:"red-white.jpg"},
+        {id:"violet",name:"Фиолетовый",price:28,img:"violet.jpg"},
+        {id:"white-pink",name:"Бело-розовый",price:27,img:"white-pink.jpg"},
+        {id:"double-yellow",name:"Махровый жёлтый",price:30,img:"double-yellow.jpg"},
+        {id:"double-pink",name:"Махровый розовый",price:30,img:"double-pink.jpg"},
+        {id:"mix",name:"Микс",price:26,img:"mix.jpg"},
+      ]
+    };
 
-    // Тосты
-    function toast(html, ms=3000){
-      const wrap = document.getElementById('toasts');
-      const el = document.createElement('div');
-      el.className = 'toast enter';
-      el.innerHTML = html;
-      wrap.appendChild(el);
-      setTimeout(()=>{ el.classList.remove('enter'); el.classList.add('exit'); }, ms);
-      setTimeout(()=> wrap.removeChild(el), ms+350);
-    }
-
-    // Навигация
-    function navTo(name){
-      document.querySelectorAll('nav .link').forEach(a=> a.classList.toggle('active', a.getAttribute('href')==='#'+name));
-      document.getElementById('catalogSection').style.display  = (name==='catalog') ? 'block' : 'none';
-      document.getElementById('checkoutSection').style.display = (name==='checkout')? 'block' : 'none';
-      if(name==='checkout') renderCart();
-      history.replaceState(null,'','#'+name);
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    // Бренд и контакты
+    const money = n => new Intl.NumberFormat('ru-RU').format(n)+' ₽';
+    const cart = [];
     document.getElementById('year').textContent = new Date().getFullYear();
-    document.getElementById('brandTitle').textContent = CONFIG.brand.title;
-    document.getElementById('brandSub').textContent   = CONFIG.cityText + ' · Быстрая поставка · Гарантия свежести';
-    document.getElementById('addr').textContent = CONFIG.address;
-    document.getElementById('city').textContent = CONFIG.cityText;
-    document.getElementById('tel').href = 'tel:' + CONFIG.phone.replace(/\s|\(|\)|-/g,'');
 
-    // Подставляем логотип и делаем его favicon, если logo.png существует
-    (function tryLogo(){
-      if(!CONFIG.brand.logoUrl) return;
-      const img = new Image();
-      img.onload = () => {
-        const box = document.getElementById('logoBox');
-        box.innerHTML = '';
-        img.alt = 'Логотип Цветофор';
-        img.style.width='30px'; img.style.height='30px'; img.style.objectFit='contain';
-        box.appendChild(img);
-        // favicon
-        const link = document.getElementById('fav');
-        link.href = CONFIG.brand.logoUrl;
-      };
-      img.onerror = ()=>{}; // тихо, если файла нет
-      img.src = CONFIG.brand.logoUrl;
-    })();
-
-    // About
-    document.getElementById('aboutP').textContent = CONFIG.aboutText;
-    document.getElementById('aboutUl').innerHTML = CONFIG.aboutBullets.map(li=>`<li>${li}</li>`).join('');
-
-    // ===== Каталог =====
-    const cart = []; // {id,name,price,qty,img}
-
-    function ensureStep(v){
-      v = Math.max(step, Math.round((v||step)/step)*step);
-      if(v%step!==0) v = Math.round(v/step)*step;
-      return v;
-    }
-
-    function makeCard(item){
-      const card = document.createElement('div');
-      card.className = 'card pad';
-      card.innerHTML = `
-        <img class="thumb" src="${item.img}" alt="${item.name}"/>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-          <div style="font-weight:700">${item.name}</div>
-          <span class="price-pill" style="color:${item.color}">${money(item.price)}/шт</span>
-        </div>
-        <div class="qtybox" style="margin-top:10px">
-          <button class="qtybtn" aria-label="Уменьшить">−</button>
-          <input class="qtyinput" type="number" min="${step}" step="${step}" value="${step}"/>
-          <button class="qtybtn" aria-label="Увеличить">+</button>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-          <div class="muted">Сумма: <b class="lineSum">${money(item.price*step)}</b></div>
-          <button class="btn btn-primary">Добавить в корзину</button>
-        </div>
-      `;
-      const btns  = card.querySelectorAll('.qtybtn');
-      const input = card.querySelector('.qtyinput');
-      const sumEl = card.querySelector('.lineSum');
-      const add   = card.querySelector('.btn.btn-primary');
-
-      function update(){
-        let v = ensureStep(parseInt(input.value||step,10));
-        input.value = v;
-        sumEl.textContent = money(v*item.price);
-      }
-      btns[0].addEventListener('click',()=>{ input.value = Math.max(step, (parseInt(input.value||step,10)-step)); update(); });
-      btns[1].addEventListener('click',()=>{ input.value = (parseInt(input.value||step,10)+step); update(); });
-      input.addEventListener('input', update);
-      update();
-
-      add.addEventListener('click',()=>{
-        const qty = ensureStep(parseInt(input.value||step,10));
-        const i = cart.findIndex(x=>x.id===item.id);
-        if(i>-1) cart[i].qty += qty; else cart.push({id:item.id,name:item.name,price:item.price,qty,img:item.img});
-        toast(`✅ Добавлено в корзину: <b>${item.name}</b> — ${qty} шт.`);
-      });
-
-      return card;
-    }
-
-    function renderCatalog(){
-      const grid = document.getElementById('catalogGrid');
-      grid.innerHTML = '';
-      CONFIG.colors.forEach(item=> grid.appendChild(makeCard(item)));
-    }
-    renderCatalog();
-
-    // ===== Корзина =====
-    function renderCart(){
-      const box = document.getElementById('cartBox');
-      if(cart.length===0){
-        box.innerHTML = '<div class="muted">Корзина пуста. Добавьте позиции из каталога.</div>';
-        document.getElementById('sumRur').textContent = money(0);
-        return;
-      }
-      let html = '';
-      cart.forEach(line=>{
-        html += `
-          <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
-            <img src="${line.img}" style="width:72px;height:54px;object-fit:cover;border-radius:10px"/>
-            <div style="flex:1">
-              <div style="font-weight:700">${line.name}</div>
-              <div class="muted" style="font-size:12px">${money(line.price)} / шт</div>
-            </div>
-            <div class="qtybox">
-              <button class="qtybtn" data-id="${line.id}" data-act="minus">−</button>
-              <input class="qtyinput" data-id="${line.id}" type="number" min="${step}" step="${step}" value="${line.qty}"/>
-              <button class="qtybtn" data-id="${line.id}" data-act="plus">+</button>
-            </div>
-            <div style="width:140px;text-align:right;font-weight:700">${money(line.qty*line.price)}</div>
-            <button class="btn" data-id="${line.id}" data-act="remove">Удалить</button>
-          </div>
-        `;
-      });
-      box.innerHTML = html;
-
-      box.querySelectorAll('.qtybtn').forEach(btn=>{
-        btn.addEventListener('click',()=>{
-          const id = btn.getAttribute('data-id');
-          const act = btn.getAttribute('data-act');
-          const line = cart.find(x=>x.id===id);
-          if(!line) return;
-          if(act==='minus') line.qty = Math.max(step, line.qty-step);
-          if(act==='plus')  line.qty = line.qty+step;
-          renderCart();
-        });
-      });
-      box.querySelectorAll('.qtyinput').forEach(inp=>{
-        inp.addEventListener('input',()=>{
-          const id = inp.getAttribute('data-id');
-          const line = cart.find(x=>x.id===id);
-          if(!line) return;
-          line.qty = ensureStep(parseInt(inp.value||step,10));
-          renderCart();
-        });
-      });
-      box.querySelectorAll('[data-act="remove"]').forEach(btn=>{
-        btn.addEventListener('click',()=>{
-          const id = btn.getAttribute('data-id');
-          const i = cart.findIndex(x=>x.id===id);
-          if(i>-1) cart.splice(i,1);
-          renderCart();
-        });
-      });
-
-      const total = cart.reduce((s,l)=> s + l.qty*l.price, 0);
-      document.getElementById('sumRur').textContent = money(total);
-    }
-
-    function placeOrder(){
-      if(cart.length===0){ toast('⚠️ Корзина пуста'); return; }
-      toast('✅ Заказ принят!<br/>📞 С вами свяжется менеджер для подтверждения заказа 🌸', 4000);
-      // При желании очистить корзину:
-      // cart.length = 0; renderCart(); navTo('catalog');
-    }
-
-    // Старт
-    if(location.hash==='#checkout') navTo('checkout'); else navTo('catalog');
+    function toast(txt){const w=document.getElementById('toasts');const d=document.createElement('div');d.className='toast';d.innerHTML=txt;w.appendChild(d);setTimeout(()=>w.removeChild(d),3000);}
+    function ensureStep(v){const s=CONFIG.step;v=Math.max(s,Math.round((v||s)/s)*s);return v;}
+    function navTo(p){document.getElementById('catalogSection').style.display=p==='catalog'?'block':'none';document.getElementById('checkoutSection').style.display=p==='checkout'?'block':'none';if(p==='checkout')renderCart();history.replaceState(null,'','#'+p);}
+    function makeCard(i){const c=document.createElement('div');c.className='card pad';c.innerHTML=`<img src="${i.img}" class="thumb"><div style="font-weight:700;margin-top:4px">${i.name}</div><div class="qtybox" style="margin-top:6px"><button class="qtybtn">−</button><input class="qtyinput" type="number" min="${CONFIG.step}" step="${CONFIG.step}" value="${CONFIG.step}"><button class="qtybtn">+</button></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><div class="muted">Сумма: <b class="sum">${money(i.price*CONFIG.step)}</b></div><button class="btn btn-primary">Добавить</button></div>`;
+      const inp=c.querySelector('.qtyinput'),sum=c.querySelector('.sum');
+      c.querySelectorAll('.qtybtn')[0].onclick=()=>{inp.value=Math.max(CONFIG.step,inp.value-CONFIG.step);sum.innerText=money(i.price*inp.value)};
+      c.querySelectorAll('.qtybtn')[1].onclick=()=>{inp.value=parseInt(inp.value)+CONFIG.step;sum.innerText=money(i.price*inp.value)};
+      c.querySelector('.btn-primary').onclick=()=>{const q=ensureStep(parseInt(inp.value));const f=cart.find(x=>x.id===i.id);f?f.qty+=q:cart.push({...i,qty:q});toast('✅ '+i.name+' — '+q+' шт');updateShareButtons();};
+      return c;}
+    function renderCatalog(){const g=document.getElementById('catalogGrid');g.innerHTML='';CONFIG.colors.forEach(i=>g.appendChild(makeCard(i)));}
+    function renderCart(){const b=document.getElementById('cartBox');if(cart.length==0){b.innerHTML='<div class="muted">Корзина пуста</div>';document.getElementById('sumRur').innerText='0 ₽';updateShareButtons();return;}
+      b.innerHTML=cart.map(l=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee"><img src="${l.img}" style="width:70px;height:54px;object-fit:cover;border-radius:8px"><div style="flex:1"><b>${l.name}</b><br><span class="muted">${money(l.price)}/шт</span></div><div style="width:90px;text-align:right"><b>${money(l.qty*l.price)}</b></div></div>`).join('');
+      document.getElementById('sumRur').innerText=money(cart.reduce((s,l)=>s+l.qty*l.price,0));updateShareButtons();}
+    function placeOrder(){if(cart.length==0){toast('⚠️ Корзина пуста');return;}toast('✅ Заказ принят! 📞 С вами свяжется менеджер 🌸');}
+    function updateShareButtons(){const wa=document.getElementById('waBtn'),tg=document.getElementById('tgBtn');if(cart.length==0){[wa,tg].forEach(el=>{el.href='#';el.style.opacity='.5';el.style.pointerEvents='none';});return;}
+      const lines=cart.map(x=>`${x.name} — ${x.qty} шт`).join('%0A');const total=cart.reduce((s,l)=>s+l.qty*l.price,0);
+      const text=`Здравствуйте! Хочу заказать:%0A${lines}%0AИтого: ${new Intl.NumberFormat('ru-RU').format(total)} ₽%0A${encodeURIComponent(CONFIG.city)}, ${encodeURIComponent(CONFIG.address)}%0AТел.: ${encodeURIComponent(CONFIG.phone)}`;
+      wa.href=`https://wa.me/${CONFIG.waPhonePlain}?text=${text}`;wa.style.opacity='1';wa.style.pointerEvents='auto';
+      const enc=text;
+      tg.href=`https://t.me/${CONFIG.TELEGRAM_USERNAME}?start=`;
+      tg.onclick=function(e){window.location.href=`https://t.me/share/url?url=&text=${enc}`;};
+      tg.style.opacity='1';tg.style.pointerEvents='auto';}
+    renderCatalog();if(location.hash==='#checkout')navTo('checkout');else navTo('catalog');
   </script>
 </body>
 </html>
