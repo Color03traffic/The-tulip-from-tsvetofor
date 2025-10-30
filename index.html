@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Цветофор · Тюльпаны — Мини‑сайт заказов</title>
+  <title>Цветофор · Тюльпаны — Мини‑сайт заказов (цвета)</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect fill="white" width="64" height="64"/><path d="M32 42c6-6 10-12 10-18 0-6-4-10-10-10s-10 4-10 10c0 6 4 12 10 18z" fill="%23ff6fa5"/><path d="M32 60c0-10-3-18-9-24" stroke="%232BB24C" stroke-width="4" fill="none"/><path d="M32 60c0-10 3-18 9-24" stroke="%232BB24C" stroke-width="4" fill="none"/></svg>'/>
   <style>
@@ -54,14 +54,51 @@
         { name:"Чита",     phone:"+7 (3022) 22-20-22", address:"ул. Амурская, 10" }
       ],
       catalog:[
-        { id:"red-impression", name:"Red Impression", price:25, stem:"40–50 см", desc:"Классический алый сорт, крупный бутон 7–8 см.", color:"#d7263d", img:"https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?q=80&w=1200&auto=format&fit=crop" },
-        { id:"strong-gold",    name:"Strong Gold",    price:27, stem:"40–50 см", desc:"Насыщенно-жёлтый сорт с прочным стеблем.",       color:"#f0c419", img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop" },
-        { id:"purple-prince",  name:"Purple Prince",  price:28, stem:"40–50 см", desc:"Фиолетовый сорт с бархатными лепестками.",        color:"#6a0dad", img:"https://images.unsplash.com/photo-1456763961288-cde5f0a7c3fe?q=80&w=1200&auto=format&fit=crop" },
-        { id:"yellow-flight",  name:"Yellow Flight",  price:26, stem:"40–50 см", desc:"Солнечный жёлтый, ровная цветная плантация.",     color:"#ffd166", img:"https://images.unsplash.com/photo-1528832636320-3a99f6fb0f58?q=80&w=1200&auto=format&fit=crop" },
-        { id:"white-snow",     name:"White Snow",     price:26, stem:"40–50 см", desc:"Чисто-белые бутоны, акцент на нежность.",         color:"#f7f7f7", img:"https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop" }
+        { id:"yellow", name:"Жёлтый", price:25, desc:"Классический солнечный оттенок.", color:"#f4d03f", img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop" },
+        { id:"white", name:"Белый", price:25, desc:"Чистый и минималистичный.", color:"#d1d5db", img:"https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop" },
+        { id:"cream", name:"Кремовый", price:26, desc:"Мягкий пастельный тон.", color:"#fae7d7", img:"https://images.unsplash.com/photo-1528832636320-3a99f6fb0f58?q=80&w=1200&auto=format&fit=crop" },
+        { id:"pink", name:"Розовый", price:26, desc:"Нежный, романтичный цвет.", color:"#f8a5c2", img:"https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?q=80&w=1200&auto=format&fit=crop" },
+        { id:"red", name:"Красный", price:27, desc:"Яркий акцент, крупный бутон.", color:"#d7263d", img:"https://images.unsplash.com/photo-1456763961288-cde5f0a7c3fe?q=80&w=1200&auto=format&fit=crop" },
+        { id:"pink-lilac", name:"Розово‑сиреневый", price:27, desc:"Идеален для весенних миксов.", color:"#c084fc", img:"https://images.unsplash.com/photo-1456763961288-cde5f0a7c3fe?q=80&w=1200&auto=format&fit=crop" },
+        { id:"white-lilac", name:"Бело‑сиреневый", price:27, desc:"Нежное сочетание оттенков.", color:"#a78bfa", img:"https://images.unsplash.com/photo-1456763961288-cde5f0a7c3fe?q=80&w=1200&auto=format&fit=crop" },
+        { id:"orange", name:"Оранжевый", price:26, desc:"Тёплый и жизнерадостный.", color:"#f59e0b", img:"https://images.unsplash.com/photo-1528832636320-3a99f6fb0f58?q=80&w=1200&auto=format&fit=crop" },
+        { id:"red-white", name:"Красно‑белый", price:28, desc:"Двухцветные, эффектные бутоны.", color:"#f87171", img:"https://images.unsplash.com/photo-1528832636320-3a99f6fb0f58?q=80&w=1200&auto=format&fit=crop" },
+        { id:"violet", name:"Фиолетовый", price:28, desc:"Глубокий и бархатный цвет.", color:"#6a0dad", img:"https://images.unsplash.com/photo-1456763961288-cde5f0a7c3fe?q=80&w=1200&auto=format&fit=crop" },
+        { id:"white-pink", name:"Бело‑розовый", price:27, desc:"Светлое сочетание для нежных букетов.", color:"#fecdd3", img:"https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?q=80&w=1200&auto=format&fit=crop" },
+        { id:"double-yellow", name:"Махровый жёлтый", price:30, desc:"Пышные многолепестковые бутоны.", color:"#facc15", img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop" },
+        { id:"double-pink", name:"Махровый розовый", price:30, desc:"Эффектные и воздушные.", color:"#f472b6", img:"https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?q=80&w=1200&auto=format&fit=crop" },
+        { id:"mix", name:"Микс", price:26, desc:"Ассорти ярких оттенков.", color:"#22c55e", img:"https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop" }
       ],
-      texts:{ ribbon:"Весенняя коллекция • предзаказ", heroTitle:"Тюльпаны оптом: выберите сорт, количество и добавьте в корзину", heroSubtitle:"Крупные бутоны, ровная длина, бережная поставка. Доступны упаковки ×50/×100/×200.", quickOrder:"Быстрый заказ", btnAdd:"Добавить в корзину", btnGoCheckout:"Перейти к оформлению", checkoutTitle:"Корзина", contactTitle:"Данные для связи", successTitle:"Заказ отправлен!", successNumber:"Номер заказа:", adminTitle:"Админ — управление сортами", adminNote:"Вкл/выкл доступность, правка базовой цены, визуальный контроль." },
-      about:{ enable:true, title:"О компании", text:"«Цветофор» — сеть цветочных магазинов с понятными ценами и свежими поставками. Мы помогаем красиво выражать чувства с 2017 года. Быстрая доставка, гарантия свежести каждого букета.", bullets:["Свежие поставки ежедневно","Оптовые цены и предзаказы","Быстрая доставка по городу"] }
+      texts:{
+        ribbon:"Предзаказ на сезон • фиксируем цену",
+        heroTitle:"Тюльпаны оптом по цветам: выберите оттенок и количество",
+        heroSubtitle:"Крупные бутоны, высокий стебель 45–60 см. Упаковки ×50/×100/×200 и своё количество.",
+        quickOrder:"Быстрый заказ",
+        btnAdd:"Добавить в корзину",
+        btnGoCheckout:"Перейти к оформлению",
+        checkoutTitle:"Корзина",
+        contactTitle:"Данные для связи",
+        successTitle:"Заказ отправлен!",
+        successNumber:"Номер заказа:",
+        adminTitle:"Админ — управление позициями",
+        adminNote:"Правьте цены и доступность в конфиге (вверху файла)."
+      },
+      about:{
+        enable:true,
+        title:"О компании",
+        text:"Бренд «Цветофор» представлен на российском рынке более 12 лет. В собственных теплицах выращиваются тюльпаны из лучших голландских луковиц.",
+        bullets:[
+          "Более 12 лет опыта.",
+          "Красивые крупные бутоны 5–7 см.",
+          "Отобранные, проверенные сорта.",
+          "Высокий стебель (45–60 см, в зависимости от сорта).",
+          "В ассортименте более 10 сочных и ярких расцветок.",
+          "Гибкие условия работы: договоры, удобные способы оплаты.",
+          "При предоплате фиксируем цену до получения товара.",
+          "Градация цен от количества заказа.",
+          "Минимальный заказ от 500 шт."
+        ]
+      }
     };
   </script>
 
@@ -112,7 +149,7 @@
           <span class="pill" id="ribbon"></span>
           <h1 style="margin:12px 0 0;font-size:28px;font-weight:800;line-height:1.2" id="heroTitle"></h1>
           <p class="muted" style="margin:8px 0 0;max-width:680px" id="heroSubtitle"></p>
-          <div style="margin-top:16px"><input class="input" placeholder="Поиск по сортам и цветам..." id="search"/></div>
+          <div style="margin-top:16px"><input class="input" placeholder="Поиск по цветам..." id="search"/></div>
         </div>
         <div class="card" style="overflow:hidden"><img class="thumb" src="https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop" alt="Tulips"/></div>
       </div>
@@ -121,7 +158,7 @@
     <div class="grid grid-cols" style="gap:16px">
       <div>
         <div style="display:flex;justify-content:space-between;align-items:end">
-          <h2 style="font-size:20px;font-weight:700">Каталог сортов</h2>
+          <h2 style="font-size:20px;font-weight:700">Доступные цвета</h2>
           <div class="xs muted">Найдено: <span id="found">0</span></div>
         </div>
         <div class="list" style="margin-top:8px" id="catalogList"></div>
@@ -129,7 +166,7 @@
 
       <div class="card" style="padding:16px">
         <h3 style="font-size:18px;font-weight:600" id="quickOrder"></h3>
-        <div class="muted xs" style="margin-top:8px" id="quickOrderHint">Выберите сорт слева, затем укажите количество и добавьте в корзину.</div>
+        <div class="muted xs" style="margin-top:8px" id="quickOrderHint">Выберите цвет слева, затем укажите количество и добавьте в корзину.</div>
         <div style="margin-top:12px">
           <div style="font-size:14px;font-weight:600">Количество, шт</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
@@ -140,7 +177,7 @@
           </div>
         </div>
         <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;background:rgba(43,178,76,.06);padding:12px;border-radius:14px">
-          <div class="muted" style="font-size:14px">Итог за выбранный сорт:</div>
+          <div class="muted" style="font-size:14px">Итог за выбранный цвет:</div>
           <div style="font-size:18px;font-weight:800;color:var(--brand-primary)" id="sum">— ₽</div>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px">
@@ -218,20 +255,17 @@
   </div>
 
   <script>
-    // THEME
     document.documentElement.style.setProperty('--brand-primary', CONFIG.theme.brandPrimary);
     document.documentElement.style.setProperty('--pink-1', CONFIG.theme.gradientFrom);
     document.documentElement.style.setProperty('--pink-2', CONFIG.theme.gradientTo);
     document.documentElement.style.setProperty('--border', CONFIG.theme.border);
 
-    // BRAND
     brandTitle.textContent = CONFIG.brand.title;
     brandTagline.textContent = CONFIG.brand.tagline;
     if (CONFIG.brand.logoUrl) {
       logoBox.innerHTML = '<img src="'+CONFIG.brand.logoUrl+'" alt="Логотип Цветофор" style="width:100%;height:100%;object-fit:contain">';
     }
 
-    // TEXTS
     ribbon.textContent = CONFIG.texts.ribbon;
     heroTitle.textContent = CONFIG.texts.heroTitle;
     heroSubtitle.textContent = CONFIG.texts.heroSubtitle;
@@ -245,13 +279,11 @@
     adminTitle.textContent = CONFIG.texts.adminTitle;
     adminNote.textContent = CONFIG.texts.adminNote;
 
-    // ABOUT
     if(CONFIG.about?.enable){
       aboutText.textContent = CONFIG.about.text;
       aboutList.innerHTML = CONFIG.about.bullets.map(b=>'<li>'+b+'</li>').join('');
     }
 
-    // CITY SELECT
     CONFIG.cities.forEach(c=>{ const o=document.createElement('option'); o.textContent=c.name; city.appendChild(o); });
     function applyCity(){
       const name = city.value || CONFIG.cities[0].name;
@@ -262,7 +294,6 @@
     city.addEventListener('change', applyCity);
     city.value = CONFIG.cities[0].name; applyCity();
 
-    // CATALOG
     function money(n){ return new Intl.NumberFormat('ru-RU').format(n); }
     function renderCatalog(q=""){
       const items = CONFIG.catalog.filter(t => !q || (t.name.toLowerCase().includes(q) || (t.desc||'').toLowerCase().includes(q)));
@@ -277,7 +308,6 @@
               <span class="price" style="color:${t.color}">${money(t.price)} ₽/шт</span>
             </div>
             <div class="muted" style="margin-top:6px;font-size:14px">${t.desc||""}</div>
-            <div class="xs muted" style="margin-top:6px">Длина стебля: ${t.stem}</div>
           </div>`;
         btn.addEventListener('click', ()=>{ selected=t; updateSum(); });
         catalogList.appendChild(btn);
@@ -289,11 +319,10 @@
     qtyInput.addEventListener('input', ()=>{ qty=parseInt(qtyInput.value||"0",10); updateSum(); });
     document.querySelectorAll('.qty-btn').forEach(b=> b.addEventListener('click', ()=>{ qty=parseInt(b.dataset.n,10); qtyInput.value=qty; updateSum(); }));
     function updateSum(){ sum.textContent = (selected && qty>0) ? money(selected.price*qty)+' ₽' : '— ₽'; }
-    btnAdd.addEventListener('click', ()=> alert(selected ? `В корзину: ${selected.name} × ${qty}` : 'Сначала выберите сорт'));
+    btnAdd.addEventListener('click', ()=> alert(selected ? `В корзину: ${selected.name} × ${qty}` : 'Сначала выберите позицию'));
     btnGoCheckout.addEventListener('click', ()=> switchTab('checkout'));
     renderCatalog();
 
-    // TABS
     const sections={catalog,checkout,success,admin}; 
     document.querySelectorAll('.tab').forEach(t=> t.addEventListener('click', ()=> switchTab(t.dataset.tab)));
     function switchTab(name){
