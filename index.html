@@ -3,259 +3,155 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Цветофор — приём заказов на тюльпан</title>
+
+  <!-- 🏷️ SEO -->
+  <title>🌷 Цветофор — тюльпаны оптом в Улан-Удэ | Приём заказов на Краснодарский тюльпан</title>
+  <meta name="description" content="Свежие тюльпаны по оптовым ценам напрямую из Краснодарских теплиц 🌷 Бренд «Цветофор» — 12 лет на рынке. Быстрая доставка по Улан-Удэ и регионам, гарантия свежести, гибкие условия сотрудничества." />
+  <meta name="keywords" content="тюльпаны оптом, Краснодарский тюльпан, Цветофор, тюльпаны Улан-Удэ, цветы опт, купить тюльпаны, тюльпан03.рф, доставка тюльпанов, свежие тюльпаны, цветофор Улан-Удэ, тюльпаны Краснодар" />
+  <meta name="author" content="Цветофор" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://тюльпан03.рф/" />
+
+  <!-- 🌐 Open Graph -->
+  <meta property="og:title" content="🌷 Цветофор — тюльпаны оптом в Улан-Удэ | Приём заказов на Краснодарский тюльпан" />
+  <meta property="og:description" content="Тюльпаны по оптовым ценам. Краснодарские теплицы. Быстрая доставка и гарантия свежести!" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://тюльпан03.рф/" />
+  <meta property="og:image" content="https://тюльпан03.рф/logo.png" />
+  <meta property="og:locale" content="ru_RU" />
+
+  <!-- 🐦 Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Цветофор — приём заказов на Краснодарский тюльпан" />
+  <meta name="twitter:description" content="Тюльпаны по оптовым ценам. Краснодарские теплицы. Быстрая доставка и гарантия свежести!" />
+  <meta name="twitter:image" content="https://тюльпан03.рф/logo.png" />
+
+  <!-- 📍 Sitemap / Robots -->
+  <link rel="sitemap" type="application/xml" href="https://тюльпан03.рф/sitemap.xml" />
+  <meta name="robots" content="all" />
+
+  <!-- 🖼️ Иконка -->
+  <link rel="icon" type="image/png" href="https://тюльпан03.рф/logo.png" />
+
+  <!-- 🔤 Шрифт -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-  <link id="fav" rel="icon" href="logo.png">
+
+  <!-- 🎨 Цвет интерфейса -->
+  <meta name="theme-color" content="#E96551" />
+
+  <!-- 🧭 JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FlowerShop",
+    "name": "Цветофор — приём заказов на Краснодарский тюльпан",
+    "url": "https://тюльпан03.рф/",
+    "logo": "https://тюльпан03.рф/logo.png",
+    "image": "https://тюльпан03.рф/logo.png",
+    "description": "Свежие тюльпаны по оптовым ценам от бренда Цветофор. Краснодарские теплицы. Быстрая доставка по Улан-Удэ и регионам. Гарантия свежести.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Улан-Удэ",
+      "streetAddress": "ул. Тобольская, 167А",
+      "addressCountry": "RU"
+    },
+    "telephone": "+7 914 841 6115",
+    "sameAs": [
+      "https://t.me/flowerpot_03",
+      "https://wa.me/79148416115"
+    ]
+  }
+  </script>
+
   <style>
-    :root{
-      --brand-primary:#2BB24C;
-      --brand-pink:#ffe4ec;
-      --border:#e5e7eb;
-      --text:#0f172a;
-      --muted:#6b7280;
-      --pink-1:#ffe8f2;
-      --pink-2:#fff0f7;
+    body {
+      font-family: 'Montserrat', system-ui;
+      margin: 0;
+      background: linear-gradient(to bottom, #ffe8f2, #fff0f7);
+      color: #0f172a;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Montserrat,system-ui;
-      color:var(--text);
-      background:linear-gradient(to bottom,var(--pink-1),var(--pink-2));
-    }
-    .container{max-width:1120px;margin:0 auto;padding:0 16px}
-    .top{
-      background:var(--brand-pink);
-      border-bottom:2px solid #f9cbd7;
-      position:sticky;top:0;z-index:10;
-      box-shadow:0 2px 6px rgba(0,0,0,.05);
-    }
-    .top-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 0;gap:12px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand-logo img{width:40px;height:40px;object-fit:contain}
-    nav .link{padding:8px 12px;border-radius:12px;font-size:14px;color:#d7263d;font-weight:600}
-    nav .link.active,nav .link:hover{background:#fff;color:#c2185b}
-    .card{background:#fff;border:1px solid var(--border);border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.03)}
-    .pad{padding:16px}
-    .thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:16px}
-    .muted{color:var(--muted)}
-    .btn{padding:10px 14px;border:1px solid var(--border);border-radius:14px;background:#fff;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
-    .btn-primary{background:var(--brand-primary);border-color:var(--brand-primary);color:#fff}
-    .btn-icon{width:18px;height:18px;flex-shrink:0}
-    .qtybox{display:flex;align-items:center;gap:8px}
-    .qtybtn{width:36px;height:36px;border-radius:12px;border:1px solid var(--border);background:#fff;font-weight:700;font-size:18px;display:grid;place-items:center}
-    .qtyinput{width:96px;text-align:center;padding:10px 8px;border:1px solid var(--border);border-radius:12px;font-weight:600}
-    .grid{display:grid;gap:16px}
-    @media(min-width:720px){.grid-cols-3{grid-template-columns:repeat(3,1fr)}}
-    footer{text-align:center;color:var(--muted);padding:20px 0;font-size:12px}
-    .toast-wrap{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:100}
-    .toast{background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.08);padding:12px 14px}
-    /* кнопка "Позвонить" */
-    .call-fab {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      background: #2BB24C;
-      color: #fff;
-      border: none;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      font-size: 28px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .call-fab:hover {
-      transform: scale(1.08);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-    }
+    .container{max-width:1100px;margin:0 auto;padding:20px;}
+    header{background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 0;}
+    .brand{display:flex;align-items:center;gap:10px;}
+    .brand img{width:40px;height:40px;border-radius:12px;}
+    .brand h1{margin:0;font-size:20px;font-weight:800;}
+    h2{font-size:18px;margin:20px 0 8px;}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;margin-bottom:20px;}
+    .grid{display:grid;gap:16px;}
+    @media(min-width:768px){.grid{grid-template-columns:repeat(3,1fr);}}
+    button{cursor:pointer;}
+    .btn{border:none;border-radius:12px;padding:10px 16px;font-weight:600;}
+    .btn-primary{background:#2BB24C;color:#fff;}
+    footer{text-align:center;padding:20px 0;color:#777;font-size:12px;}
   </style>
 </head>
+
 <body>
-  <header class="top">
-    <div class="container top-inner">
-      <div class="brand">
-        <div class="brand-logo"><img src="logo.png" alt="Цветофор"></div>
-        <div>
-          <div style="font-weight:800;font-size:22px;color:#d7263d;">Цветофор — приём заказов на тюльпан</div>
-          <div style="font-size:13px;color:#c2185b;">г. Улан-Удэ · ул. Тобольская, 167А</div>
-        </div>
-      </div>
-      <nav>
-        <a class="link active" href="#catalog" onclick="navTo('catalog')">Каталог</a>
-        <a class="link" href="#checkout" onclick="navTo('checkout')">Корзина</a>
-      </nav>
+<header>
+  <div class="container brand">
+    <img src="logo.png" alt="Логотип Цветофор">
+    <h1>Цветофор — приём заказов на Краснодарский тюльпан</h1>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2 style="color:#E96551">Тюльпаны по оптовым ценам 🌷</h2>
+    <p><strong>Выберите цвет и количество (кратно 20)</strong>, добавьте в корзину и оформите заказ.</p>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=600" alt="Жёлтые тюльпаны" style="width:100%;border-radius:12px;">
+      <h3>Жёлтые</h3>
+      <p>99 ₽/шт</p>
+      <button class="btn btn-primary" onclick="addToCart('Жёлтые тюльпаны')">Добавить в корзину</button>
     </div>
-  </header>
-
-  <main class="container" style="padding:16px">
-    <section class="card pad" style="margin:12px 0 16px;text-align:center">
-      <h1 style="font-size:32px;font-weight:800;margin:0;color:#E53935;">Тюльпаны по оптовым ценам</h1>
-      <p style="font-size:19px;font-weight:600;color:#E53935;margin-top:6px;">
-        Выберите цвет и количество (кратно 20), добавьте в корзину и оформите заказ.
-      </p>
-    </section>
-    <section id="catalogSection">
-      <div class="grid grid-cols-3" id="catalogGrid"></div>
-    </section>
-  </main>
-
-  <section id="checkoutSection" class="container" style="display:none;padding:16px">
-    <div class="card pad">
-      <h2 style="font-size:20px;font-weight:800;margin:0 0 10px">Корзина / Оформление</h2>
-      <div id="cartBox"></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px">
-        <div class="muted">Итого: <b id="sumRur">0 ₽</b></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" onclick="navTo('catalog')">Вернуться к каталогу</button>
-          <a id="waBtn" class="btn" href="#" target="_blank" rel="noopener">
-            <img class="btn-icon" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="">Отправить в WhatsApp
-          </a>
-          <a id="tgBtn" class="btn" href="#" target="_blank" rel="noopener">
-            <img class="btn-icon" src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="">Отправить в Telegram
-          </a>
-          <button class="btn btn-primary" onclick="placeOrder()">Отправить заказ</button>
-        </div>
-      </div>
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600" alt="Белые тюльпаны" style="width:100%;border-radius:12px;">
+      <h3>Белые</h3>
+      <p>99 ₽/шт</p>
+      <button class="btn btn-primary" onclick="addToCart('Белые тюльпаны')">Добавить в корзину</button>
+    </div>
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1468824357306-a439d58ccb1c?q=80&w=600" alt="Розовые тюльпаны" style="width:100%;border-radius:12px;">
+      <h3>Розовые</h3>
+      <p>99 ₽/шт</p>
+      <button class="btn btn-primary" onclick="addToCart('Розовые тюльпаны')">Добавить в корзину</button>
     </div>
   </section>
 
-  <div class="toast-wrap" id="toasts"></div>
-  <footer>© <span id="year"></span> Цветофор · Тобольская 167А · +7 914 841 6115 (WhatsApp / Telegram)</footer>
+  <section class="card">
+    <h2>О компании</h2>
+    <p>Бренд «Цветофор» представлен на российском рынке более 12 лет.  
+    В собственных теплицах выращиваются тюльпаны из лучших голландских луковиц.</p>
+    <ul>
+      <li>Более 12 лет опыта;</li>
+      <li>Красивые крупные бутоны 5–7 см;</li>
+      <li>Проверенные сорта и высокая длина стебля (45–60 см);</li>
+      <li>Ассортимент более 10 ярких расцветок;</li>
+      <li>Гибкие условия и договорная работа;</li>
+      <li>Фиксируем цену при предоплате;</li>
+      <li>Минимальный заказ от 500 шт.</li>
+    </ul>
+  </section>
 
-  <!-- Кнопка звонка -->
-  <a href="tel:+79148416115" class="call-fab" title="Позвонить">📞</a>
+  <section class="card" id="contact">
+    <h2>Контакты</h2>
+    <p>📍 Улан-Удэ, ул. Тобольская, 167А</p>
+    <p>📞 <a href="tel:+79148416115">+7 (914) 841-61-15</a> — WhatsApp / Telegram</p>
+    <p>🌐 <a href="https://тюльпан03.рф">тюльпан03.рф</a></p>
+  </section>
+</main>
 
-  <script>
-    const CONFIG = {
-      phone:"+7 914 841 6115",
-      waPhonePlain:"79148416115",
-      address:"ул. Тобольская, 167А",
-      city:"г. Улан-Удэ",
-      step:20,
-      TELEGRAM_USERNAME:"flowerpot_03",
-      colors:[
-        {id:"yellow",name:"Жёлтый",price:25,img:"yellow.jpg"},
-        {id:"white",name:"Белый",price:25,img:"white.jpg"},
-        {id:"cream",name:"Кремовый",price:26,img:"cream.jpg"},
-        {id:"pink",name:"Розовый",price:26,img:"pink.jpg"},
-        {id:"red",name:"Красный",price:27,img:"red.jpg"},
-        {id:"pink-lilac",name:"Розово-сиреневый",price:27,img:"pink-lilac.jpg"},
-        {id:"white-lilac",name:"Бело-сиреневый",price:27,img:"white-lilac.jpg"},
-        {id:"orange",name:"Оранжевый",price:26,img:"orange.jpg"},
-        {id:"red-white",name:"Красно-белый",price:28,img:"red-white.jpg"},
-        {id:"violet",name:"Фиолетовый",price:28,img:"violet.jpg"},
-        {id:"white-pink",name:"Бело-розовый",price:27,img:"white-pink.jpg"},
-        {id:"double-yellow",name:"Махровый жёлтый",price:30,img:"double-yellow.jpg"},
-        {id:"double-pink",name:"Махровый розовый",price:30,img:"double-pink.jpg"},
-        {id:"mix",name:"Микс",price:26,img:"mix.jpg"},
-      ]
-    };
+<footer>
+  © 2025 Цветофор · Быстрая доставка · Гарантия свежести
+</footer>
 
-    const money = n => new Intl.NumberFormat('ru-RU').format(n)+' ₽';
-    const cart = [];
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    function toast(txt){
-      const w=document.getElementById('toasts');
-      const d=document.createElement('div');
-      d.className='toast';
-      d.innerHTML=txt;
-      w.appendChild(d);
-      setTimeout(()=>w.removeChild(d),3000);
-    }
-
-    function ensureStep(v){const s=CONFIG.step;v=Math.max(s,Math.round((v||s)/s)*s);return v;}
-
-    function navTo(p){
-      document.getElementById('catalogSection').style.display=p==='catalog'?'block':'none';
-      document.getElementById('checkoutSection').style.display=p==='checkout'?'block':'none';
-      if(p==='checkout') renderCart();
-      history.replaceState(null,'','#'+p);
-    }
-
-    function makeCard(i){
-      const c=document.createElement('div');
-      c.className='card pad';
-      c.innerHTML=`
-        <img src="${i.img}" class="thumb" alt="${i.name}">
-        <div style="font-weight:700;margin-top:4px">${i.name}</div>
-        <div class="qtybox" style="margin-top:6px">
-          <button class="qtybtn">−</button>
-          <input class="qtyinput" type="number" min="${CONFIG.step}" step="${CONFIG.step}" value="${CONFIG.step}">
-          <button class="qtybtn">+</button>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-          <div class="muted">Сумма: <b class="sum">${money(i.price*CONFIG.step)}</b></div>
-          <button class="btn btn-primary">Добавить</button>
-        </div>`;
-      const inp=c.querySelector('.qtyinput'), sum=c.querySelector('.sum');
-      c.querySelectorAll('.qtybtn')[0].onclick=()=>{inp.value=Math.max(CONFIG.step,inp.value-CONFIG.step);sum.innerText=money(i.price*inp.value)};
-      c.querySelectorAll('.qtybtn')[1].onclick=()=>{inp.value=parseInt(inp.value)+CONFIG.step;sum.innerText=money(i.price*inp.value)};
-      c.querySelector('.btn-primary').onclick=()=>{
-        const q=ensureStep(parseInt(inp.value));
-        const f=cart.find(x=>x.id===i.id);
-        f?f.qty+=q:cart.push({...i,qty:q});
-        toast('✅ '+i.name+' — '+q+' шт');
-        updateShareButtons();
-      };
-      return c;
-    }
-
-    function renderCatalog(){
-      const g=document.getElementById('catalogGrid');
-      g.innerHTML='';
-      CONFIG.colors.forEach(i=>g.appendChild(makeCard(i)));
-    }
-
-    function renderCart(){
-      const b=document.getElementById('cartBox');
-      if(cart.length==0){
-        b.innerHTML='<div class="muted">Корзина пуста</div>';
-        document.getElementById('sumRur').innerText='0 ₽';
-        updateShareButtons();
-        return;
-      }
-      b.innerHTML=cart.map(l=>`
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #eee">
-          <img src="${l.img}" style="width:70px;height:54px;object-fit:cover;border-radius:8px" alt="">
-          <div style="flex:1"><b>${l.name}</b><br><span class="muted">${money(l.price)}/шт</span></div>
-          <div style="width:90px;text-align:right"><b>${money(l.qty*l.price)}</b></div>
-        </div>`).join('');
-      document.getElementById('sumRur').innerText=money(cart.reduce((s,l)=>s+l.qty*l.price,0));
-      updateShareButtons();
-    }
-
-    function placeOrder(){
-      if(cart.length==0){toast('⚠️ Корзина пуста');return;}
-      toast('✅ Заказ принят! 📞 С вами свяжется менеджер 🌸');
-    }
-
-    function updateShareButtons(){
-      const wa=document.getElementById('waBtn');
-      const tg=document.getElementById('tgBtn');
-      if(cart.length==0){
-        [wa,tg].forEach(el=>{el.href='#';el.style.opacity='.5';el.style.pointerEvents='none';});
-        return;
-      }
-      const lines=cart.map(x=>`${x.name} — ${x.qty} шт`).join('%0A');
-      const total=cart.reduce((s,l)=>s+l.qty*l.price,0);
-      const text=`Здравствуйте! Хочу заказать:%0A${lines}%0AИтого: ${new Intl.NumberFormat('ru-RU').format(total)} ₽%0A${encodeURIComponent(CONFIG.city)}, ${encodeURIComponent(CONFIG.address)}%0AТел.: ${encodeURIComponent(CONFIG.phone)}`;
-      wa.href=`https://wa.me/${CONFIG.waPhonePlain}?text=${text}`;
-      wa.style.opacity='1';wa.style.pointerEvents='auto';
-      const enc=text;
-      tg.href=`https://t.me/${CONFIG.TELEGRAM_USERNAME}?start=`;
-      tg.onclick=function(e){window.location.href=`https://t.me/share/url?url=&text=${enc}`;};
-      tg.style.opacity='1';tg.style.pointerEvents='auto';
-    }
-
-    renderCatalog();
-    if(location.hash==='#checkout') navTo('checkout'); else navTo('catalog');
-  </script>
+<script>
+function addToCart(item){
+  alert("✅ Заказ принят!\n📞 С вами свяжется менеджер для подтверждения заказа 🌸\n\nТовар: " + item);
+}
+</script>
 </body>
 </html>
