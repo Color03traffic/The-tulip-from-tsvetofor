@@ -1,48 +1,60 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- 🔸 Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+  <!-- 🔸 Основные мета-теги -->
   <meta charset="UTF-8">
-  <meta name="google-site-verification" content="8CGmjoAJgxzpBQXYqL0J-S0etYKgjEnoZQiQ6203MWU" />
-<meta name="yandex-verification" content="fbc4d16f279f293e" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 🔸 SEO и описание -->
   <title>Цветофор — приём заказов на Краснодарский тюльпан</title>
-  <meta name="description" content="Цветофор — приём заказов на Краснодарский тюльпан по оптовым ценам. Доставка по России. Оплата удобным способом.">
-  <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #fff4f4; color: #222; margin: 0; padding: 0; }
-    header { background: #fff; border-bottom: 2px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; padding: 14px 22px; position: sticky; top: 0; z-index: 10; }
-    header h1 { font-size: 18px; margin: 0; color: #000; }
-    header small { font-size: 13px; color: #777; display: block; }
-    nav a { color: #2BB24C; text-decoration: none; margin-left: 20px; font-weight: 600; }
-    nav a:hover { text-decoration: underline; }
+  <meta name="description" content="Цветофор — приём заказов на Краснодарский тюльпан в г. Улан-Удэ. Оптовые цены, свежесть и быстрая доставка. Гарантия качества и гибкие условия работы.">
+  <meta name="keywords" content="тюльпаны оптом, цветофор, цветы Улан-Удэ, купить тюльпаны, оптовые цветы, Краснодарский тюльпан, свежие цветы, доставка цветов">
+  <meta name="author" content="Цветофор">
 
-    main { max-width: 1200px; margin: 20px auto; padding: 0 16px; }
-    h2 { color: #C70039; font-size: 22px; margin-bottom: 10px; }
-    .subtitle { color: rgb(233,65,51); font-weight: 600; margin-bottom: 24px; }
+  <!-- 🔸 Open Graph (для соцсетей и мессенджеров) -->
+  <meta property="og:title" content="Цветофор — приём заказов на Краснодарский тюльпан">
+  <meta property="og:description" content="Оптовые цены на тюльпаны. Быстрая доставка и гарантия свежести. Цветофор — ваш поставщик №1.">
+  <meta property="og:image" content="https://тюльпан03.рф/favicon.png">
+  <meta property="og:url" content="https://тюльпан03.рф/">
+  <meta property="og:type" content="website">
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-    .card { background: #fff; border-radius: 16px; padding: 16px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); text-align: center; }
-    .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; }
-    .card h3 { margin: 10px 0 6px; }
-    .card button { background: #2BB24C; border: none; color: white; padding: 8px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; }
-    .card button:hover { background: #23983f; }
+  <!-- 🔸 Цвет вкладки на мобильных устройствах -->
+  <meta name="theme-color" content="#ff6fa5">
 
-    footer { text-align: center; padding: 24px 12px; font-size: 14px; color: #777; margin-top: 40px; }
-
-    /* Модальное окно */
-    #modal { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);z-index:100;align-items:center;justify-content:center; }
-    #modal .window { background:#fff;padding:34px 24px 24px;border-radius:24px;max-width:360px;width:90%;text-align:center;
-                     box-shadow:0 10px 30px rgba(0,0,0,.25);animation:pop .25s ease-out;position:relative; }
-    #modal button.close { position:absolute;top:10px;right:10px;border:none;background:none;font-size:20px;color:#999;cursor:pointer; }
-    #modal img.logo { width:64px;height:64px;object-fit:contain; }
-    #modal .logo-wrap { width:86px;height:86px;border-radius:50%;background:#fff;border:1px solid #eee;
-                        box-shadow:0 8px 20px rgba(0,0,0,.12);display:grid;place-items:center;margin:-56px auto 8px;overflow:hidden; }
-    .btn-modal{display:block;color:#fff;text-decoration:none;padding:12px 14px;border-radius:14px;
-      font-weight:600;font-size:16px;transition:transform .15s ease, box-shadow .15s ease;}
-    .btn-modal:hover{transform:translateY(-2px);box-shadow:0 0 15px rgba(0,0,0,0.2);}
-    @keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-  </style>
+  <!-- 🔸 Структурированные данные для Google и Яндекс -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Цветофор — приём заказов на Краснодарский тюльпан",
+    "image": "https://тюльпан03.рф/favicon.png",
+    "url": "https://тюльпан03.рф/",
+    "telephone": "+7 914 841 6115",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "ул. Тобольская, 167А",
+      "addressLocality": "Улан-Удэ",
+      "addressCountry": "RU"
+    },
+    "priceRange": "77–109 руб/шт",
+    "description": "Бренд «Цветофор» — оптовые продажи Краснодарских тюльпанов. Работаем более 12 лет. Гарантия свежести, гибкие условия и доставка по всей России.",
+    "openingHours": "Mo-Su 08:00-22:00",
+    "logo": "https://тюльпан03.рф/favicon.png",
+    "sameAs": [
+      "https://t.me/flowerpot_03",
+      "https://wa.me/79148416115"
+    ]
+  }
+  </script>
 </head>
-
 <body>
   <header>
     <div>
