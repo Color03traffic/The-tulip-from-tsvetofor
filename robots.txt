@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://тюльпан03.рф/sitemap.xml
+Host: тюльпан03.рф
