@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Каталог — Тюльпаны оптом | Тюльпан03.рф</title>
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://тюльпан03.рф/catalog.html">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <meta name="theme-color" content="#E33400">
+
+  <style>
+    :root{
+      --bg:#E04297; --text:#111; --muted:#666; --brand:#E33400;
+      --stroke:#e5e7eb; --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;background:var(--bg);color:var(--text)}
+    a{text-decoration:none;color:inherit}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--stroke);padding:12px 0;z-index:10}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px}
+    .spread{display:flex;justify-content:space-between;align-items:center}
+    .logo{font-weight:800;font-size:22px}
+    nav a{margin-left:14px;font-weight:500}
+    nav a:hover{color:var(--brand)}
+    .btn{display:inline-block;padding:12px 18px;border-radius:12px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-weight:600;cursor:pointer}
+    .btn:hover{opacity:.92}
+
+    main.container, .section, footer{background:#fff;border-radius:var(--radius)}
+    .section{padding:32px 20px;margin-top:16px}
+    .section h1, .section h2{margin:0 0 10px}
+    .lead{color:var(--muted);margin-bottom:18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+    .card{border:1px solid var(--stroke);border-radius:16px;overflow:hidden;background:#f9fafb}
+    .card img{width:100%;height:220px;object-fit:cover}
+    .card .body{padding:16px}
+    .card strong{display:block;margin-bottom:4px}
+    .meta{color:var(--muted);font-size:13px;margin-bottom:6px}
+    .price{font-size:20px;font-weight:700;margin-top:8px;color:var(--brand)}
+    .hint{font-size:12px;color:var(--muted)}
+
+    .qty-ctrl{display:inline-flex;align-items:center;border:1px solid #ccc;border-radius:10px;overflow:hidden;margin:4px 0;background:#fff}
+    .qty-ctrl button{border:0;background:#fff;font-size:18px;padding:6px 10px;cursor:pointer;line-height:1;color:var(--brand)}
+    .qty-ctrl button:hover{background:#f8f8f8}
+    .qty-ctrl input.qty{width:70px;text-align:center;border:0;border-left:1px solid #eee;border-right:1px solid #eee;height:34px}
+
+    .cart{border:1px solid var(--stroke);border-radius:16px;overflow:hidden;background:#fff}
+    .cart-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#f8fafc;border-bottom:1px solid var(--stroke)}
+    .cart-body{padding:0}
+    .cart-empty{padding:16px;color:var(--muted)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px 10px;border-bottom:1px solid var(--stroke);text-align:left;font-size:14px;background:#fff}
+    th{font-weight:700}
+    .cart-total{display:flex;justify-content:flex-end;gap:24px;padding:12px 16px;font-weight:800;background:#fff}
+    .link{color:var(--brand)}
+    footer{border-top:1px solid var(--stroke);padding:16px 20px;text-align:center;color:var(--muted);font-size:14px;margin-top:16px}
+    .btn-row{display:flex;gap:12px;flex-wrap:wrap;padding:12px 16px}
+    .btn-wa{background:#25D366;border-color:#25D366}
+    .btn-tg{background:#229ED9;border-color:#229ED9}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container spread">
+    <div class="logo">🌷 Тюльпан03</div>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="#catalog">Каталог</a>
+      <a href="#cart">Корзина</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section id="catalog" class="section">
+    <h1>Каталог тюльпанов</h1>
+    <p class="lead">Введите количество — цена изменится автоматически. Нажмите «В корзину», чтобы собрать заказ.</p>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="cart" class="section">
+    <h2>Корзина</h2>
+    <div class="cart" id="cartBox">
+      <div class="cart-head">
+        <div>Позиции заказа</div>
+        <button id="clearCart" class="btn" style="padding:8px 12px">Очистить</button>
+      </div>
+      <div class="cart-body">
+        <div class="cart-empty" id="cartEmpty">Корзина пуста. Добавьте товары из <a class="link" href="#catalog">каталога</a>.</div>
+        <div id="cartTableWrap" style="display:none">
+          <table id="cartTable">
+            <thead>
+              <tr>
+                <th>Товар</th>
+                <th>Тип</th>
+                <th>Кол-во</th>
+                <th>Цена за шт</th>
+                <th>Сумма</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="cart-total">
+            <div>Итого:</div>
+            <div id="cartTotal">0 ₽</div>
+          </div>
+          <div class="btn-row">
+            <a id="waCheckout" class="btn btn-wa" target="_blank">Отправить в WhatsApp</a>
+            <a id="tgCheckout" class="btn btn-tg" target="_blank">Отправить в Telegram</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacts" class="section">
+    <h2>Контакты</h2>
+    <p>📍 Улан-Удэ, ул. Тобольская, 167А<br>
+      ☎ <a href="tel:+79148416115">+7 914 841-61-15</a><br>
+      💬 <a href="https://t.me/tulpan03" target="_blank">Telegram</a> ·
+      <a href="https://wa.me/79148416115" target="_blank">WhatsApp</a></p>
+  </section>
+
+</main>
+
+<footer>
+  © 2025 Тюльпан03.рф — свежие цветы оптом 🌷
+</footer>
+
+<script>
+const TG_USERNAME = "tulpan03";
+const WA_PHONE   = "79148416115";
+
+const tiers = {
+  default: [
+    {min:20, max:500, price:99},{min:500, max:1000, price:88},{min:1000, max:2000, price:80},{min:2000, max:3000, price:79},{min:3000, max:5000, price:78},{min:5000, max:10000, price:77},{min:15000, max:50000, price:76},{min:50000, max:100000, price:75}
+  ],
+  mahrovye: [
+    {min:20, max:500, price:109},{min:500, max:1000, price:98},{min:1000, max:2000, price:90},{min:2000, max:3000, price:89},{min:3000, max:5000, price:88},{min:5000, max:10000, price:87},{min:15000, max:50000, price:86},{min:50000, max:100000, price:85}
+  ],
+  mix: [
+    {min:20, max:500, price:99},{min:500, max:1000, price:88},{min:1000, max:2000, price:80},{min:2000, max:3000, price:79},{min:3000, max:5000, price:78},{min:5000, max:10000, price:77},{min:15000, max:50000, price:76},{min:50000, max:100000, price:75}
+  ]
+};
+
+const products = [
+  {id:"tul-red", name:"Тюльпан красный", type:"default", img:"red.jpg"},
+  {id:"tul-white", name:"Тюльпан белый", type:"default", img:"white.jpg"},
+  {id:"tul-yellow", name:"Тюльпан жёлтый", type:"default", img:"yellow.jpg"},
+  {id:"tul-mahrovyj", name:"Тюльпан махровый", type:"mahrovye", img:"mahrovyj.jpg"},
+  {id:"tul-mix", name:"Тюльпан микс", type:"mix", img:"mix.jpg"}
+];
+
+const grid = document.getElementById('grid');
+grid.innerHTML = products.map(p => `
+  <div class="card">
+    <img src="${p.img}" alt="${p.name}">
+    <div class="body">
+      <strong>${p.name}</strong>
+      <div class="meta">Цена зависит от количества</div>
+      <label>Количество (шт):</label>
+      <div class="qty-ctrl">
+        <button data-act="dec" data-id="${p.id}">−</button>
+        <input type="number" min="20" step="10" value="20" class="qty" data-type="${p.type}" data-id="${p.id}">
+        <button data-act="inc" data-id="${p.id}">+</button>
+      </div>
+      <div class="price" data-price-for="${p.id}">99 ₽</div>
+      <div class="hint">Введите количество и нажмите «В корзину»</div>
+      <div style="margin-top:10px">
+        <button class="btn add" data-id="${p.id}">В корзину</button>
+      </div>
+    </div>
+  </div>
+`).join('');
+
+function getPrice(type, qty){
+  const set = tiers[type] || tiers.default;
+  for(const t of set){ if(qty >= t.min && qty < t.max) return t.price; }
+  return set[set.length-1].price;
+}
+
+document.querySelectorAll('.qty').forEach(input=>{
+  const priceEl = document.querySelector(`.price[data-price-for="${input.dataset.id}"]`);
+  const update = ()=>{
+    const qty = Math.max(20, parseInt(input.value)||20);
+    const price = getPrice(input.dataset.type, qty);
+    priceEl.textContent = price + ' ₽';
+  };
+  input.addEventListener('input', update);
+  update();
+});
+
+document.getElementById('grid').addEventListener('click',(e)=>{
+  const btn = e.target.closest('button[data-act]');
+  if(!btn) return;
+  const id = btn.dataset.id;
+  const input = document.querySelector(`input.qty[data-id="${id}"]`);
+  let value = parseInt(input.value)||20;
+  if(btn.dataset.act==="inc") value += 10;
+  if(btn.dataset.act==="dec") value = Math.max(20, value-10);
+  input.value = value;
+  const priceEl = document.querySelector(`.price[data-price-for="${id}"]`);
+  const price = getPrice(input.dataset.type, value);
+  priceEl.textContent = price + ' ₽';
+});
+
+const cart = new Map();
+
+function renderCart(){
+  const empty = document.getElementById('cartEmpty');
+  const wrap = document.getElementById('cartTableWrap');
+  const tbody = document.querySelector('#cartTable tbody');
+  const totalEl = document.getElementById('cartTotal');
+  if(cart.size===0){ empty.style.display='block'; wrap.style.display='none'; return; }
+  empty.style.display='none'; wrap.style.display='block'; tbody.innerHTML=''; let total=0;
+
+  cart.forEach(item=>{
+    const unit = getPrice(item.type,item.qty); const sum=unit*item.qty; total+=sum;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${item.name}</td>
+      <td>${item.type==='mahrovye'?'Махровые':(item.type==='mix'?'Микс':'Остальные')}</td>
+      <td>
+        <div class="qty-ctrl">
+          <button data-act="dec" data-id="${item.id}">−</button>
+          <input type="number" min="0" step="10" value="${item.qty}" data-id="${item.id}">
+          <button data-act="inc" data-id="${item.id}">+</button>
+        </div>
+      </td>
+      <td>${unit} ₽</td>
+      <td>${sum.toLocaleString('ru-RU')} ₽</td>
+      <td><a href="#" class="link" data-act="del" data-id="${item.id}">Удалить</a></td>`;
+    tbody.appendChild(tr);
+  });
+
+  totalEl.textContent=total.toLocaleString('ru-RU')+' ₽';
+  const lines=[];
+  cart.forEach(i=>{
+    const price=getPrice(i.type,i.qty);
+    lines.push(`${i.name}: ${i.qty} шт × ${price} ₽ = ${(i.qty*price).toLocaleString('ru-RU')} ₽`);
+  });
+  const msg = `Заказ с тюльпан03.рф%0A%0A` + lines.join('%0A') + `%0A%0AИтого: ${total.toLocaleString('ru-RU')} ₽`;
+
+  document.getElementById('tgCheckout').href = `https://t.me/${TG_USERNAME}?text=${msg}`;
+  document.getElementById('waCheckout').href = `https://wa.me/${WA_PHONE}?text=${msg}`;
+}
+
+document.querySelectorAll('.add').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const id=btn.dataset.id; const p=products.find(x=>x.id===id);
+    const input=document.querySelector(`.qty[data-id="${id}"]`);
+    let qty=parseInt(input.value)||0; if(qty<20){qty=20;input.value=20;}
+    const prev=cart.get(id)||{id,name:p.name,type:p.type,qty:0};
+    prev.qty+=qty; cart.set(id,prev); renderCart(); location.hash='#cart';
+  });
+});
+
+document.getElementById('cartBox').addEventListener('click',(e)=>{
+  const a=e.target.closest('[data-act]'); if(!a) return;
+  const id=a.dataset.id; const act=a.dataset.act; const current=cart.get(id); if(!current) return;
+  if(act==='del'){cart.delete(id);renderCart();return;}
+  if(act==='inc'){current.qty+=10;cart.set(id,current);renderCart();return;}
+  if(act==='dec'){current.qty=Math.max(0,current.qty-10);if(current.qty===0)cart.delete(id);renderCart();return;}
+});
+
+document.getElementById('cartBox').addEventListener('input',(e)=>{
+  const inp=e.target.closest('input[type="number"][data-id]'); if(!inp) return;
+  const id=inp.dataset.id; const item=cart.get(id); if(!item) return;
+  item.qty=Math.max(0,parseInt(inp.value)||0); if(item.qty===0) cart.delete(id); else cart.set(id,item);
+  renderCart();
+});
+
+document.getElementById('clearCart').addEventListener('click', ()=>{cart.clear();renderCart();});
+renderCart();
+</script>
+
+</body>
+</html>
