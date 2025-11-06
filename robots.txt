@@ -2,7 +2,7 @@
 User-agent: *
 Allow: /
 
-# Запрещаем индексацию служебных разделов (если они есть)
+# Запрещаем индексацию служебных разделов (если они появятся)
 Disallow: /admin/
 Disallow: /cart/
 Disallow: /checkout/
@@ -17,4 +17,4 @@ Host: xn--03-6kc7blkt5fq.xn--p1ai
 Sitemap: https://тюльпан03.рф/sitemap.xml
 
 # Дополнительные рекомендации
-Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content /  # убираем UTM-параметры из индекса
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content /
