@@ -1,21 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Главная -->
   <url>
     <loc>https://тюльпан03.рф/</loc>
-    <lastmod>2025-11-03</lastmod>
+    <lastmod>2025-11-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- Каталог -->
   <url>
-    <loc>https://тюльпан03.рф/catalog</loc>
-    <lastmod>2025-11-03</lastmod>
+    <loc>https://тюльпан03.рф/catalog/</loc>
+    <lastmod>2025-11-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+
+  <!-- Категории -->
   <url>
-    <loc>https://тюльпан03.рф/about</loc>
-    <lastmod>2025-11-03</lastmod>
+    <loc>https://тюльпан03.рф/catalog/tyulpany/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://тюльпан03.рф/catalog/rozy/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://тюльпан03.рф/catalog/hrizantemy/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Примеры товаров -->
+  <url>
+    <loc>https://тюльпан03.рф/product/tyulpan-krasnyj-40</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://тюльпан03.рф/product/tyulpan-belyj-50</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Контакты -->
+  <url>
+    <loc>https://тюльпан03.рф/contacts/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
 </urlset>
