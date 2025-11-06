@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Тюльпаны оптом — Тюльпан03.рф</title>
-  <meta name="description" content="Свежие тюльпаны оптом по выгодным ценам. Прямые поставки, доставка по России.">
-  <meta name="robots" content="index,follow">
-  <link rel="canonical" href="https://тюльпан03.рф/">
+  <meta name="description" content="Свежие тюльпаны оптом по выгодным ценам. Прямые поставки, собственные теплицы, гибкие условия." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://тюльпан03.рф/" />
 
-  <!-- Иконка для вкладки -->
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
-  <meta name="theme-color" content="#E33400">
+  <!-- Иконки -->
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+  <meta name="theme-color" content="#E33400" />
 
   <style>
     :root{
       --bg:#E04297; /* фон */
       --text:#111; --muted:#666; --brand:#E33400;
-      --stroke:#e5e7eb; --radius:16px;
+      --stroke:#e5e7eb; --radius:18px;
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
@@ -32,44 +32,40 @@
     nav a{margin-left:14px;font-weight:500}
     nav a:hover{color:var(--brand)}
 
-    /* Белые карточные блоки */
-    main.container, footer, .section, .hero{background:#fff;border-radius:18px}
-    .hero{display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:20px;padding:40px 20px;margin-top:16px}
+    main.container, .section, .hero, footer{background:#fff;border-radius:var(--radius)}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:center;padding:40px 20px;margin-top:16px}
     @media(max-width:900px){.hero{grid-template-columns:1fr}}
     h1{font-size:34px;margin:0 0 10px}
     .lead{color:var(--muted);margin-bottom:18px}
+    .btn{display:inline-block;padding:12px 18px;border-radius:12px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-weight:600;cursor:pointer}
+    .btn:hover{opacity:.92}
+    .hero img{width:100%;border-radius:16px;border:1px solid #ddd;box-shadow:0 8px 24px rgba(0,0,0,.06)}
     .section{padding:32px 20px;margin-top:16px}
     .section h2{margin-bottom:10px;font-size:26px}
     ul.features{padding-left:18px;margin:10px 0;line-height:1.55}
     ul.features li{margin-bottom:6px}
-
-    /* Анимации */
+    footer{border-top:1px solid var(--stroke);padding:16px 20px;text-align:center;color:var(--muted);font-size:14px;margin-top:16px}
+    .cta-row{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+    /* анимации */
     .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease}
     .reveal.show{opacity:1;transform:translateY(0)}
     .stagger li{opacity:0;transform:translateY(10px)}
     .stagger.show li{opacity:1;transform:translateY(0);transition:opacity .5s ease, transform .5s ease}
-    .stagger.show li:nth-child(1){transition-delay:.05s}
-    .stagger.show li:nth-child(2){transition-delay:.1s}
-    .stagger.show li:nth-child(3){transition-delay:.15s}
-    .stagger.show li:nth-child(4){transition-delay:.2s}
-    .stagger.show li:nth-child(5){transition-delay:.25s}
-    .stagger.show li:nth-child(6){transition-delay:.3s}
-    .stagger.show li:nth-child(7){transition-delay:.35s}
-    .stagger.show li:nth-child(8){transition-delay:.4s}
-
-    /* Картинка героя с лёгкой тенью */
-    .hero img{width:100%;border-radius:16px;border:1px solid #ddd;box-shadow:0 8px 24px rgba(0,0,0,.06)}
-    footer{border-top:1px solid var(--stroke);padding:16px 20px;text-align:center;color:var(--muted);font-size:14px;margin-top:16px}
+    .stagger.show li:nth-child(2){transition-delay:.08s}
+    .stagger.show li:nth-child(3){transition-delay:.16s}
+    .stagger.show li:nth-child(4){transition-delay:.24s}
+    .stagger.show li:nth-child(5){transition-delay:.32s}
+    .stagger.show li:nth-child(6){transition-delay:.40s}
+    .stagger.show li:nth-child(7){transition-delay:.48s}
+    .stagger.show li:nth-child(8){transition-delay:.56s}
   </style>
 </head>
 <body>
-
 <header>
   <div class="container spread">
     <div class="logo">🌷 Тюльпан03</div>
     <nav>
-      <a href="#catalog">Каталог</a>
-      <a href="#cart">Корзина</a>
+      <a href="catalog.html">Каталог</a>
       <a href="#contacts">Контакты</a>
     </nav>
   </div>
@@ -90,35 +86,30 @@
         <li>Красивые крупные бутоны 5–7 см.</li>
         <li>Отобранные, проверенные сорта.</li>
         <li>Высокий стебель (45–60 см, в зависимости от сорта).</li>
-        <li>В ассортименте более 10 сочных и ярких расцветок.</li>
-        <li>Гибкие условия работы: заключаем договоры, рассматриваем разные способы оплаты.</li>
+        <li>Более 10 ярких расцветок.</li>
+        <li>Гибкие условия: договоры, разные способы оплаты.</li>
         <li>При предоплате цена фиксируется до получения товара.</li>
         <li>Градация цен от количества заказа.</li>
       </ul>
 
       <p><strong>Минимальный заказ — от 500 шт.</strong></p>
+
+      <div class="cta-row">
+        <a class="btn" href="catalog.html">Перейти в каталог</a>
+      </div>
     </div>
 
-    <div class="reveal" style="transition-delay:.15s"><img src="red.jpg" alt="Тюльпаны оптом"></div>
-  </section>
-
-  <section id="catalog" class="section reveal">
-    <h2>Каталог тюльпанов</h2>
-    <p class="lead">Введите количество — цена изменится автоматически. Нажмите «В корзину», чтобы собрать заказ.</p>
-    <div class="grid" id="grid"><!-- здесь будет ваш каталог/карточки, если подключите JS --></div>
-  </section>
-
-  <section id="cart" class="section reveal">
-    <h2>Корзина</h2>
-    <p>Корзина появится здесь, когда вы добавите тюльпаны из каталога.</p>
+    <div class="reveal" style="transition-delay:.12s">
+      <img src="red.jpg" alt="Тюльпаны оптом">
+    </div>
   </section>
 
   <section id="contacts" class="section reveal">
     <h2>Контакты</h2>
     <p>📍 Улан-Удэ, ул. Тобольская, 167А<br>
-    ☎ <a href="tel:+79148416115">+7 914 841-61-15</a><br>
-    💬 <a href="https://t.me/ВАШ_ЮЗЕРНЕЙМ" target="_blank">Telegram</a> · 
-    <a href="https://wa.me/79148416115" target="_blank">WhatsApp</a></p>
+      ☎ <a href="tel:+79148416115">+7 914 841-61-15</a><br>
+      💬 <a href="https://t.me/ВАШ_ЮЗЕРНЕЙМ" target="_blank">Telegram</a> ·
+      <a href="https://wa.me/79148416115" target="_blank">WhatsApp</a></p>
   </section>
 
 </main>
@@ -128,18 +119,11 @@
 </footer>
 
 <script>
-  // Плавная анимация появления блоков при прокрутке
+  // Плавное появление блоков
   const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.classList.add('show');
-        io.unobserve(e.target);
-      }
-    });
-  }, {threshold: 0.15});
-
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target);} });
+  }, {threshold: .15});
   document.querySelectorAll('.reveal, .stagger').forEach(el=>io.observe(el));
 </script>
-
 </body>
 </html>
