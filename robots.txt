@@ -1,4 +1,15 @@
+# Разрешаем индексацию всем поисковикам
 User-agent: *
 Allow: /
+
+# Запрещаем служебные страницы
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /search?
+
+# Главное зеркало для Яндекса (только одна директива Host)
+Host: xn--03-6kc7blkt5fq.xn--p1ai
+
+# Карта сайта
 Sitemap: https://тюльпан03.рф/sitemap.xml
-Host: тюльпан03.рф
