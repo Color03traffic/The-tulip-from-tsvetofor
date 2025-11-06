@@ -4,150 +4,147 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Тюльпаны оптом — Тюльпан03.рф</title>
-  <meta name="description" content="Свежие тюльпаны оптом по выгодным ценам. Прямые поставки, доставка по городу и России.">
+  <meta name="description" content="Свежие тюльпаны любых сортов и цветов. Работаем напрямую с теплицами. Градация цен от общего количества. Заказ кратно 20 шт.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://тюльпан03.рф/">
 
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <!-- Favicon / PWA -->
+  <link rel="icon" type="image/png" sizes="32x32" href="logo-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="logo-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <meta name="theme-color" content="#E33400">
+
+  <!-- Верификации (если используете) -->
+  <!-- <meta name="yandex-verification" content="ВАШ_КОД"> -->
+  <!-- <meta name="google-site-verification" content="ВАШ_КОД"> -->
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Тюльпаны оптом — Тюльпан03.рф">
+  <meta property="og:description" content="Свежие тюльпаны любых сортов и цветов. Прямые поставки из теплиц. Заказ кратно 20 шт.">
+  <meta property="og:url" content="https://тюльпан03.рф/">
+  <meta property="og:image" content="red.jpg">
 
   <style>
-    :root {
-      --bg: #E04297;
-      --text: #111;
-      --muted: #666;
-      --brand: #E33400;
-      --stroke: #e5e7eb;
-      --radius: 18px;
+    :root{
+      --bg:#E04297;      /* ваш фон сайта: rgb(224,66,151) */
+      --text:#111;
+      --muted:#666;
+      --brand:#E33400;   /* фирменный акцент (кнопки) */
+      --stroke:#e5e7eb;
+      --radius:18px;
     }
-    * { box-sizing: border-box }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Roboto, Inter, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-    a { text-decoration: none; color: inherit }
-    header {
-      position: sticky;
-      top: 0;
-      background: #fff;
-      border-bottom: 1px solid var(--stroke);
-      padding: 12px 0;
-      z-index: 10;
-    }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 16px }
-    .spread { display: flex; justify-content: space-between; align-items: center }
-    .logo { font-weight: 800; font-size: 22px }
-    nav a { margin-left: 14px; font-weight: 500 }
-    nav a:hover { color: var(--brand) }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;background:var(--bg);color:var(--text)}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;height:auto;display:block}
 
-    .hero {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      align-items: center;
-      gap: 24px;
-      padding: 40px 0;
-    }
-    @media(max-width:900px){
-      .hero{grid-template-columns:1fr}
-    }
-    .hero .img-wrap {
-      position: relative;
-      overflow: hidden;
-      border-radius: 18px;
-    }
-    .hero .img-wrap::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.25), transparent 60%);
-      z-index: 2;
-      border-radius: 18px;
-    }
-    .hero img {
-      width: 100%;
-      height: 420px;
-      object-fit: cover;
-      border-radius: 18px;
-      border: 1px solid #eee;
-      position: relative;
-      z-index: 1;
-    }
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--stroke);padding:12px 0;z-index:10}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px}
+    .spread{display:flex;justify-content:space-between;align-items:center}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px}
+    .logo img{width:28px;height:28px;border-radius:6px}
+    nav a{margin-left:14px;font-weight:500}
+    nav a:hover{color:var(--brand)}
 
-    h1 { font-size: 34px; margin: 0 0 10px }
-    .lead { color: var(--muted); margin-bottom: 18px }
-    .btn {
-      display: inline-block;
-      padding: 12px 18px;
-      border-radius: 12px;
-      border: 1px solid var(--brand);
-      background: var(--brand);
-      color: #fff;
-      font-weight: 600;
-      margin-top: 10px;
-    }
-    .btn:hover { opacity: .9 }
-    .section { padding: 40px 0 }
-    .section h2 { margin-bottom: 10px; font-size: 26px }
-    footer {
-      border-top: 1px solid var(--stroke);
-      padding: 16px 0;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-      background: #fff;
-      border-radius: 18px;
-      margin-top: 24px;
-    }
+    main.container, .section, footer{background:#fff;border-radius:var(--radius)}
+    .section{padding:32px 20px;margin-top:16px}
+    .lead{color:var(--muted);margin:8px 0 18px}
+
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;padding:40px 20px}
+    @media(max-width:900px){.hero{grid-template-columns:1fr}}
+    h1{font-size:34px;margin:0 0 8px}
+    .btn{display:inline-block;padding:12px 18px;border-radius:12px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-weight:700;cursor:pointer}
+    .btn:hover{opacity:.92}
+    .btn.outline{background:#fff;color:var(--brand)}
+    .btn-row{display:flex;gap:10px;flex-wrap:wrap}
+    .hero img{width:100%;border-radius:16px;border:1px solid var(--stroke);object-fit:cover;aspect-ratio:4/3}
+
+    .features{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;margin:10px 0 0;padding-left:18px}
+    .features li{margin:0 0 6px}
+    @media(max-width:800px){.features{grid-template-columns:1fr}}
+
+    .contact-card{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.contact-card{grid-template-columns:1fr}}
+
+    footer{border-top:1px solid var(--stroke);padding:16px 20px;text-align:center;color:var(--muted);font-size:14px;margin-top:16px}
   </style>
 </head>
 <body>
 
 <header>
   <div class="container spread">
-    <div class="logo">🌷 Тюльпан03</div>
+    <div class="logo">
+      <img src="logo-32.png" alt="Логотип Тюльпан03">
+      <span>🌷 Тюльпан03</span>
+    </div>
     <nav>
       <a href="catalog.html">Каталог</a>
+      <a href="#about">О нас</a>
       <a href="#contacts">Контакты</a>
     </nav>
   </div>
 </header>
 
-<main class="container" style="background:#fff;border-radius:18px;padding:0 24px;">
+<main class="container">
 
+  <!-- HERO -->
   <section class="hero">
     <div>
-      <h1>Тюльпаны оптом от 75 ₽</h1>
+      <h1>Тюльпаны оптом от 75&nbsp;₽</h1>
       <p class="lead">Свежие тюльпаны любых сортов и цветов. Работаем напрямую с теплицами.</p>
-
-      <ul style="line-height:1.6;margin-bottom:18px;">
-        <li>Бренд «Цветофор» представлен на рынке более 12 лет.</li>
-        <li>В собственных теплицах выращиваются тюльпаны из лучших голландских луковиц.</li>
-        <li>Крупные бутоны 5–7 см, отобранные проверенные сорта.</li>
-        <li>Высокий стебель 45–60 см (в зависимости от сорта).</li>
-        <li>Более 10 сочных, ярких расцветок.</li>
-        <li>Гибкие условия: договора, разные способы оплаты.</li>
-        <li>При предоплате фиксируется цена до получения товара.</li>
-        <li>Градация цен от количества заказа.</li>
-      </ul>
-
-      <p style="font-weight:600;">Минимальный заказ — от 500 шт.</p>
-      <a href="catalog.html" class="btn">Перейти в каталог</a>
+      <div class="btn-row" style="margin-top:4px">
+        <a class="btn" href="catalog.html">Посмотреть каталог</a>
+        <a class="btn outline" href="#contacts">Контакты</a>
+        <a class="btn" style="background:#25D366;border-color:#25D366" href="https://wa.me/79148416115" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn" style="background:#229ED9;border-color:#229ED9" href="tg://resolve?domain=tulpan03" onclick="setTimeout(()=>window.open('https://t.me/tulpan03','_blank'),300)" >Telegram</a>
+      </div>
     </div>
-
-    <div class="img-wrap">
-      <img src="tulips-new.jpg" alt="Свежие тюльпаны оптом">
+    <div>
+      <!-- Замените файл на своё фото (имя сохранено из ваших файлов) -->
+      <img src="red.jpg" alt="Тюльпаны оптом — красные тюльпаны">
     </div>
   </section>
 
+  <!-- ABOUT -->
+  <section id="about" class="section">
+    <h2>Почему «Цветофор»</h2>
+    <p class="lead">Мы выращиваем и поставляем тюльпаны из собственных и партнёрских теплиц. Качество, стабильность и прозрачные условия.</p>
+    <ul class="features">
+      <li><strong>Более 12 лет</strong> на российском рынке.</li>
+      <li><strong>Крупные бутоны</strong> 5–7&nbsp;см, отобранные проверенные сорта.</li>
+      <li><strong>Высокий стебель</strong> — 45–60&nbsp;см (в зависимости от сорта).</li>
+      <li><strong>Более 10 расцветок</strong> в постоянном ассортименте.</li>
+      <li><strong>Градация цен</strong> от общего количества в заказе (упаковка = 20&nbsp;шт).</li>
+      <li><strong>Гибкие условия</strong>: заключаем договоры, разные формы оплаты.</li>
+      <li><strong>Предоплата фиксирует цену</strong> до получения товара.</li>
+      <li><em>Минимальный заказ — от 500&nbsp;шт.</em></li>
+    </ul>
+    <div class="btn-row" style="margin-top:16px">
+      <a class="btn" href="catalog.html">Перейти в каталог</a>
+    </div>
+  </section>
+
+  <!-- CONTACTS -->
   <section id="contacts" class="section">
     <h2>Контакты</h2>
-    <p>📍 Улан-Удэ, ул. Тобольская, 167А<br>
-    ☎ <a href="tel:+79148416115">+7 (914) 841-61-15</a><br>
-    💬 <a href="https://t.me/tulpan03" target="_blank">Telegram</a> · 
-    <a href="https://wa.me/79148416115" target="_blank">WhatsApp</a></p>
+    <div class="contact-card">
+      <div>
+        <p><strong>Адрес:</strong><br>📍 Улан-Удэ, ул. Тобольская, 167А</p>
+        <p><strong>Телефон:</strong><br>☎ <a href="tel:+79148416115">+7&nbsp;914&nbsp;841-61-15</a></p>
+        <p><strong>Мессенджеры:</strong><br>
+          💬 <a href="https://t.me/tulpan03" target="_blank" rel="noopener">Telegram</a> ·
+          <a href="https://wa.me/79148416115" target="_blank" rel="noopener">WhatsApp</a>
+        </p>
+      </div>
+      <div>
+        <p class="lead">Заказ кратно 20&nbsp;шт. Итоговая цена за штуку зависит от <strong>общего количества</strong> в корзине. Гладкие и махровые считаются вместе по порогу, но имеют <strong>разные цены</strong> внутри порога.</p>
+        <div class="btn-row">
+          <a class="btn" href="catalog.html">Сформировать заказ</a>
+        </div>
+      </div>
+    </div>
   </section>
 
 </main>
