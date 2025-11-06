@@ -14,7 +14,7 @@
 
   <style>
     :root{
-      --bg:#ffffff;
+      --bg:#E04297; /* розовый фон */
       --text:#111;
       --muted:#666;
       --brand:#E33400;
@@ -22,33 +22,65 @@
       --radius:16px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;background:var(--bg);color:var(--text)}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
     a{text-decoration:none;color:inherit}
-    header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--stroke);padding:12px 0;z-index:10}
+    header{
+      position:sticky;
+      top:0;
+      background:#fff;
+      border-bottom:1px solid var(--stroke);
+      padding:12px 0;
+      z-index:10;
+    }
     .container{max-width:1100px;margin:0 auto;padding:0 16px}
     .spread{display:flex;justify-content:space-between;align-items:center}
     .logo{font-weight:800;font-size:22px}
     nav a{margin-left:14px;font-weight:500}
     nav a:hover{color:var(--brand)}
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:20px;padding:40px 0}
+    .hero{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      align-items:center;
+      gap:20px;
+      padding:40px 0;
+    }
     @media(max-width:900px){.hero{grid-template-columns:1fr}}
     h1{font-size:34px;margin:0 0 10px}
     .lead{color:var(--muted);margin-bottom:18px}
-    .btn{display:inline-block;padding:12px 18px;border-radius:12px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-weight:600;margin-right:10px}
+    .btn{
+      display:inline-block;
+      padding:12px 18px;
+      border-radius:12px;
+      border:1px solid var(--brand);
+      background:var(--brand);
+      color:#fff;
+      font-weight:600;
+      margin-right:10px;
+    }
     .btn:hover{opacity:.9}
-    .hero img{width:100%;height:420px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--stroke)}
+    .hero img{
+      width:100%;
+      height:420px;
+      object-fit:cover;
+      border-radius:var(--radius);
+      border:1px solid var(--stroke);
+    }
     .section{padding:40px 0}
     .section h2{margin-bottom:10px;font-size:26px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
-    .card{border:1px solid var(--stroke);border-radius:var(--radius);overflow:hidden;background:#f9fafb}
-    .card img{width:100%;height:220px;object-fit:cover}
-    .card .body{padding:16px}
-    .card strong{display:block;margin-bottom:4px}
-    .meta{color:var(--muted);font-size:13px;margin-bottom:6px}
-    input.qty{width:100%;padding:8px;border:1px solid #ccc;border-radius:10px;margin:4px 0}
-    .price{font-size:20px;font-weight:700;margin-top:8px}
-    .hint{font-size:12px;color:var(--muted)}
-    footer{border-top:1px solid var(--stroke);padding:16px 0;text-align:center;color:var(--muted);font-size:14px}
+    footer{
+      border-top:1px solid var(--stroke);
+      padding:16px 0;
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+      background:#fff;
+      margin-top:30px;
+    }
   </style>
 </head>
 <body>
@@ -63,7 +95,7 @@
   </div>
 </header>
 
-<main class="container">
+<main class="container" style="background:#fff;border-radius:18px;padding:0 24px;">
 
   <section class="hero">
     <div>
@@ -84,7 +116,7 @@
       <a href="catalog.html" class="btn">Перейти в каталог</a>
     </div>
 
-    <div><img src="red.jpg" alt="Тюльпаны оптом"></div>
+    <div><img src="tulips-new.jpg" alt="Тюльпаны оптом"></div>
   </section>
 
   <section id="contacts" class="section">
