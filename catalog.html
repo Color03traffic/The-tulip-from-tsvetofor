@@ -6,11 +6,8 @@
   <title>Каталог — Тюльпаны оптом | Тюльпан03.рф</title>
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://тюльпан03.рф/catalog.html">
-
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
   <meta name="theme-color" content="#E33400">
-
   <style>
     :root{
       --bg:#E04297; --text:#111; --muted:#666; --brand:#E33400;
@@ -41,7 +38,7 @@
     .qty-ctrl{display:inline-flex;align-items:center;border:1px solid #ccc;border-radius:10px;overflow:hidden;margin:4px 0;background:#fff}
     .qty-ctrl button{border:0;background:#fff;font-size:18px;padding:6px 10px;cursor:pointer;line-height:1;color:var(--brand)}
     .qty-ctrl button:hover{background:#f8f8f8}
-    .qty-ctrl input.qty{width:70px;text-align:center;border:0;border-left:1px solid #eee;border-right:1px solid #eee;height:34px}
+    .qty-ctrl input.qty{width:90px;text-align:center;border:0;border-left:1px solid #eee;border-right:1px solid #eee;height:34px}
 
     .cart{border:1px solid var(--stroke);border-radius:16px;overflow:hidden;background:#fff}
     .cart-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#f8fafc;border-bottom:1px solid var(--stroke)}
@@ -51,6 +48,7 @@
     th,td{padding:12px 10px;border-bottom:1px solid var(--stroke);text-align:left;font-size:14px;background:#fff}
     th{font-weight:700}
     .cart-total{display:flex;justify-content:flex-end;gap:24px;padding:12px 16px;font-weight:800;background:#fff}
+    .sub{color:var(--muted);font-size:12px}
     .link{color:var(--brand)}
     footer{border-top:1px solid var(--stroke);padding:16px 20px;text-align:center;color:var(--muted);font-size:14px;margin-top:16px}
     .btn-row{display:flex;gap:12px;flex-wrap:wrap;padding:12px 16px}
@@ -77,7 +75,7 @@
 
   <section id="catalog" class="section">
     <h1>Каталог тюльпанов</h1>
-    <p class="lead">Введите количество — цена изменится автоматически. Нажмите «В корзину», чтобы собрать заказ.</p>
+    <p class="lead">Количество кратно упаковке: 20 шт. Кнопки ± меняют по 20. Нажмите «В корзину», чтобы собрать заказ.</p>
     <div class="grid" id="grid"></div>
   </section>
 
@@ -140,8 +138,9 @@
 <script>
 const TG_USERNAME = "tulpan03";
 const WA_PHONE   = "79148416115";
+const PACK = 20; // размер упаковки
 
-/* ---------- Прайс ---------- */
+/* ---- Прайс ---- */
 const tiers = {
   default: [
     {min:20, max:500, price:99},{min:500, max:1000, price:88},{min:1000, max:2000, price:80},
@@ -160,11 +159,20 @@ const tiers = {
   ]
 };
 
-/* ---------- Каталог ---------- */
+/* ---- Каталог ---- */
 const products = [
   {id:"tul-red", name:"Тюльпан красный", type:"default", img:"red.jpg"},
   {id:"tul-white", name:"Тюльпан белый", type:"default", img:"white.jpg"},
   {id:"tul-yellow", name:"Тюльпан жёлтый", type:"default", img:"yellow.jpg"},
+  {id:"tul-pink", name:"Тюльпан розовый", type:"default", img:"pink.jpg"},
+  {id:"tul-cream", name:"Тюльпан кремовый", type:"default", img:"cream.jpg"},
+  {id:"tul-orange", name:"Тюльпан оранжевый", type:"default", img:"orange.jpg"},
+  {id:"tul-peach", name:"Тюльпан персиковый", type:"default", img:"peach.jpg"},
+  {id:"tul-lilac", name:"Тюльпан лиловый", type:"default", img:"lilac.jpg"},
+  {id:"tul-purple", name:"Тюльпан фиолетовый", type:"default", img:"purple.jpg"},
+  {id:"tul-burgundy", name:"Тюльпан бордовый", type:"default", img:"burgundy.jpg"},
+  {id:"tul-coral", name:"Тюльпан коралловый", type:"default", img:"coral.jpg"},
+  {id:"tul-bicolor", name:"Тюльпан двухцветный", type:"default", img:"bicolor.jpg"},
   {id:"tul-mahrovyj", name:"Тюльпан махровый", type:"mahrovye", img:"mahrovyj.jpg"},
   {id:"tul-mix", name:"Тюльпан микс", type:"mix", img:"mix.jpg"}
 ];
@@ -176,14 +184,15 @@ grid.innerHTML = products.map(p => `
     <div class="body">
       <strong>${p.name}</strong>
       <div class="meta">Цена зависит от количества</div>
-      <label>Количество (шт):</label>
+      <label>Количество (шт, кратно ${PACK}):</label>
       <div class="qty-ctrl">
         <button data-act="dec" data-id="${p.id}">−</button>
-        <input type="number" min="20" step="10" value="20" class="qty" data-type="${p.type}" data-id="${p.id}">
+        <input type="number" min="${PACK}" step="${PACK}" value="${PACK}" class="qty" data-type="${p.type}" data-id="${p.id}">
         <button data-act="inc" data-id="${p.id}">+</button>
       </div>
       <div class="price" data-price-for="${p.id}">99 ₽</div>
-      <div class="hint">Введите количество и нажмите «В корзину»</div>
+      <div class="sub">1 уп. = ${PACK} шт</div>
+      <div class="hint">Введите количество (кратно ${PACK}) и нажмите «В корзину»</div>
       <div style="margin-top:10px">
         <button class="btn add" data-id="${p.id}">В корзину</button>
       </div>
@@ -191,13 +200,41 @@ grid.innerHTML = products.map(p => `
   </div>
 `).join('');
 
+/* ---- Вспомогательные ---- */
+function roundToPacks(q){ if(!q) return PACK; q = Math.max(PACK, parseInt(q)||PACK); return Math.ceil(q / PACK)*PACK; }
 function getPrice(type, qty){
   const set = tiers[type] || tiers.default;
   for(const t of set){ if(qty >= t.min && qty < t.max) return t.price; }
   return set[set.length-1].price;
 }
 
-/* ---------- Корзина ---------- */
+/* ---- Обновление цен при вводе ---- */
+document.addEventListener('input', (e)=>{
+  const inp = e.target.closest('input.qty');
+  if(!inp) return;
+  // принудительно округляем к кратности 20 на лету
+  inp.value = roundToPacks(inp.value);
+  const priceEl = document.querySelector(`.price[data-price-for="${inp.dataset.id}"]`);
+  const price = getPrice(inp.dataset.type, parseInt(inp.value));
+  priceEl.textContent = price + ' ₽';
+});
+
+/* ---- Кнопки ± по 20 ---- */
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-act]');
+  if(!btn) return;
+  const id = btn.dataset.id;
+  const input = document.querySelector(`input.qty[data-id="${id}"]`);
+  let value = roundToPacks(input.value);
+  if(btn.dataset.act==="inc") value += PACK;
+  if(btn.dataset.act==="dec") value = Math.max(PACK, value - PACK);
+  input.value = value;
+  const priceEl = document.querySelector(`.price[data-price-for="${id}"]`);
+  const price = getPrice(input.dataset.type, value);
+  priceEl.textContent = price + ' ₽';
+});
+
+/* ---- Корзина ---- */
 const cart = new Map();
 
 function renderCart(){
@@ -209,22 +246,47 @@ function renderCart(){
   empty.style.display='none'; wrap.style.display='block'; tbody.innerHTML=''; let total=0;
 
   cart.forEach(item=>{
-    const unit = getPrice(item.type,item.qty); const sum=unit*item.qty; total+=sum;
+    const unit = getPrice(item.type,item.qty);
+    const sum  = unit * item.qty;
+    total += sum;
+    const packs = item.qty / PACK;
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td>${item.name}</td>
+      <td>${item.name}<div class="sub">Упаковок: ${packs}</div></td>
       <td>${item.type==='mahrovye'?'Махровые':(item.type==='mix'?'Микс':'Остальные')}</td>
-      <td>${item.qty}</td>
+      <td>${item.qty} шт<div class="sub">(${packs}×${PACK})</div></td>
       <td>${unit} ₽</td>
       <td>${sum.toLocaleString('ru-RU')} ₽</td>
       <td><a href="#" class="link" data-act="del" data-id="${item.id}">Удалить</a></td>`;
     tbody.appendChild(tr);
   });
 
-  totalEl.textContent=total.toLocaleString('ru-RU')+' ₽';
+  totalEl.textContent = total.toLocaleString('ru-RU') + ' ₽';
 }
 
-/* ---------- Маска и автосохранение телефона / ФИО ---------- */
+/* ---- Добавление в корзину: округление вверх к 20 ---- */
+document.addEventListener('click', (e)=>{
+  const add = e.target.closest('.add');
+  if(!add) return;
+  const id = add.dataset.id; const p = products.find(x=>x.id===id);
+  const input = document.querySelector(`.qty[data-id="${id}"]`);
+  let qty = roundToPacks(input.value);
+  input.value = qty; // визуально тоже выровняем
+  const prev = cart.get(id) || {id, name:p.name, type:p.type, qty:0};
+  prev.qty += qty; // прибавляем кратно 20
+  cart.set(id, prev);
+  renderCart();
+  location.hash = '#cart';
+});
+
+/* ---- Удаление и очистка ---- */
+document.getElementById('cartBox').addEventListener('click',(e)=>{
+  const del = e.target.closest('[data-act="del"]');
+  if(del){ e.preventDefault(); cart.delete(del.dataset.id); renderCart(); }
+});
+document.getElementById('clearCart').addEventListener('click',()=>{cart.clear();renderCart();});
+
+/* ---- ФИО/Телефон: маска + автосохранение ---- */
 const fioInput = document.getElementById('fio');
 const phoneInput = document.getElementById('phone');
 
@@ -240,9 +302,8 @@ function formatPhone(value){
   if(d.length>=9) res += '-' + d.slice(9,11);
   return res;
 }
-
-function saveField(key, value){ try{ localStorage.setItem(key, value); }catch(e){} }
-function loadField(key){ try{ return localStorage.getItem(key) || ''; }catch(e){ return ''; } }
+function saveField(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function loadField(k){try{return localStorage.getItem(k)||'';}catch(e){return'';}}
 
 phoneInput.addEventListener('input', ()=>{
   phoneInput.value = formatPhone(phoneInput.value);
@@ -251,7 +312,6 @@ phoneInput.addEventListener('input', ()=>{
 });
 fioInput.addEventListener('input', ()=> saveField('t03_fio', fioInput.value) );
 
-/* Подставим сохранённые */
 (function preload(){
   const savedFio = loadField('t03_fio');
   const savedPhone = loadField('t03_phone');
@@ -259,35 +319,34 @@ fioInput.addEventListener('input', ()=> saveField('t03_fio', fioInput.value) );
   if(savedPhone) phoneInput.value = savedPhone;
 })();
 
-/* ---------- Сообщение и проверка ---------- */
+/* ---- Сообщение и проверка ---- */
 function buildMessage(){
   const fio = fioInput.value.trim();
   const digits = phoneInput.value.replace(/\D/g,'');
-
   if(!fio){ alert('Введите фамилию, имя и отчество'); return null; }
   if(digits.length!==11 || !(digits.startsWith('7') || digits.startsWith('8'))){
     alert('Телефон должен быть российским: +7 (9XX) XXX-XX-XX');
     return null;
   }
-
   const lines=[];
+  let totalPacks = 0;
   cart.forEach(i=>{
     const price=getPrice(i.type,i.qty);
-    lines.push(`${i.name}: ${i.qty} шт × ${price} ₽ = ${(i.qty*price).toLocaleString('ru-RU')} ₽`);
+    const packs=i.qty/ PACK; totalPacks+=packs;
+    lines.push(`${i.name}: ${i.qty} шт (${packs} уп. × ${PACK}) × ${price} ₽ = ${(i.qty*price).toLocaleString('ru-RU')} ₽`);
   });
   const total=document.getElementById('cartTotal').textContent;
-
   const norm = (digits.startsWith('8') ? '7'+digits.slice(1) : digits);
   const pretty = formatPhone('+'+norm);
 
   return (
     `Новый заказ с тюльпан03.рф%0A%0A` +
     lines.join('%0A') +
-    `%0A%0AИтого: ${total}%0A%0AФИО: ${encodeURIComponent(fio)}%0AТелефон: ${encodeURIComponent(pretty)}`
+    `%0A%0AИтого: ${total}%0AВсего упаковок: ${totalPacks}%0A%0AФИО: ${encodeURIComponent(fio)}%0AТелефон: ${encodeURIComponent(pretty)}`
   );
 }
 
-/* ---------- Кнопки отправки ---------- */
+/* ---- Кнопки отправки ---- */
 document.getElementById('waCheckout').addEventListener('click',(e)=>{
   const msg=buildMessage(); if(!msg){e.preventDefault();return;}
   e.target.href=`https://wa.me/${WA_PHONE}?text=${msg}`;
@@ -297,35 +356,7 @@ document.getElementById('tgCheckout').addEventListener('click',(e)=>{
   e.target.href=`https://t.me/${TG_USERNAME}?text=${msg}`;
 });
 
-/* ---------- Добавление в корзину ---------- */
-document.addEventListener('click',(e)=>{
-  const plus = e.target.closest('button[data-act="inc"]');
-  const minus = e.target.closest('button[data-act="dec"]');
-  if(plus || minus){
-    const id=(plus||minus).dataset.id;
-    const input=document.querySelector(`.qty[data-id="${id}"]`);
-    let value=parseInt(input.value)||20;
-    value += plus ? 10 : -10;
-    if(value<20) value=20;
-    input.value=value;
-    const priceEl=document.querySelector(`.price[data-price-for="${id}"]`);
-    const type=input.dataset.type;
-    priceEl.textContent=getPrice(type,value)+' ₽';
-  }
-  const add = e.target.closest('.add');
-  if(add){
-    const id=add.dataset.id; const p=products.find(x=>x.id===id);
-    const input=document.querySelector(`.qty[data-id="${id}"]`);
-    let qty=parseInt(input.value)||0; if(qty<20){qty=20;input.value=20;}
-    const prev=cart.get(id)||{id,name:p.name,type:p.type,qty:0};
-    prev.qty+=qty; cart.set(id,prev); renderCart(); location.hash='#cart';
-  }
-  const del = e.target.closest('[data-act="del"]');
-  if(del){ e.preventDefault(); const id=del.dataset.id; cart.delete(id); renderCart(); }
-});
-
-/* очистка корзины */
-document.getElementById('clearCart').addEventListener('click',()=>{cart.clear();renderCart();});
+/* ---- Старт ---- */
 renderCart();
 </script>
 
