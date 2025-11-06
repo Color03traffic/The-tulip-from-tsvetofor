@@ -9,10 +9,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <meta name="theme-color" content="#E33400">
   <style>
-    :root{
-      --bg:#E04297; --text:#111; --muted:#666; --brand:#E33400;
-      --stroke:#e5e7eb; --radius:18px;
-    }
+    :root{ --bg:#E04297; --text:#111; --muted:#666; --brand:#E33400;
+           --stroke:#e5e7eb; --radius:18px; }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;background:var(--bg);color:var(--text)}
     a{text-decoration:none;color:inherit}
@@ -60,6 +58,11 @@
     .toast .t-title{font-weight:700;margin-bottom:4px}
     .toast .t-sub{color:#ddd;font-size:12px}
     .toast .ok{margin-right:6px}
+    /* Индикаторы порога */
+    .tierbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:12px 16px;background:#f6f7fb;border:1px solid var(--stroke);border-radius:12px;font-size:14px;margin:12px 0}
+    .badge{display:inline-block;background:#eef2ff;border:1px solid #dbe3ff;border-radius:999px;padding:6px 10px}
+    .strong{font-weight:700}
+    .muted{color:#666}
   </style>
 </head>
 <body>
@@ -79,12 +82,37 @@
 
   <section id="catalog" class="section">
     <h1>Каталог тюльпанов</h1>
-    <p class="lead">Количество кратно упаковке: 20 шт. Кнопки ± меняют по 20. Нажмите «Добавить в корзину», чтобы собрать заказ. Цена для всех позиций зависит от <b>общего количества</b> в заказе.</p>
+
+    <!-- Подсказка над каталогом -->
+    <div class="tierbar" id="catalogTier">
+      <span class="badge">Всего в корзине: <span id="cQty" class="strong">0</span> шт</span>
+      <span class="badge">Порог: <span id="cRange" class="strong">—</span> шт</span>
+      <span class="badge">Гладкие: <span id="cDef" class="strong">— ₽</span></span>
+      <span class="badge">Махровые: <span id="cMah" class="strong">— ₽</span></span>
+      <span class="badge muted">След. порог: <span id="cNext" class="strong">—</span></span>
+    </div>
+
+    <p class="lead">
+      Количество кратно упаковке: 20 шт. Цена за штуку зависит от <b>общего количества в корзине</b>.
+      Гладкие и махровые считаются вместе по порогу, но у них <b>свои цены</b> внутри выбранного порога.
+    </p>
     <div class="grid" id="grid"></div>
   </section>
 
   <section id="cart" class="section">
     <h2>Корзина</h2>
+
+    <!-- Индикатор текущего порога и цен над корзиной -->
+    <div class="cart" style="margin-bottom:16px">
+      <div id="tierBar" class="tierbar">
+        <span class="badge">Всего в корзине: <span id="tierQty" class="strong">0</span> шт</span>
+        <span class="badge">Порог: <span id="tierRange" class="strong">—</span> шт</span>
+        <span class="badge">Гладкие: <span id="tierPriceDefault" class="strong">— ₽</span></span>
+        <span class="badge">Махровые: <span id="tierPriceMah" class="strong">— ₽</span></span>
+        <span class="badge muted">След. порог: <span id="tierNext" class="strong">—</span></span>
+      </div>
+    </div>
+
     <div class="cart" id="cartBox">
       <div class="cart-head">
         <div>Позиции заказа</div>
@@ -147,34 +175,44 @@
 /* Константы */
 const WA_PHONE="79148416115", PACK=20;
 
-/* Диапазоны цен — единые для всех сортов */
-const tiers = [
-  {min:20, max:500,   price:99},
-  {min:500, max:1000, price:88},
-  {min:1000,max:2000, price:80},
-  {min:2000,max:3000, price:79},
-  {min:3000,max:5000, price:78},
-  {min:5000,max:10000,price:77},
-  {min:15000,max:50000,price:76},
-  {min:50000,max:100000,price:75}
+/* Диапазоны — одинаковые границы, но разные цены */
+const tiersDefault = [
+  {min:20,   max:500,    price:99},
+  {min:500,  max:1000,   price:88},
+  {min:1000, max:2000,   price:80},
+  {min:2000, max:3000,   price:79},
+  {min:3000, max:5000,   price:78},
+  {min:5000, max:10000,  price:77},
+  {min:15000,max:50000,  price:76},
+  {min:50000,max:100000, price:75}
+];
+const tiersMahrovye = [
+  {min:20,   max:500,    price:109},
+  {min:500,  max:1000,   price:98},
+  {min:1000, max:2000,   price:90},
+  {min:2000, max:3000,   price:89},
+  {min:3000, max:5000,   price:88},
+  {min:5000, max:10000,  price:87},
+  {min:15000,max:50000,  price:86},
+  {min:50000,max:100000, price:85}
 ];
 
-/* Товары */
+/* Товары: type 'default' (гладкие) | 'mahrovye' */
 const products=[
-  {id:"yellow",   name:"Жёлтый",            img:"yellow.jpg"},
-  {id:"white",    name:"Белый",             img:"white.jpg"},
-  {id:"cream",    name:"Кремовый",          img:"cream.jpg"},
-  {id:"pink",     name:"Розовый",           img:"pink.jpg"},
-  {id:"red",      name:"Красный",           img:"red.jpg"},
-  {id:"roz-sir",  name:"Розово-сиреневый",  img:"rozovo-sirenevyj.jpg"},
-  {id:"bel-sir",  name:"Бело-сиреневый",    img:"belo-sirenevyj.jpg"},
-  {id:"orange",   name:"Оранжевый",         img:"orange.jpg"},
-  {id:"red-yel",  name:"Красно-жёлтый",     img:"krasno-zheltyj.jpg"},
-  {id:"kra-bel",  name:"Краево-белый",      img:"kraevo-belyj.jpg"},
-  {id:"violet",   name:"Фиолетовый",        img:"fioletovyj.jpg"},
-  {id:"bel-roz",  name:"Бело-розовый",      img:"belo-rozovyj.jpg"},
-  {id:"mah-yel",  name:"Махровый жёлтый",   img:"mahrovyj-zheltyj.jpg"},
-  {id:"mah-pnk",  name:"Махровый розовый",  img:"mahrovyj-rozovyj.jpg"}
+  {id:"yellow",   name:"Жёлтый",            type:"default",  img:"yellow.jpg"},
+  {id:"white",    name:"Белый",             type:"default",  img:"white.jpg"},
+  {id:"cream",    name:"Кремовый",          type:"default",  img:"cream.jpg"},
+  {id:"pink",     name:"Розовый",           type:"default",  img:"pink.jpg"},
+  {id:"red",      name:"Красный",           type:"default",  img:"red.jpg"},
+  {id:"roz-sir",  name:"Розово-сиреневый",  type:"default",  img:"rozovo-sirenevyj.jpg"},
+  {id:"bel-sir",  name:"Бело-сиреневый",    type:"default",  img:"belo-sirenevyj.jpg"},
+  {id:"orange",   name:"Оранжевый",         type:"default",  img:"orange.jpg"},
+  {id:"red-yel",  name:"Красно-жёлтый",     type:"default",  img:"krasno-zheltyj.jpg"},
+  {id:"kra-bel",  name:"Краево-белый",      type:"default",  img:"kraevo-belyj.jpg"},
+  {id:"violet",   name:"Фиолетовый",        type:"default",  img:"fioletovyj.jpg"},
+  {id:"bel-roz",  name:"Бело-розовый",      type:"default",  img:"belo-rozovyj.jpg"},
+  {id:"mah-yel",  name:"Махровый жёлтый",   type:"mahrovye", img:"mahrovyj-zheltyj.jpg"},
+  {id:"mah-pnk",  name:"Махровый розовый",  type:"mahrovye", img:"mahrovyj-rozovyj.jpg"}
 ];
 
 /* Рендер карточек */
@@ -184,16 +222,16 @@ grid.innerHTML=products.map(p=>`
     <img src="${p.img}" alt="${p.name}">
     <div class="body">
       <strong>${p.name}</strong>
-      <div class="meta">Цена зависит от общего количества</div>
+      <div class="meta">Цена зависит от общего количества в корзине</div>
       <label>Количество (шт, кратно ${PACK}):</label>
       <div class="qty-ctrl">
         <button data-act="dec" data-id="${p.id}">−</button>
-        <input type="number" min="${PACK}" step="${PACK}" value="${PACK}" class="qty" data-id="${p.id}">
+        <input type="number" min="${PACK}" step="${PACK}" value="${PACK}" class="qty" data-id="${p.id}" data-type="${p.type}">
         <button data-act="inc" data-id="${p.id}">+</button>
       </div>
       <div class="price" data-price-for="${p.id}">— ₽</div>
       <div class="sub">1 уп. = ${PACK} шт</div>
-      <div class="hint">Введите количество и нажмите «Добавить в корзину»</div>
+      <div class="hint">Нажмите «Добавить в корзину»</div>
       <div style="margin-top:10px">
         <button class="btn add" data-id="${p.id}">Добавить в корзину</button>
       </div>
@@ -202,48 +240,100 @@ grid.innerHTML=products.map(p=>`
 `).join('');
 
 /* Корзина */
-const cart = new Map(); // id -> {id,name,qty}
+const cart = new Map(); // id -> {id,name,type,qty}
 
 /* Утилиты */
 function roundToPacks(q){ if(!q) return PACK; q=Math.max(PACK,parseInt(q)||PACK); return Math.ceil(q/PACK)*PACK; }
-function getTierPrice(totalQty){
-  for(const t of tiers){ if(totalQty>=t.min && totalQty<t.max) return t.price; }
-  return tiers[tiers.length-1].price;
+function totalQtyCart(){ let t=0; cart.forEach(i=> t+=i.qty); return t; }
+function findTierIndex(total){
+  const base=tiersDefault;
+  for(let i=0;i<base.length;i++){
+    if(total>=base[i].min && total<=base[i].max) return i; // включительно
+  }
+  return base.length-1;
 }
-function totalQtyPlanned(){
-  // суммы из всех инпутов каталога + из корзины
-  let total=0;
-  document.querySelectorAll('input.qty').forEach(i=> total += parseInt(i.value)||0);
-  cart.forEach(i=> total += i.qty);
-  return total;
+function getUnitPriceByType(type,totalQty){
+  const idx = findTierIndex(Math.max(totalQty, PACK));
+  return (type==='mahrovye'? tiersMahrovye[idx].price : tiersDefault[idx].price);
 }
-function formatMoney(n){ return (Math.round(n)).toLocaleString('ru-RU')+' ₽'; }
+function nextThresholdInfo(total){
+  const idx = findTierIndex(Math.max(total, PACK));
+  const nextIdx = idx+1;
+  const base=tiersDefault;
+  if(nextIdx>=base.length) return {label:'макс. порог', left:0, hasNext:false};
+  const nextMin = base[nextIdx].min;
+  const left = Math.max(0, nextMin - total);
+  return {label:`${nextMin} шт`, left, hasNext:true};
+}
+function money(n){ return Math.round(n).toLocaleString('ru-RU')+' ₽'; }
 
-/* Пересчёт цен на карточках и в корзине по общему количеству */
+/* Элементы индикаторов */
+const tierQtyEl = document.getElementById('tierQty');
+const tierRangeEl = document.getElementById('tierRange');
+const tierPriceDefEl = document.getElementById('tierPriceDefault');
+const tierPriceMahEl = document.getElementById('tierPriceMah');
+const tierNextEl = document.getElementById('tierNext');
+
+const cQtyEl = document.getElementById('cQty');
+const cRangeEl = document.getElementById('cRange');
+const cDefEl = document.getElementById('cDef');
+const cMahEl = document.getElementById('cMah');
+const cNextEl = document.getElementById('cNext');
+
+function updateTierBars(){
+  const total = totalQtyCart();
+  const idx = findTierIndex(Math.max(total, PACK));
+  const range = `${tiersDefault[idx].min}–${tiersDefault[idx].max}`;
+  const def = getUnitPriceByType('default', total) + ' ₽';
+  const mah = getUnitPriceByType('mahrovye', total) + ' ₽';
+  const next = nextThresholdInfo(total);
+
+  // Бар над корзиной
+  tierQtyEl.textContent = total.toLocaleString('ru-RU');
+  tierRangeEl.textContent = range;
+  tierPriceDefEl.textContent = def;
+  tierPriceMahEl.textContent = mah;
+  tierNextEl.textContent = next.hasNext ? `${next.label} (осталось ${next.left})` : 'макс. порог';
+
+  // Бар над каталогом
+  cQtyEl.textContent = total.toLocaleString('ru-RU');
+  cRangeEl.textContent = range;
+  cDefEl.textContent = def;
+  cMahEl.textContent = mah;
+  cNextEl.textContent = next.hasNext ? `${next.label} (осталось ${next.left})` : 'макс. порог';
+}
+
+/* Пересчёт цен в карточках и корзине */
 function refreshPricesEverywhere(){
-  const total = totalQtyPlanned();
-  const unit = getTierPrice(total);
+  const total = totalQtyCart();
 
-  // карточки
-  document.querySelectorAll('.price').forEach(el=>{
-    el.textContent = unit + ' ₽';
+  // карточки — показываем актуальную цену для каждого типа
+  document.querySelectorAll('.card').forEach(card=>{
+    const inp = card.querySelector('input.qty');
+    const type = inp.dataset.type;
+    const priceEl = card.querySelector('.price');
+    const unit = getUnitPriceByType(type, total);
+    priceEl.textContent = unit + ' ₽';
   });
 
-  // корзина
+  // корзина — каждая строка получает цену по своему типу
   const tbody=document.querySelector('#cartTable tbody');
   const totalEl=document.getElementById('cartTotal');
-  if(cart.size===0){ totalEl.textContent='0 ₽'; return; }
+  if(cart.size===0){ totalEl.textContent='0 ₽'; updateTierBars(); return; }
 
   let grand=0;
   tbody.querySelectorAll('tr').forEach(tr=>{
     const id=tr.dataset.id;
     const item=cart.get(id); if(!item) return;
+    const unit = getUnitPriceByType(item.type, total);
     const sum = unit * item.qty;
     tr.querySelector('[data-cell="unit"]').textContent = unit + ' ₽';
-    tr.querySelector('[data-cell="sum"]').textContent  = formatMoney(sum);
+    tr.querySelector('[data-cell="sum"]').textContent  = money(sum);
     grand += sum;
   });
-  totalEl.textContent = formatMoney(grand);
+  totalEl.textContent = money(grand);
+
+  updateTierBars();
 }
 
 /* Рендер корзины */
@@ -254,7 +344,7 @@ function renderCart(){
 
   if(cart.size===0){
     empty.style.display='block'; wrap.style.display='none'; tbody.innerHTML='';
-    refreshPricesEverywhere(); // чтобы цены на карточках тоже пересчитались
+    refreshPricesEverywhere();
     return;
   }
   empty.style.display='none'; wrap.style.display='block'; tbody.innerHTML='';
@@ -264,7 +354,7 @@ function renderCart(){
     const tr=document.createElement('tr');
     tr.dataset.id=item.id;
     tr.innerHTML=`
-      <td>${item.name}<div class="sub">Упаковок: ${packs}</div></td>
+      <td>${item.name}<div class="sub">${item.type==='mahrovye'?'Махровые':'Гладкие'}. Упаковок: ${packs}</div></td>
       <td>
         <div class="qty-ctrl">
           <button data-cart-act="dec" data-id="${item.id}">−</button>
@@ -294,11 +384,10 @@ function showToast(text){
   toastTimer=setTimeout(()=>toast.classList.remove('show'), 2500);
 }
 
-/* Инпуты каталога — ввод и +/− */
+/* Каталог: ввод и +/− (только подготовка количества перед добавлением) */
 document.addEventListener('input',e=>{
   const inp=e.target.closest('input.qty:not(.cart-qty)'); if(!inp) return;
   inp.value=roundToPacks(inp.value);
-  refreshPricesEverywhere();
 });
 document.addEventListener('click',e=>{
   const btn=e.target.closest('button[data-act]'); if(!btn) return;
@@ -306,7 +395,6 @@ document.addEventListener('click',e=>{
   let val=roundToPacks(input.value);
   if(btn.dataset.act==='inc') val+=PACK; else val=Math.max(PACK,val-PACK);
   input.value=val;
-  refreshPricesEverywhere();
 });
 
 /* Добавление в корзину */
@@ -315,13 +403,12 @@ document.addEventListener('click',e=>{
   const id=add.dataset.id;
   const p=products.find(x=>x.id===id);
   const input=document.querySelector(`.qty[data-id="${id}"]`);
-  let qty=roundToPacks(input.value); input.value=PACK; // сбрасываем после добавления
-  const prev=cart.get(id)||{id,name:p.name,qty:0};
+  let qty=roundToPacks(input.value);
+  const prev=cart.get(id)||{id,name:p.name,type:p.type,qty:0};
   prev.qty+=qty; cart.set(id,prev);
   renderCart();
   const packs=qty/PACK;
   showToast(`${p.name} — ${qty} шт (${packs} уп.)`);
-  refreshPricesEverywhere();
 });
 
 /* Корзина: +/−, ввод, удалить, очистить */
@@ -383,11 +470,12 @@ function buildMsg(){
   if(!fio){ alert('Введите ФИО'); return null; }
   if(digits.length!==11){ alert('Неверный телефон'); return null; }
 
-  let totalQty=0; cart.forEach(i=> totalQty+=i.qty);
-  const unit=getTierPrice(totalQty);
+  const total = totalQtyCart();
+  const idx = findTierIndex(Math.max(total, PACK));
 
-  let lines=[], totalPacks=0, totalSum=0;
+  let totalPacks=0, totalSum=0, lines=[];
   cart.forEach(i=>{
+    const unit = (i.type==='mahrovye'? tiersMahrovye[idx].price : tiersDefault[idx].price);
     const pk=i.qty/PACK; totalPacks+=pk;
     const sum = unit*i.qty; totalSum+=sum;
     lines.push(`${i.name}: ${i.qty} шт (${pk} уп. × ${PACK}) × ${unit} ₽ = ${sum.toLocaleString('ru-RU')} ₽`);
@@ -420,11 +508,8 @@ document.getElementById('tgCheckout').addEventListener('click',(e)=>{
 });
 
 /* Инициализация */
-function initCardPricesFirstTime(){
-  // первичная отрисовка цен на карточках (исходно PACK в каждом инпуте)
-  refreshPricesEverywhere();
-}
-initCardPricesFirstTime();
+function init(){ updateTierBars(); refreshPricesEverywhere(); }
+init();
 renderCart();
 </script>
 
