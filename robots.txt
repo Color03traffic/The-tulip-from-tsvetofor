@@ -2,14 +2,19 @@
 User-agent: *
 Allow: /
 
-# Запрещаем служебные страницы
+# Запрещаем индексацию служебных разделов (если они есть)
 Disallow: /admin/
 Disallow: /cart/
 Disallow: /checkout/
 Disallow: /search?
+Disallow: /privacy-policy/
+Disallow: /terms/
 
-# Главное зеркало для Яндекса (только одна директива Host)
+# Основное зеркало для Яндекса
 Host: xn--03-6kc7blkt5fq.xn--p1ai
 
-# Карта сайта
+# Карта сайта для Яндекса и Google
 Sitemap: https://тюльпан03.рф/sitemap.xml
+
+# Дополнительные рекомендации
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content /  # убираем UTM-параметры из индекса
