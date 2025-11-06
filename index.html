@@ -45,7 +45,7 @@
     .card strong{display:block;margin-bottom:4px}
     .meta{color:var(--muted);font-size:13px;margin-bottom:6px}
     input.qty{width:100%;padding:8px;border:1px solid #ccc;border-radius:10px;margin:4px 0}
-    .price{font-size:20px;font-weight:700;margin-top:8px}
+    .price{font-size:20px;font-weight:700;margin-top:8px;color:var(--brand)}
     .hint{font-size:12px;color:var(--muted)}
     footer{border-top:1px solid var(--stroke);padding:16px 0;text-align:center;color:var(--muted);font-size:14px}
   </style>
@@ -154,7 +154,7 @@ grid.innerHTML = products.map(p => `
       <div class="price">99 ₽</div>
       <div class="hint">Цена обновится при изменении количества</div>
       <div style="margin-top:10px">
-        <a class="btn" style="background:#229ED9;border-color:#229ED9" href="https://t.me/ВАШ_ЮЗЕРНЕЙМ" target="_blank">Заказать</a>
+        <a class="btn" style="background:#229ED9;border-color:#229ED9" href="https://t.me/ВАШ_ЮЗЕРНЕЙН" target="_blank">Заказать</a>
       </div>
     </div>
   </div>
@@ -172,4 +172,11 @@ document.querySelectorAll('.qty').forEach(input=>{
   const priceEl = input.parentElement.querySelector('.price');
   input.addEventListener('input',()=>{
     const qty = parseInt(input.value)||0;
-    const price
+    const price = getPrice(input.dataset.type, qty);
+    priceEl.textContent = price + ' ₽';
+  });
+});
+</script>
+
+</body>
+</html>
