@@ -3,49 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Каталог Краснодарских тюльпанов — Тюльпан03.рф</title>
-  <meta name="description" content="Каталог свежих тюльпанов от бренда Цветофор. Оптовые цены зависят от общего количества в заказе.">
+  <title>Каталог краснодарских тюльпанов — Тюльпан03.рф</title>
+  <meta name="description" content="Каталог краснодарских тюльпанов оптом. Все сорта, свежие цветы из теплиц, гибкая градация цен по количеству.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://тюльпан03.рф/catalog.html">
+
   <style>
-    :root {
-      --brand:#E33400;
+    :root{
+      --bg:#ffffff;
+      --text:#111;
       --muted:#666;
-      --bg:#fff;
+      --brand:#E33400;
       --stroke:#e5e7eb;
       --radius:16px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;background:var(--bg);color:#111}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;
+      background:#fff;
+      color:var(--text);
+    }
     a{text-decoration:none;color:inherit}
-    header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--stroke);padding:12px 0;z-index:10}
+    header{
+      position:sticky;
+      top:0;
+      background:#fff;
+      border-bottom:1px solid var(--stroke);
+      padding:12px 0;
+      z-index:10;
+    }
     .container{max-width:1100px;margin:0 auto;padding:0 16px}
     .spread{display:flex;justify-content:space-between;align-items:center}
     .logo{font-weight:800;font-size:22px}
     nav a{margin-left:14px;font-weight:500}
     nav a:hover{color:var(--brand)}
-    h1{font-size:28px;margin:24px 0 16px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-    .card{border:1px solid var(--stroke);border-radius:var(--radius);overflow:hidden;background:#f9fafb;display:flex;flex-direction:column}
-    .card img{width:100%;height:200px;object-fit:cover}
-    .card .body{padding:16px;flex:1;display:flex;flex-direction:column}
-    .card strong{display:block;margin-bottom:4px}
-    .meta{color:var(--muted);font-size:13px;margin-bottom:8px}
-    .controls{display:flex;align-items:center;gap:6px;margin:6px 0}
-    .controls button{width:32px;height:32px;border:1px solid #ccc;border-radius:8px;background:#fff;font-size:18px;cursor:pointer}
-    input.qty{width:60px;text-align:center;padding:6px;border:1px solid #ccc;border-radius:8px}
-    .price{font-size:18px;font-weight:700;margin-top:auto}
-    .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-weight:600;text-align:center;margin-top:10px}
+    h1{font-size:30px;margin:30px 0 10px;text-align:left}
+    .subtitle{color:var(--muted);font-size:15px;margin-bottom:30px;text-align:left}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+    .card{border:1px solid var(--stroke);border-radius:var(--radius);overflow:hidden;background:#f9fafb}
+    .card img{width:100%;height:220px;object-fit:cover}
+    .card .body{padding:16px}
+    .card strong{display:block;margin-bottom:4px;font-size:18px}
+    .meta{color:var(--muted);font-size:13px;margin-bottom:6px}
+    input.qty{width:70px;padding:8px;border:1px solid #ccc;border-radius:10px;text-align:center;margin:4px}
+    .btn{
+      display:inline-block;
+      padding:10px 18px;
+      border-radius:10px;
+      border:1px solid var(--brand);
+      background:var(--brand);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+    }
     .btn:hover{opacity:.9}
-    footer{border-top:1px solid var(--stroke);padding:16px 0;text-align:center;color:var(--muted);font-size:14px;margin-top:40px}
-    #cart{margin-top:40px;border-top:2px solid var(--stroke);padding-top:24px}
-    table{width:100%;border-collapse:collapse;margin-bottom:20px}
-    th,td{border-bottom:1px solid var(--stroke);padding:8px;text-align:left}
-    tfoot td{font-weight:700}
-    .contact-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn-wa{background:#25D366;border-color:#25D366}
-    .btn-tg{background:#229ED9;border-color:#229ED9}
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;z-index:1000}
-    .modal{background:#fff;padding:24px;border-radius:16px;max-width:400px;width:90%}
-    .modal input{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;margin-bottom:10px}
+    footer{
+      border-top:1px solid var(--stroke);
+      padding:16px 0;
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+      margin-top:40px;
+    }
+    .controls{display:flex;justify-content:center;align-items:center;margin-bottom:8px}
+    .controls button{
+      width:32px;height:32px;border:none;background:#e5e7eb;border-radius:8px;font-size:18px;cursor:pointer;
+    }
+    .controls button:hover{background:#d1d5db}
   </style>
 </head>
 <body>
@@ -55,167 +80,106 @@
     <div class="logo">🌷 Тюльпан03</div>
     <nav>
       <a href="index.html">Главная</a>
-      <a href="#cart">Корзина</a>
+      <a href="cart.html">Корзина</a>
     </nav>
   </div>
 </header>
 
 <main class="container">
-  <h1>Каталог тюльпанов</h1>
+
+  <h1>Каталог краснодарских тюльпанов</h1>
+  <p class="subtitle">Прямые поставки из теплиц Краснодарского края</p>
+
   <div class="grid" id="grid"></div>
 
-  <section id="cart">
-    <h2>Корзина</h2>
-    <div id="cartTable"></div>
-    <div class="contact-buttons">
-      <button class="btn btn-wa" onclick="openForm('wa')">Отправить WhatsApp</button>
-      <button class="btn btn-tg" onclick="openForm('tg')">Отправить Telegram</button>
-    </div>
-  </section>
 </main>
 
 <footer>
   © 2025 Тюльпан03.рф — свежие цветы оптом 🌷
 </footer>
 
-<!-- Модалка ввода данных -->
-<div class="overlay" id="formOverlay">
-  <div class="modal">
-    <h3>Введите данные для связи</h3>
-    <input id="fio" placeholder="Фамилия Имя Отчество">
-    <input id="phone" placeholder="Номер телефона">
-    <div class="contact-buttons">
-      <button class="btn btn-wa" onclick="sendOrder('wa')">WhatsApp</button>
-      <button class="btn btn-tg" onclick="sendOrder('tg')">Telegram</button>
-    </div>
-    <div style="text-align:center;margin-top:8px">
-      <a href="#" onclick="closeForm();return false;">Отмена</a>
-    </div>
-  </div>
-</div>
-
 <script>
-const tiersDefault = [
-  {min:20,max:500,price:99},
-  {min:500,max:1000,price:88},
-  {min:1000,max:2000,price:80},
-  {min:2000,max:3000,price:79},
-  {min:3000,max:5000,price:78},
-  {min:5000,max:10000,price:77},
-  {min:15000,max:50000,price:76},
-  {min:50000,max:100000,price:75}
-];
-const tiersMahrovye = [
-  {min:20,max:500,price:109},
-  {min:500,max:1000,price:98},
-  {min:1000,max:2000,price:90},
-  {min:2000,max:3000,price:89},
-  {min:3000,max:5000,price:88},
-  {min:5000,max:10000,price:87},
-  {min:15000,max:50000,price:86},
-  {min:50000,max:100000,price:85}
-];
-
 const products = [
+  {id:"pink", name:"Розовый", type:"default", img:"pink.jpg"},
   {id:"yellow", name:"Жёлтый", type:"default", img:"yellow.jpg"},
+  {id:"red", name:"Красный", type:"default", img:"red.jpg"},
   {id:"white", name:"Белый", type:"default", img:"white.jpg"},
   {id:"cream", name:"Кремовый", type:"default", img:"cream.jpg"},
-  {id:"pink", name:"Розовый", type:"default", img:"pink.jpg"},
-  {id:"red", name:"Красный", type:"default", img:"red.jpg"},
-  {id:"rozovo-sirenevyj", name:"Розово-сиреневый", type:"default", img:"rozovo-sirenevyj.jpg"},
-  {id:"belo-sirenevyj", name:"Бело-сиреневый", type:"default", img:"belo-sirenevyj.jpg"},
+  {id:"roseviolet", name:"Розово-сиреневый", type:"default", img:"roseviolet.jpg"},
+  {id:"mahrovy", name:"Махровый розовый", type:"mahrovye", img:"mahrovy-rozovyj.jpg"},
+  {id:"mahrovy-yellow", name:"Махровый жёлтый", type:"mahrovye", img:"mahrovy-yellow.jpg"},
+  {id:"redwhite", name:"Красно-белый", type:"default", img:"redwhite.jpg"},
+  {id:"redyellow", name:"Красно-жёлтый", type:"default", img:"redyellow.jpg"},
   {id:"orange", name:"Оранжевый", type:"default", img:"orange.jpg"},
-  {id:"krasno-zheltyj", name:"Красно-жёлтый", type:"default", img:"krasno-zheltyj.jpg"},
-  {id:"krasno-belyj", name:"Красно-белый", type:"default", img:"krasno-belyj.jpg"},
-  {id:"fioletovyj", name:"Фиолетовый", type:"default", img:"fioletovyj.jpg"},
-  {id:"belo-rozovyj", name:"Бело-розовый", type:"default", img:"belo-rozovyj.jpg"},
-  {id:"mahrovyj-zheltyj", name:"Махровый жёлтый", type:"mahrovye", img:"mahrovyj-zheltyj.jpg"},
-  {id:"mahrovyj-rozovyj", name:"Махровый розовый", type:"mahrovye", img:"mahrovyj-rozovyj.jpg"}
+  {id:"violet", name:"Фиолетовый", type:"default", img:"violet.jpg"},
+  {id:"whitepink", name:"Бело-розовый", type:"default", img:"whitepink.jpg"},
+  {id:"whiteviolet", name:"Бело-сиреневый", type:"default", img:"whiteviolet.jpg"}
 ];
 
-const grid=document.getElementById("grid");
-const cart={};
-
-function renderProducts(){
-  grid.innerHTML=products.map(p=>`
+const grid = document.getElementById('grid');
+grid.innerHTML = products.map(p => `
   <div class="card">
     <img src="${p.img}" alt="${p.name}">
     <div class="body">
       <strong>${p.name}</strong>
       <div class="meta">Цена зависит от общего количества</div>
       <div class="controls">
-        <button onclick="changeQty('${p.id}',-20)">−</button>
-        <input type="number" class="qty" id="qty-${p.id}" min="0" step="20" value="${cart[p.id]?.qty||0}">
-        <button onclick="changeQty('${p.id}',20)">+</button>
+        <button class="minus">−</button>
+        <input type="number" min="0" step="20" value="0" class="qty" data-type="${p.type}" data-id="${p.id}">
+        <button class="plus">+</button>
       </div>
-      <div class="price" id="price-${p.id}">0 ₽</div>
-      <button class="btn" onclick="addToCart('${p.id}')">Добавить в корзину</button>
+      <div class="price">0 ₽</div>
+      <button class="btn add">Добавить в корзину</button>
     </div>
-  </div>`).join('');
-}
-renderProducts();
+  </div>
+`).join('');
 
-function changeQty(id,delta){
-  const input=document.getElementById(`qty-${id}`);
-  let val=parseInt(input.value)||0;
-  val=Math.max(0,val+delta);
-  input.value=val;
-}
+document.querySelectorAll('.plus').forEach(btn=>{
+  btn.onclick=()=>{
+    const input=btn.parentElement.querySelector('.qty');
+    input.value=parseInt(input.value||0)+20;
+    updatePrice(input);
+  };
+});
+document.querySelectorAll('.minus').forEach(btn=>{
+  btn.onclick=()=>{
+    const input=btn.parentElement.querySelector('.qty');
+    input.value=Math.max(0,parseInt(input.value||0)-20);
+    updatePrice(input);
+  };
+});
 
-function addToCart(id){
-  const input=document.getElementById(`qty-${id}`);
+function updatePrice(input){
   const qty=parseInt(input.value)||0;
-  if(!qty) return;
-  cart[id]={...products.find(p=>p.id===id),qty};
-  updateCart();
+  const price=getPrice(input.dataset.type,qty);
+  const total=qty*price;
+  input.closest('.body').querySelector('.price').textContent=`${total} ₽`;
 }
 
-function totalQty(){
-  return Object.values(cart).reduce((a,b)=>a+b.qty,0);
-}
-
-function getPrice(type,total){
-  const t=(type==="mahrovye")?tiersMahrovye:tiersDefault;
-  for(const tr of t){if(total>=tr.min && total<tr.max)return tr.price;}
+function getPrice(type,qty){
+  const t=(type==="mahrovye")?[
+    {min:20, max:500, price:109},
+    {min:500, max:1000, price:98},
+    {min:1000, max:2000, price:90},
+    {min:2000, max:3000, price:89},
+    {min:3000, max:5000, price:88},
+    {min:5000, max:10000, price:87},
+    {min:15000, max:50000, price:86},
+    {min:50000, max:100000, price:85}
+  ]:[
+    {min:20, max:500, price:99},
+    {min:500, max:1000, price:88},
+    {min:1000, max:2000, price:80},
+    {min:2000, max:3000, price:79},
+    {min:3000, max:5000, price:78},
+    {min:5000, max:10000, price:77},
+    {min:15000, max:50000, price:76},
+    {min:50000, max:100000, price:75}
+  ];
+  for(const r of t){ if(qty>=r.min && qty<r.max) return r.price; }
   return t[t.length-1].price;
 }
-
-function updateCart(){
-  const total=totalQty();
-  let html=`<table><thead><tr><th>Сорт</th><th>Кол-во</th><th>Цена</th><th>Сумма</th></tr></thead><tbody>`;
-  let sum=0;
-  Object.values(cart).forEach(p=>{
-    const price=getPrice(p.type,total);
-    const s=price*p.qty;
-    sum+=s;
-    html+=`<tr><td>${p.name}</td><td>${p.qty}</td><td>${price} ₽</td><td>${s.toLocaleString()} ₽</td></tr>`;
-    document.getElementById(`price-${p.id}`).textContent=price+" ₽";
-  });
-  html+=`</tbody><tfoot><tr><td colspan="3">Итого:</td><td>${sum.toLocaleString()} ₽</td></tr></tfoot></table>`;
-  document.getElementById("cartTable").innerHTML=html;
-}
-
-let currentSend="";
-function openForm(type){currentSend=type;document.getElementById('formOverlay').style.display='flex';}
-function closeForm(){document.getElementById('formOverlay').style.display='none';}
-
-function sendOrder(type){
-  const fio=document.getElementById('fio').value.trim();
-  const phone=document.getElementById('phone').value.trim();
-  if(!fio||!phone){alert("Заполните ФИО и телефон.");return;}
-  const total=totalQty();
-  let text=`Заказ тюльпанов с сайта Тюльпан03.рф%0AФИО: ${fio}%0AТелефон: ${phone}%0AОбщее количество: ${total} шт%0A`;
-  Object.values(cart).forEach(p=>{
-    const price=getPrice(p.type,total);
-    text+=`%0A${p.name}: ${p.qty} шт × ${price} ₽ = ${(price*p.qty).toLocaleString()} ₽`;
-  });
-  const sum=Object.values(cart).reduce((a,b)=>a+getPrice(b.type,total)*b.qty,0);
-  text+=`%0A%0AИтого: ${sum.toLocaleString()} ₽`;
-  closeForm();
-  if(type==='wa')window.open(`https://wa.me/79148416115?text=${text}`,'_blank');
-  else window.open(`https://t.me/share/url?url=tulpan03&text=${text}`,'_blank');
-}
 </script>
+
 </body>
 </html>
-
