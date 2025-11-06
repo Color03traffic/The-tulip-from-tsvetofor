@@ -17,7 +17,7 @@
 
   <style>
     :root{
-      --bg:#ffffff; --text:#111; --muted:#666; --brand:#16a34a;
+      --bg:#ffffff; --text:#111; --muted:#666; --brand:#E33400;
       --stroke:#e5e7eb; --radius:16px;
     }
     *{box-sizing:border-box}
@@ -68,7 +68,7 @@
   <section class="hero">
     <div>
       <h1>Тюльпаны оптом от 75 ₽</h1>
-      <p class="lead">Свежие тюльпаны любых сортов и цветов. Работаем напрямую с теплицами. Быстрая доставка, фото перед отгрузкой.</p>
+      <p class="lead">Свежие тюльпаны любых сортов и цветов. Работаем напрямую с теплицами.</p>
       <a href="#catalog" class="btn">Посмотреть каталог</a>
       <a href="https://t.me/ВАШ_ЮЗЕРНЕЙМ" class="btn" style="background:#229ED9;border-color:#229ED9">Связаться в Telegram</a>
     </div>
@@ -172,11 +172,4 @@ document.querySelectorAll('.qty').forEach(input=>{
   const priceEl = input.parentElement.querySelector('.price');
   input.addEventListener('input',()=>{
     const qty = parseInt(input.value)||0;
-    const price = getPrice(input.dataset.type, qty);
-    priceEl.textContent = price + ' ₽';
-  });
-});
-</script>
-
-</body>
-</html>
+    const price
