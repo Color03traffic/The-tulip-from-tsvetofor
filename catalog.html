@@ -39,7 +39,6 @@
     .qty-ctrl button{border:0;background:#fff;font-size:18px;padding:6px 10px;cursor:pointer;line-height:1;color:var(--brand)}
     .qty-ctrl button:hover{background:#f8f8f8}
     .qty-ctrl input.qty{width:90px;text-align:center;border:0;border-left:1px solid #eee;border-right:1px solid #eee;height:34px}
-
     .cart{border:1px solid var(--stroke);border-radius:16px;overflow:hidden;background:#fff}
     .cart-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#f8fafc;border-bottom:1px solid var(--stroke)}
     .cart-body{padding:0}
@@ -56,6 +55,20 @@
     .btn-tg{background:#229ED9;border-color:#229ED9}
     .form-row{display:flex;flex-wrap:wrap;gap:10px;padding:12px 16px}
     .form-row input{flex:1 1 200px;padding:10px;border:1px solid #ccc;border-radius:8px;font-size:15px}
+
+    /* Toast */
+    .toast{
+      position:fixed; right:16px; bottom:16px;
+      background:#111; color:#fff; padding:12px 14px;
+      border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.25);
+      opacity:0; transform:translateY(10px); pointer-events:none;
+      transition:opacity .25s, transform .25s;
+      max-width: 90vw; z-index: 9999; font-size:14px; line-height:1.35;
+    }
+    .toast.show{opacity:1; transform:translateY(0)}
+    .toast .t-title{font-weight:700; margin-bottom:4px}
+    .toast .t-sub{color:#ddd; font-size:12px}
+    .toast .ok{margin-right:6px}
   </style>
 </head>
 <body>
@@ -75,7 +88,7 @@
 
   <section id="catalog" class="section">
     <h1>Каталог тюльпанов</h1>
-    <p class="lead">Количество кратно упаковке: 20 шт. Кнопки ± меняют по 20. Нажмите «В корзину», чтобы собрать заказ.</p>
+    <p class="lead">Количество кратно упаковке: 20 шт. Кнопки ± меняют по 20. Нажмите «Добавить в корзину», чтобы собрать заказ.</p>
     <div class="grid" id="grid"></div>
   </section>
 
@@ -135,50 +148,50 @@
   © 2025 Тюльпан03.рф — свежие цветы оптом 🌷
 </footer>
 
-<script>
-const TG_USERNAME = "tulpan03";
-const WA_PHONE   = "79148416115";
-const PACK = 20; // размер упаковки
+<!-- Toast -->
+<div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true">
+  <div class="t-title"><span class="ok">✅</span>Добавлено в корзину</div>
+  <div class="t-sub" id="toastText">Позиция и количество</div>
+</div>
 
-/* ---- Прайс ---- */
-const tiers = {
-  default: [
-    {min:20, max:500, price:99},{min:500, max:1000, price:88},{min:1000, max:2000, price:80},
-    {min:2000, max:3000, price:79},{min:3000, max:5000, price:78},{min:5000, max:10000, price:77},
-    {min:15000, max:50000, price:76},{min:50000, max:100000, price:75}
+<script>
+const TG_USERNAME="tulpan03", WA_PHONE="79148416115", PACK=20;
+
+/* --- Прайс --- */
+const tiers={
+  default:[
+    {min:20,max:500,price:99},{min:500,max:1000,price:88},{min:1000,max:2000,price:80},
+    {min:2000,max:3000,price:79},{min:3000,max:5000,price:78},{min:5000,max:10000,price:77},
+    {min:15000,max:50000,price:76},{min:50000,max:100000,price:75}
   ],
-  mahrovye: [
-    {min:20, max:500, price:109},{min:500, max:1000, price:98},{min:1000, max:2000, price:90},
-    {min:2000, max:3000, price:89},{min:3000, max:5000, price:88},{min:5000, max:10000, price:87},
-    {min:15000, max:50000, price:86},{min:50000, max:100000, price:85}
-  ],
-  mix: [
-    {min:20, max:500, price:99},{min:500, max:1000, price:88},{min:1000, max:2000, price:80},
-    {min:2000, max:3000, price:79},{min:3000, max:5000, price:78},{min:5000, max:10000, price:77},
-    {min:15000, max:50000, price:76},{min:50000, max:100000, price:75}
+  mahrovye:[
+    {min:20,max:500,price:109},{min:500,max:1000,price:98},{min:1000,max:2000,price:90},
+    {min:2000,max:3000,price:89},{min:3000,max:5000,price:88},{min:5000,max:10000,price:87},
+    {min:15000,max:50000,price:86},{min:50000,max:100000,price:85}
   ]
 };
 
-/* ---- Каталог ---- */
-const products = [
-  {id:"tul-red", name:"Тюльпан красный", type:"default", img:"red.jpg"},
-  {id:"tul-white", name:"Тюльпан белый", type:"default", img:"white.jpg"},
-  {id:"tul-yellow", name:"Тюльпан жёлтый", type:"default", img:"yellow.jpg"},
-  {id:"tul-pink", name:"Тюльпан розовый", type:"default", img:"pink.jpg"},
-  {id:"tul-cream", name:"Тюльпан кремовый", type:"default", img:"cream.jpg"},
-  {id:"tul-orange", name:"Тюльпан оранжевый", type:"default", img:"orange.jpg"},
-  {id:"tul-peach", name:"Тюльпан персиковый", type:"default", img:"peach.jpg"},
-  {id:"tul-lilac", name:"Тюльпан лиловый", type:"default", img:"lilac.jpg"},
-  {id:"tul-purple", name:"Тюльпан фиолетовый", type:"default", img:"purple.jpg"},
-  {id:"tul-burgundy", name:"Тюльпан бордовый", type:"default", img:"burgundy.jpg"},
-  {id:"tul-coral", name:"Тюльпан коралловый", type:"default", img:"coral.jpg"},
-  {id:"tul-bicolor", name:"Тюльпан двухцветный", type:"default", img:"bicolor.jpg"},
-  {id:"tul-mahrovyj", name:"Тюльпан махровый", type:"mahrovye", img:"mahrovyj.jpg"},
-  {id:"tul-mix", name:"Тюльпан микс", type:"mix", img:"mix.jpg"}
+/* --- Товары (14 позиций под прайс) --- */
+const products=[
+  {id:"yellow",   name:"Жёлтый",            type:"default",  img:"yellow.jpg"},
+  {id:"white",    name:"Белый",             type:"default",  img:"white.jpg"},
+  {id:"cream",    name:"Кремовый",          type:"default",  img:"cream.jpg"},
+  {id:"pink",     name:"Розовый",           type:"default",  img:"pink.jpg"},
+  {id:"red",      name:"Красный",           type:"default",  img:"red.jpg"},
+  {id:"roz-sir",  name:"Розово-сиреневый",  type:"default",  img:"rozovo-sirenevyj.jpg"},
+  {id:"bel-sir",  name:"Бело-сиреневый",    type:"default",  img:"belo-sirenevyj.jpg"},
+  {id:"orange",   name:"Оранжевый",         type:"default",  img:"orange.jpg"},
+  {id:"red-yel",  name:"Красно-жёлтый",     type:"default",  img:"krasno-zheltyj.jpg"},
+  {id:"kra-bel",  name:"Краево-белый",      type:"default",  img:"kraevo-belyj.jpg"},
+  {id:"violet",   name:"Фиолетовый",        type:"default",  img:"fioletovyj.jpg"},
+  {id:"bel-roz",  name:"Бело-розовый",      type:"default",  img:"belo-rozovyj.jpg"},
+  {id:"mah-yel",  name:"Махровый жёлтый",   type:"mahrovye", img:"mahrovyj-zheltyj.jpg"},
+  {id:"mah-pnk",  name:"Махровый розовый",  type:"mahrovye", img:"mahrovyj-rozovyj.jpg"}
 ];
 
-const grid = document.getElementById('grid');
-grid.innerHTML = products.map(p => `
+/* --- Рендер карточек --- */
+const grid=document.getElementById('grid');
+grid.innerHTML=products.map(p=>`
   <div class="card">
     <img src="${p.img}" alt="${p.name}">
     <div class="body">
@@ -192,68 +205,60 @@ grid.innerHTML = products.map(p => `
       </div>
       <div class="price" data-price-for="${p.id}">99 ₽</div>
       <div class="sub">1 уп. = ${PACK} шт</div>
-      <div class="hint">Введите количество (кратно ${PACK}) и нажмите «В корзину»</div>
+      <div class="hint">Введите количество и нажмите «Добавить в корзину»</div>
       <div style="margin-top:10px">
-        <button class="btn add" data-id="${p.id}">В корзину</button>
+        <button class="btn add" data-id="${p.id}">Добавить в корзину</button>
       </div>
     </div>
   </div>
 `).join('');
 
-/* ---- Вспомогательные ---- */
-function roundToPacks(q){ if(!q) return PACK; q = Math.max(PACK, parseInt(q)||PACK); return Math.ceil(q / PACK)*PACK; }
-function getPrice(type, qty){
-  const set = tiers[type] || tiers.default;
-  for(const t of set){ if(qty >= t.min && qty < t.max) return t.price; }
+/* --- Утилиты --- */
+function roundToPacks(q){ if(!q) return PACK; q=Math.max(PACK,parseInt(q)||PACK); return Math.ceil(q/PACK)*PACK; }
+function getPrice(type,qty){
+  const set=tiers[type]||tiers.default;
+  for(const t of set){ if(qty>=t.min && qty<t.max) return t.price; }
   return set[set.length-1].price;
 }
 
-/* ---- Обновление цен при вводе ---- */
-document.addEventListener('input', (e)=>{
-  const inp = e.target.closest('input.qty');
-  if(!inp) return;
-  // принудительно округляем к кратности 20 на лету
-  inp.value = roundToPacks(inp.value);
-  const priceEl = document.querySelector(`.price[data-price-for="${inp.dataset.id}"]`);
-  const price = getPrice(inp.dataset.type, parseInt(inp.value));
-  priceEl.textContent = price + ' ₽';
+/* --- Обновление цены при вводе --- */
+document.addEventListener('input',e=>{
+  const inp=e.target.closest('input.qty'); if(!inp) return;
+  inp.value=roundToPacks(inp.value);
+  const priceEl=document.querySelector(`.price[data-price-for="${inp.dataset.id}"]`);
+  priceEl.textContent=getPrice(inp.dataset.type,parseInt(inp.value))+' ₽';
 });
 
-/* ---- Кнопки ± по 20 ---- */
-document.addEventListener('click', (e)=>{
-  const btn = e.target.closest('button[data-act]');
-  if(!btn) return;
-  const id = btn.dataset.id;
-  const input = document.querySelector(`input.qty[data-id="${id}"]`);
-  let value = roundToPacks(input.value);
-  if(btn.dataset.act==="inc") value += PACK;
-  if(btn.dataset.act==="dec") value = Math.max(PACK, value - PACK);
-  input.value = value;
-  const priceEl = document.querySelector(`.price[data-price-for="${id}"]`);
-  const price = getPrice(input.dataset.type, value);
-  priceEl.textContent = price + ' ₽';
+/* --- Плюс/минус по 20 --- */
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('button[data-act]'); if(!btn) return;
+  const input=document.querySelector(`input.qty[data-id="${btn.dataset.id}"]`);
+  let val=roundToPacks(input.value);
+  if(btn.dataset.act==='inc') val+=PACK;
+  if(btn.dataset.act==='dec') val=Math.max(PACK,val-PACK);
+  input.value=val;
+  const priceEl=document.querySelector(`.price[data-price-for="${input.dataset.id}"]`);
+  priceEl.textContent=getPrice(input.dataset.type,val)+' ₽';
 });
 
-/* ---- Корзина ---- */
-const cart = new Map();
+/* --- Корзина --- */
+const cart=new Map();
 
 function renderCart(){
-  const empty = document.getElementById('cartEmpty');
-  const wrap = document.getElementById('cartTableWrap');
-  const tbody = document.querySelector('#cartTable tbody');
-  const totalEl = document.getElementById('cartTotal');
+  const empty=document.getElementById('cartEmpty');
+  const wrap=document.getElementById('cartTableWrap');
+  const tbody=document.querySelector('#cartTable tbody');
+  const totalEl=document.getElementById('cartTotal');
   if(cart.size===0){ empty.style.display='block'; wrap.style.display='none'; return; }
   empty.style.display='none'; wrap.style.display='block'; tbody.innerHTML=''; let total=0;
 
   cart.forEach(item=>{
-    const unit = getPrice(item.type,item.qty);
-    const sum  = unit * item.qty;
-    total += sum;
-    const packs = item.qty / PACK;
+    const unit=getPrice(item.type,item.qty);
+    const sum=unit*item.qty; total+=sum; const packs=item.qty/PACK;
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td>${item.name}<div class="sub">Упаковок: ${packs}</div></td>
-      <td>${item.type==='mahrovye'?'Махровые':(item.type==='mix'?'Микс':'Остальные')}</td>
+      <td>${item.type==='mahrovye'?'Махровые':'Обычные'}</td>
       <td>${item.qty} шт<div class="sub">(${packs}×${PACK})</div></td>
       <td>${unit} ₽</td>
       <td>${sum.toLocaleString('ru-RU')} ₽</td>
@@ -261,102 +266,102 @@ function renderCart(){
     tbody.appendChild(tr);
   });
 
-  totalEl.textContent = total.toLocaleString('ru-RU') + ' ₽';
+  totalEl.textContent = total.toLocaleString('ru-RU')+' ₽';
 }
 
-/* ---- Добавление в корзину: округление вверх к 20 ---- */
-document.addEventListener('click', (e)=>{
-  const add = e.target.closest('.add');
-  if(!add) return;
-  const id = add.dataset.id; const p = products.find(x=>x.id===id);
-  const input = document.querySelector(`.qty[data-id="${id}"]`);
-  let qty = roundToPacks(input.value);
-  input.value = qty; // визуально тоже выровняем
-  const prev = cart.get(id) || {id, name:p.name, type:p.type, qty:0};
-  prev.qty += qty; // прибавляем кратно 20
-  cart.set(id, prev);
-  renderCart();
-  location.hash = '#cart';
+/* --- Toast --- */
+const toast=document.getElementById('toast');
+const toastText=document.getElementById('toastText');
+let toastTimer=null;
+function showToast(text){
+  toastText.textContent=text;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('show'), 2500);
+}
+
+/* --- Добавление (без перехода к корзине) --- */
+document.addEventListener('click',e=>{
+  const add=e.target.closest('.add'); if(!add) return;
+  const id=add.dataset.id; const p=products.find(x=>x.id===id);
+  const input=document.querySelector(`.qty[data-id="${id}"]`);
+  let qty=roundToPacks(input.value); input.value=qty;
+  const prev=cart.get(id)||{id,name:p.name,type:p.type,qty:0};
+  prev.qty+=qty; cart.set(id,prev); renderCart();
+  const packs=qty/PACK;
+  showToast(`${p.name} — ${qty} шт (${packs} уп.)`);
 });
 
-/* ---- Удаление и очистка ---- */
-document.getElementById('cartBox').addEventListener('click',(e)=>{
-  const del = e.target.closest('[data-act="del"]');
+/* --- Удаление/очистка --- */
+document.getElementById('cartBox').addEventListener('click',e=>{
+  const del=e.target.closest('[data-act="del"]');
   if(del){ e.preventDefault(); cart.delete(del.dataset.id); renderCart(); }
 });
-document.getElementById('clearCart').addEventListener('click',()=>{cart.clear();renderCart();});
+document.getElementById('clearCart').addEventListener('click',()=>{ cart.clear(); renderCart(); });
 
-/* ---- ФИО/Телефон: маска + автосохранение ---- */
-const fioInput = document.getElementById('fio');
-const phoneInput = document.getElementById('phone');
-
+/* --- ФИО/Телефон: маска + автосохранение --- */
+const fioInput=document.getElementById('fio'), phoneInput=document.getElementById('phone');
 function formatPhone(value){
-  let d = value.replace(/\D/g,'');
-  if(d.startsWith('8')) d = '7' + d.slice(1);
-  if(!d.startsWith('7')) d = '7' + d;
-  d = d.slice(0,11);
-  let res = '+7';
-  if(d.length>1) res += ' (' + d.slice(1,4);
-  if(d.length>=4) res += ') ' + d.slice(4,7);
-  if(d.length>=7) res += '-' + d.slice(7,9);
-  if(d.length>=9) res += '-' + d.slice(9,11);
+  let d=value.replace(/\D/g,'');
+  if(d.startsWith('8')) d='7'+d.slice(1);
+  if(!d.startsWith('7')) d='7'+d;
+  d=d.slice(0,11);
+  let res='+7';
+  if(d.length>1) res+=' ('+d.slice(1,4);
+  if(d.length>=4) res+=') '+d.slice(4,7);
+  if(d.length>=7) res+='-'+d.slice(7,9);
+  if(d.length>=9) res+='-'+d.slice(9,11);
   return res;
 }
 function saveField(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function loadField(k){try{return localStorage.getItem(k)||'';}catch(e){return'';}}
 
-phoneInput.addEventListener('input', ()=>{
-  phoneInput.value = formatPhone(phoneInput.value);
-  saveField('t03_phone', phoneInput.value);
-  phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+phoneInput.addEventListener('input',()=>{
+  phoneInput.value=formatPhone(phoneInput.value);
+  saveField('t03_phone',phoneInput.value);
+  phoneInput.setSelectionRange(phoneInput.value.length,phoneInput.value.length);
 });
-fioInput.addEventListener('input', ()=> saveField('t03_fio', fioInput.value) );
-
+fioInput.addEventListener('input',()=>saveField('t03_fio',fioInput.value));
 (function preload(){
-  const savedFio = loadField('t03_fio');
-  const savedPhone = loadField('t03_phone');
-  if(savedFio) fioInput.value = savedFio;
-  if(savedPhone) phoneInput.value = savedPhone;
+  const sf=loadField('t03_fio'); const sp=loadField('t03_phone');
+  if(sf) fioInput.value=sf; if(sp) phoneInput.value=sp;
 })();
 
-/* ---- Сообщение и проверка ---- */
-function buildMessage(){
-  const fio = fioInput.value.trim();
-  const digits = phoneInput.value.replace(/\D/g,'');
-  if(!fio){ alert('Введите фамилию, имя и отчество'); return null; }
-  if(digits.length!==11 || !(digits.startsWith('7') || digits.startsWith('8'))){
-    alert('Телефон должен быть российским: +7 (9XX) XXX-XX-XX');
-    return null;
-  }
-  const lines=[];
-  let totalPacks = 0;
-  cart.forEach(i=>{
-    const price=getPrice(i.type,i.qty);
-    const packs=i.qty/ PACK; totalPacks+=packs;
-    lines.push(`${i.name}: ${i.qty} шт (${packs} уп. × ${PACK}) × ${price} ₽ = ${(i.qty*price).toLocaleString('ru-RU')} ₽`);
-  });
-  const total=document.getElementById('cartTotal').textContent;
-  const norm = (digits.startsWith('8') ? '7'+digits.slice(1) : digits);
+/* --- Сообщение и отправка --- */
+function buildMsg(){
+  const fio=fioInput.value.trim();
+  const digits=phoneInput.value.replace(/\D/g,'');
+  if(!fio){ alert('Введите ФИО'); return null; }
+  if(digits.length!==11){ alert('Неверный телефон'); return null; }
+  const norm = digits.startsWith('8') ? '7'+digits.slice(1) : (digits.startsWith('7') ? digits : '7'+digits.slice(-10));
   const pretty = formatPhone('+'+norm);
+
+  let lines=[], totalPacks=0;
+  cart.forEach(i=>{
+    const pr=getPrice(i.type,i.qty);
+    const pk=i.qty/PACK; totalPacks+=pk;
+    lines.push(`${i.name}: ${i.qty} шт (${pk} уп. × ${PACK}) × ${pr} ₽ = ${(i.qty*pr).toLocaleString('ru-RU')} ₽`);
+  });
+  const tot=document.getElementById('cartTotal').textContent;
 
   return (
     `Новый заказ с тюльпан03.рф%0A%0A` +
     lines.join('%0A') +
-    `%0A%0AИтого: ${total}%0AВсего упаковок: ${totalPacks}%0A%0AФИО: ${encodeURIComponent(fio)}%0AТелефон: ${encodeURIComponent(pretty)}`
+    `%0A%0AИтого: ${tot}%0AВсего упаковок: ${totalPacks}%0A%0A` +
+    `ФИО: ${encodeURIComponent(fio)}%0AТелефон: ${encodeURIComponent(pretty)}`
   );
 }
 
-/* ---- Кнопки отправки ---- */
-document.getElementById('waCheckout').addEventListener('click',(e)=>{
-  const msg=buildMessage(); if(!msg){e.preventDefault();return;}
+document.getElementById('waCheckout').addEventListener('click',e=>{
+  const msg=buildMsg(); if(!msg){e.preventDefault();return;}
   e.target.href=`https://wa.me/${WA_PHONE}?text=${msg}`;
 });
-document.getElementById('tgCheckout').addEventListener('click',(e)=>{
-  const msg=buildMessage(); if(!msg){e.preventDefault();return;}
+document.getElementById('tgCheckout').addEventListener('click',e=>{
+  const msg=buildMsg(); if(!msg){e.preventDefault();return;}
   e.target.href=`https://t.me/${TG_USERNAME}?text=${msg}`;
 });
 
-/* ---- Старт ---- */
+/* --- Старт --- */
 renderCart();
 </script>
 
