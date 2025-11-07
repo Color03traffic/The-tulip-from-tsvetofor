@@ -54,7 +54,7 @@
     .toast{position:fixed;right:16px;bottom:16px;background:#111;color:#fff;padding:12px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;z-index:9999;font-size:14px;line-height:1.35}
     .toast.show{opacity:1;transform:translateY(0)}
 
-    /* Мобильные правки интерфейса корзины */
+    /* Мобильные правки */
     @media (max-width: 640px){
       .qty-ctrl input.qty{width:70px}
       th,td{padding:8px}
@@ -132,8 +132,9 @@
 <script>
 const PACK=20;
 const WA_PHONE="79148416115";
+const TG_USERNAME="tulpan03";
 
-/* Пороги */
+/* Пороги (гладкие/махровые) */
 const tiersDefault=[
   {min:20,max:500,price:99},
   {min:500,max:1000,price:88},
@@ -201,15 +202,8 @@ const cart=new Map();
 /* Утилиты */
 function roundToPacks(q){q=parseInt(q)||PACK;return Math.max(PACK,Math.ceil(q/PACK)*PACK);}
 function totalQtyCart(){let t=0;cart.forEach(i=>t+=i.qty);return t;}
-function findTierIndex(total){
-  const base=tiersDefault;
-  for(let i=0;i<base.length;i++){ if(total>=base[i].min && total<=base[i].max) return i; }
-  return base.length-1;
-}
-function getUnitPriceByType(type,totalQty){
-  const idx=findTierIndex(Math.max(totalQty,PACK));
-  return (type==='mahrovye'?tiersMahrovye[idx].price:tiersDefault[idx].price);
-}
+function findTierIndex(total){const base=tiersDefault;for(let i=0;i<base.length;i++){if(total>=base[i].min && total<=base[i].max) return i;}return base.length-1;}
+function getUnitPriceByType(type,totalQty){const idx=findTierIndex(Math.max(totalQty,PACK));return (type==='mahrovye'?tiersMahrovye[idx].price:tiersDefault[idx].price);}
 function money(n){return Math.round(n).toLocaleString('ru-RU')+' ₽';}
 
 /* Тост */
@@ -303,7 +297,7 @@ document.getElementById('cartBox').addEventListener('input',e=>{
 });
 document.getElementById('clearCart').addEventListener('click',()=>{ cart.clear(); renderCart(); });
 
-/* Формируем один текст и кодируем его только при вставке в ссылку */
+/* Формируем текст заказа */
 function formatPhoneHuman(raw){
   let d=raw.replace(/\D/g,'');
   if(d.startsWith('8')) d='7'+d.slice(1);
@@ -316,7 +310,6 @@ function formatPhoneHuman(raw){
   if(d.length>=9) res+='-'+d.slice(9,11);
   return res;
 }
-
 function buildPlainText(){
   if(cart.size===0){ alert('Корзина пуста'); return null; }
   const fio=document.getElementById('fio').value.trim();
@@ -351,32 +344,31 @@ document.getElementById('waCheckout').addEventListener('click',e=>{
   e.currentTarget.href=`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`;
 });
 
-/* Telegram — сначала открываем приложение (deeplink),
-   если не удалось — авто-фолбэк на веб-шеринг. */
+/* Telegram — открываем сразу диалог с @username; фолбэк в веб при неудаче */
 document.getElementById('tgCheckout').addEventListener('click', (e)=>{
   const text = buildPlainText(); 
   if(!text){ e.preventDefault(); return; }
 
-  const deeplink = 'tg://msg?text=' + encodeURIComponent(text);
-  const webshare = 'https://t.me/share/url?text=' + encodeURIComponent(text);
+  const deeplink = `tg://resolve?domain=${encodeURIComponent(TG_USERNAME)}&text=${encodeURIComponent(text)}`;
+  const webshare = `https://t.me/${encodeURIComponent(TG_USERNAME)}?text=${encodeURIComponent(text)}`;
 
   e.preventDefault();
 
-  // Пробуем открыть приложение (даст системный диалог «Открыть в Telegram?»)
+  // Пробуем открыть приложение (системный диалог «Открыть в Telegram?»)
   const iframe = document.createElement('iframe');
   iframe.style.display = 'none';
   iframe.src = deeplink;
   document.body.appendChild(iframe);
   setTimeout(()=>{ window.location.href = deeplink; }, 50);
 
-  // Фолбэк через 800мс, если вкладка осталась видимой (значит приложение не открылось)
+  // Фолбэк: если вкладка видима через 800 мс — открываем веб-страницу профиля с текстом
   const timer = setTimeout(()=>{
     if (document.visibilityState === 'visible') {
       window.open(webshare, '_blank', 'noopener');
     }
   }, 800);
 
-  // Если пользователь ушёл в приложение — отменяем фолбэк
+  // Если пользователь ушёл в Telegram — отменяем фолбэк
   const onVis = () => {
     if (document.visibilityState === 'hidden') {
       clearTimeout(timer);
