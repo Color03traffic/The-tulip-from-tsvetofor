@@ -351,11 +351,39 @@ document.getElementById('waCheckout').addEventListener('click',e=>{
   e.currentTarget.href=`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`;
 });
 
-/* Telegram — упрощённая надёжная схема */
-document.getElementById('tgCheckout').addEventListener('click',e=>{
-  const text=buildPlainText(); if(!text){e.preventDefault();return;}
-  e.currentTarget.href=`https://t.me/share/url?text=${encodeURIComponent(text)}`;
-  // Ничего не предотвращаем: пусть браузер откроет ссылку как обычно
+/* Telegram — сначала открываем приложение (deeplink),
+   если не удалось — авто-фолбэк на веб-шеринг. */
+document.getElementById('tgCheckout').addEventListener('click', (e)=>{
+  const text = buildPlainText(); 
+  if(!text){ e.preventDefault(); return; }
+
+  const deeplink = 'tg://msg?text=' + encodeURIComponent(text);
+  const webshare = 'https://t.me/share/url?text=' + encodeURIComponent(text);
+
+  e.preventDefault();
+
+  // Пробуем открыть приложение (даст системный диалог «Открыть в Telegram?»)
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = deeplink;
+  document.body.appendChild(iframe);
+  setTimeout(()=>{ window.location.href = deeplink; }, 50);
+
+  // Фолбэк через 800мс, если вкладка осталась видимой (значит приложение не открылось)
+  const timer = setTimeout(()=>{
+    if (document.visibilityState === 'visible') {
+      window.open(webshare, '_blank', 'noopener');
+    }
+  }, 800);
+
+  // Если пользователь ушёл в приложение — отменяем фолбэк
+  const onVis = () => {
+    if (document.visibilityState === 'hidden') {
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', onVis);
+    }
+  };
+  document.addEventListener('visibilitychange', onVis);
 });
 
 /* Инициализация */
