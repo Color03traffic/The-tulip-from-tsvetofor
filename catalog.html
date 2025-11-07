@@ -54,7 +54,6 @@
     .toast{position:fixed;right:16px;bottom:16px;background:#111;color:#fff;padding:12px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;z-index:9999;font-size:14px;line-height:1.35}
     .toast.show{opacity:1;transform:translateY(0)}
 
-    /* Мобильные правки */
     @media (max-width: 640px){
       .qty-ctrl input.qty{width:70px}
       th,td{padding:8px}
@@ -134,47 +133,35 @@ const PACK=20;
 const WA_PHONE="79148416115";
 const TG_USERNAME="tulpan03";
 
-/* Пороги (гладкие/махровые) */
+/* Пороги */
 const tiersDefault=[
-  {min:20,max:500,price:99},
-  {min:500,max:1000,price:88},
-  {min:1000,max:2000,price:80},
-  {min:2000,max:3000,price:79},
-  {min:3000,max:5000,price:78},
-  {min:5000,max:10000,price:77},
-  {min:15000,max:50000,price:76},
-  {min:50000,max:100000,price:75}
+  {min:20,max:500,price:99},{min:500,max:1000,price:88},{min:1000,max:2000,price:80},{min:2000,max:3000,price:79},
+  {min:3000,max:5000,price:78},{min:5000,max:10000,price:77},{min:15000,max:50000,price:76},{min:50000,max:100000,price:75}
 ];
 const tiersMahrovye=[
-  {min:20,max:500,price:109},
-  {min:500,max:1000,price:98},
-  {min:1000,max:2000,price:90},
-  {min:2000,max:3000,price:89},
-  {min:3000,max:5000,price:88},
-  {min:5000,max:10000,price:87},
-  {min:15000,max:50000,price:86},
-  {min:50000,max:100000,price:85}
+  {min:20,max:500,price:109},{min:500,max:1000,price:98},{min:1000,max:2000,price:90},{min:2000,max:3000,price:89},
+  {min:3000,max:5000,price:88},{min:5000,max:10000,price:87},{min:15000,max:50000,price:86},{min:50000,max:100000,price:85}
 ];
 
 /* Товары */
 const products=[
-  {id:"pink",          name:"Розовый",           type:"default",  img:"pink.jpg"},
-  {id:"yellow",        name:"Жёлтый",            type:"default",  img:"yellow.jpg"},
-  {id:"red",           name:"Красный",           type:"default",  img:"red.jpg"},
-  {id:"white",         name:"Белый",             type:"default",  img:"white.jpg"},
-  {id:"cream",         name:"Кремовый",          type:"default",  img:"cream.jpg"},
-  {id:"roseviolet",    name:"Розово-сиреневый",  type:"default",  img:"roseviolet.jpg"},
-  {id:"whiteviolet",   name:"Бело-сиреневый",    type:"default",  img:"whiteviolet.jpg"},
-  {id:"orange",        name:"Оранжевый",         type:"default",  img:"orange.jpg"},
-  {id:"redyellow",     name:"Красно-жёлтый",     type:"default",  img:"redyellow.jpg"},
-  {id:"redwhite",      name:"Красно-белый",      type:"default",  img:"redwhite.jpg"},
-  {id:"violet",        name:"Фиолетовый",        type:"default",  img:"violet.jpg"},
-  {id:"whitepink",     name:"Бело-розовый",      type:"default",  img:"whitepink.jpg"},
-  {id:"mahrovy-yellow",name:"Махровый жёлтый",   type:"mahrovye", img:"mahrovy-yellow.jpg"},
-  {id:"mahrovy-roz",   name:"Махровый розовый",  type:"mahrovye", img:"mahrovy-rozovyj.jpg"}
+  {id:"pink",name:"Розовый",type:"default",img:"pink.jpg"},
+  {id:"yellow",name:"Жёлтый",type:"default",img:"yellow.jpg"},
+  {id:"red",name:"Красный",type:"default",img:"red.jpg"},
+  {id:"white",name:"Белый",type:"default",img:"white.jpg"},
+  {id:"cream",name:"Кремовый",type:"default",img:"cream.jpg"},
+  {id:"roseviolet",name:"Розово-сиреневый",type:"default",img:"roseviolet.jpg"},
+  {id:"whiteviolet",name:"Бело-сиреневый",type:"default",img:"whiteviolet.jpg"},
+  {id:"orange",name:"Оранжевый",type:"default",img:"orange.jpg"},
+  {id:"redyellow",name:"Красно-жёлтый",type:"default",img:"redyellow.jpg"},
+  {id:"redwhite",name:"Красно-белый",type:"default",img:"redwhite.jpg"},
+  {id:"violet",name:"Фиолетовый",type:"default",img:"violet.jpg"},
+  {id:"whitepink",name:"Бело-розовый",type:"default",img:"whitepink.jpg"},
+  {id:"mahrovy-yellow",name:"Махровый жёлтый",type:"mahrovye",img:"mahrovy-yellow.jpg"},
+  {id:"mahrovy-roz",name:"Махровый розовый",type:"mahrovye",img:"mahrovy-rozovyj.jpg"}
 ];
 
-/* Рендер карточек */
+/* Рендер карточек (цена на карточке фиксирована как «от 75 ₽») */
 const grid=document.getElementById('grid');
 grid.innerHTML=products.map(p=>`
   <div class="card">
@@ -190,50 +177,49 @@ grid.innerHTML=products.map(p=>`
         <button data-act="inc" data-id="${p.id}">+</button>
       </div>
 
-      <div class="price" id="price-${p.id}">— ₽</div>
+      <div class="price">от 75 ₽</div>
       <div><button class="btn add" data-id="${p.id}">Добавить в корзину</button></div>
     </div>
   </div>
 `).join('');
 
-/* Корзина */
+/* Корзина и логика цен — без изменений */
 const cart=new Map();
 
-/* Утилиты */
 function roundToPacks(q){q=parseInt(q)||PACK;return Math.max(PACK,Math.ceil(q/PACK)*PACK);}
 function totalQtyCart(){let t=0;cart.forEach(i=>t+=i.qty);return t;}
-function findTierIndex(total){const base=tiersDefault;for(let i=0;i<base.length;i++){if(total>=base[i].min && total<=base[i].max) return i;}return base.length-1;}
-function getUnitPriceByType(type,totalQty){const idx=findTierIndex(Math.max(totalQty,PACK));return (type==='mahrovye'?tiersMahrovye[idx].price:tiersDefault[idx].price);}
+function findTierIndex(total){const b=tiersDefault;for(let i=0;i<b.length;i++){if(total>=b[i].min&&total<=b[i].max)return i;}return b.length-1;}
+function getUnitPriceByType(t,total){const i=findTierIndex(Math.max(total,PACK));return(t==='mahrovye'?tiersMahrovye[i].price:tiersDefault[i].price);}
 function money(n){return Math.round(n).toLocaleString('ru-RU')+' ₽';}
 
 /* Тост */
-const toast=document.getElementById('toast'); let toastTimer=null;
-function showToast(text){toast.textContent=text;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2200);}
+const toast=document.getElementById('toast');let toastTimer=null;
+function showToast(t){toast.textContent=t;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2200);}
 
 /* Qty на карточках */
 document.addEventListener('click',e=>{
-  const btn=e.target.closest('button[data-act]'); if(!btn) return;
-  const id=btn.dataset.id, inp=document.getElementById(`qty-${id}`);
-  let val=roundToPacks(inp.value);
-  if(btn.dataset.act==='inc') val+=PACK; else val=Math.max(PACK,val-PACK);
-  inp.value=val;
+  const b=e.target.closest('button[data-act]'); if(!b) return;
+  const id=b.dataset.id, inp=document.getElementById(`qty-${id}`);
+  let v=roundToPacks(inp.value);
+  if(b.dataset.act==='inc') v+=PACK; else v=Math.max(PACK,v-PACK);
+  inp.value=v;
 });
 document.addEventListener('input',e=>{
-  const inp=e.target.closest('input.qty'); if(!inp) return;
-  inp.value=roundToPacks(inp.value);
+  const i=e.target.closest('input.qty'); if(!i) return;
+  i.value=roundToPacks(i.value);
 });
 
 /* Добавление в корзину */
 document.addEventListener('click',e=>{
-  const add=e.target.closest('.add'); if(!add) return;
-  const id=add.dataset.id, p=products.find(x=>x.id===id);
+  const a=e.target.closest('.add'); if(!a) return;
+  const id=a.dataset.id, p=products.find(x=>x.id===id);
   const q=roundToPacks(document.getElementById(`qty-${id}`).value);
   const prev=cart.get(id)||{id,name:p.name,type:p.type,qty:0};
   prev.qty+=q; cart.set(id,prev);
   renderCart(); showToast(`${p.name} — добавлено ${q} шт`);
 });
 
-/* Рендер корзины */
+/* Рендер корзины (реальные цены считаются как раньше) */
 function renderCart(){
   const empty=document.getElementById('cartEmpty');
   const wrap=document.getElementById('cartTableWrap');
@@ -245,35 +231,35 @@ function renderCart(){
 
   const totalQty=totalQtyCart(); let grand=0;
 
-  cart.forEach(item=>{
-    const unit=getUnitPriceByType(item.type,totalQty);
-    const sum=unit*item.qty; grand+=sum;
+  cart.forEach(it=>{
+    const unit=getUnitPriceByType(it.type,totalQty);
+    const sum=unit*it.qty; grand+=sum;
 
-    const tr=document.createElement('tr'); tr.dataset.id=item.id;
+    const tr=document.createElement('tr'); tr.dataset.id=it.id;
     tr.innerHTML=`
-      <td>${item.name}<div class="sub">${item.type==='mahrovye'?'Махровые':'Гладкие'}</div></td>
+      <td>${it.name}<div class="sub">${it.type==='mahrovye'?'Махровые':'Гладкие'}</div></td>
       <td>
         <div class="qty-ctrl">
-          <button data-cart-act="dec" data-id="${item.id}">−</button>
-          <input type="number" class="qty cart-qty" data-id="${item.id}" min="${PACK}" step="${PACK}" value="${item.qty}">
-          <button data-cart-act="inc" data-id="${item.id}">+</button>
+          <button data-cart-act="dec" data-id="${it.id}">−</button>
+          <input type="number" class="qty cart-qty" data-id="${it.id}" min="${PACK}" step="${PACK}" value="${it.qty}">
+          <button data-cart-act="inc" data-id="${it.id}">+</button>
         </div>
-        <div class="sub">упаковок: ${item.qty/PACK} × ${PACK}</div>
+        <div class="sub">упаковок: ${it.qty/PACK} × ${PACK}</div>
       </td>
       <td data-cell="unit">${unit} ₽</td>
       <td data-cell="sum">${money(sum)}</td>
-      <td><a href="#" data-act="del" data-id="${item.id}">Удалить</a></td>
+      <td><a href="#" data-act="del" data-id="${it.id}">Удалить</a></td>
     `;
     tbody.appendChild(tr);
   });
 
-  // Пересчёт строк на случай смены порога
+  // Пересчёт строк при смене порога
   tbody.querySelectorAll('tr').forEach(tr=>{
     const id=tr.dataset.id; const it=cart.get(id); if(!it) return;
-    const unit=getUnitPriceByType(it.type,totalQty);
-    const sum=unit*it.qty;
-    tr.querySelector('[data-cell="unit"]').textContent=unit+' ₽';
-    tr.querySelector('[data-cell="sum"]').textContent=money(sum);
+    const u=getUnitPriceByType(it.type,totalQty);
+    const s=u*it.qty;
+    tr.querySelector('[data-cell="unit"]').textContent=u+' ₽';
+    tr.querySelector('[data-cell="sum"]').textContent=money(s);
   });
 
   totalEl.textContent=money(grand);
@@ -283,9 +269,9 @@ function renderCart(){
 document.getElementById('cartBox').addEventListener('click',e=>{
   const del=e.target.closest('[data-act="del"]');
   if(del){ e.preventDefault(); cart.delete(del.dataset.id); renderCart(); return; }
-  const btn=e.target.closest('button[data-cart-act]'); if(btn){
-    const id=btn.dataset.id, it=cart.get(id); if(!it) return;
-    if(btn.dataset.cartAct==='inc') it.qty+=PACK; else it.qty=Math.max(PACK,it.qty-PACK);
+  const b=e.target.closest('button[data-cart-act]'); if(b){
+    const id=b.dataset.id, it=cart.get(id); if(!it) return;
+    if(b.dataset.cartAct==='inc') it.qty+=PACK; else it.qty=Math.max(PACK,it.qty-PACK);
     cart.set(id,it); renderCart();
   }
 });
@@ -297,9 +283,9 @@ document.getElementById('cartBox').addEventListener('input',e=>{
 });
 document.getElementById('clearCart').addEventListener('click',()=>{ cart.clear(); renderCart(); });
 
-/* Формируем текст заказа */
-function formatPhoneHuman(raw){
-  let d=raw.replace(/\D/g,'');
+/* Формирование текста заказа */
+function formatPhoneHuman(r){
+  let d=r.replace(/\D/g,'');
   if(d.startsWith('8')) d='7'+d.slice(1);
   if(!d.startsWith('7')) d='7'+d;
   d=d.slice(0,11);
@@ -323,13 +309,13 @@ function buildPlainText(){
   let totalSum=0, packs=0;
 
   cart.forEach(it=>{
-    const unit=getUnitPriceByType(it.type,totalQty);
-    const sum=unit*it.qty; totalSum+=sum; packs+=it.qty/PACK;
-    lines.push(`${it.name}: ${it.qty} шт (${it.qty/PACK} уп.) × ${unit} ₽ = ${sum.toLocaleString('ru-RU')} ₽`);
+    const u=getUnitPriceByType(it.type,totalQty);
+    const s=u*it.qty; totalSum+=s; packs+=it.qty/PACK;
+    lines.push(`${it.name}: ${it.qty} шт (${it.qty/PACK} уп.) × ${u} ₽ = ${s.toLocaleString('ru-RU')} ₽`);
   });
 
-  const header = `Новый заказ с tulpan03.рф`;
-  const footer = `Итого: ${totalSum.toLocaleString('ru-RU')} ₽
+  const header=`Новый заказ с tulpan03.рф`;
+  const footer=`Итого: ${totalSum.toLocaleString('ru-RU')} ₽
 Всего упаковок: ${packs}
 
 ФИО: ${fio}
@@ -344,7 +330,7 @@ document.getElementById('waCheckout').addEventListener('click',e=>{
   e.currentTarget.href=`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`;
 });
 
-/* Telegram — открываем сразу диалог с @username; фолбэк в веб при неудаче */
+/* Telegram — открываем диалог с @username, при неудаче — веб-страница username */
 document.getElementById('tgCheckout').addEventListener('click', (e)=>{
   const text = buildPlainText(); 
   if(!text){ e.preventDefault(); return; }
@@ -354,21 +340,20 @@ document.getElementById('tgCheckout').addEventListener('click', (e)=>{
 
   e.preventDefault();
 
-  // Пробуем открыть приложение (системный диалог «Открыть в Telegram?»)
+  // Пытаемся открыть приложение (системный диалог «Открыть в Telegram?»)
   const iframe = document.createElement('iframe');
   iframe.style.display = 'none';
   iframe.src = deeplink;
   document.body.appendChild(iframe);
   setTimeout(()=>{ window.location.href = deeplink; }, 50);
 
-  // Фолбэк: если вкладка видима через 800 мс — открываем веб-страницу профиля с текстом
+  // Фолбэк через 800мс, если вкладка осталась видимой
   const timer = setTimeout(()=>{
     if (document.visibilityState === 'visible') {
       window.open(webshare, '_blank', 'noopener');
     }
   }, 800);
 
-  // Если пользователь ушёл в Telegram — отменяем фолбэк
   const onVis = () => {
     if (document.visibilityState === 'hidden') {
       clearTimeout(timer);
@@ -379,14 +364,6 @@ document.getElementById('tgCheckout').addEventListener('click', (e)=>{
 });
 
 /* Инициализация */
-function initCardPrices(){
-  const total=totalQtyCart();
-  products.forEach(p=>{
-    const el=document.getElementById(`price-${p.id}`);
-    if(el){ el.textContent=getUnitPriceByType(p.type,total)+' ₽'; }
-  });
-}
-initCardPrices();
 renderCart();
 </script>
 
