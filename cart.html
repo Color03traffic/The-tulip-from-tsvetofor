@@ -180,7 +180,7 @@
   const CART_KEY = 'cart';
   const PACK = 20;
 
-  // градация гладкие+микс
+  // Градация гладкие + микс
   const tiersSmooth = [
     {min:20,   max:500,    price:99},
     {min:500,  max:1000,   price:88},
@@ -192,7 +192,7 @@
     {min:50000,max:1000000,price:75}
   ];
 
-  // градация махровые
+  // Градация махровые
   const tiersTerry = [
     {min:20,   max:500,    price:109},
     {min:500,  max:1000,   price:98},
@@ -211,86 +211,102 @@
     return tiers[tiers.length-1].price;
   }
 
+  // читаем корзину ВСЕГДА как МАССИВ
   function getCart(){
     const raw = localStorage.getItem(CART_KEY);
-    if (!raw) return {};
+    if (!raw) return [];
+
     try{
       const parsed = JSON.parse(raw);
-      // ожидаем объект {id: {id,name,type,qty}}
-      return parsed && typeof parsed === 'object' ? parsed : {};
+      if (Array.isArray(parsed)) return parsed;
+      // если вдруг объект — берём values, чтобы ничего не потерять
+      return Object.values(parsed);
     }catch(e){
-      return {};
+      return [];
     }
   }
 
-  function saveCart(cart){
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  function saveCart(items){
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
   }
 
   function format(num){return num.toLocaleString('ru-RU');}
 
+  function getType(item){
+    if (item.type) return item.type; // smooth / mix / terry
+    const n = (item.name || item.title || '').toLowerCase();
+    if (n.includes('махров')) return 'terry';
+    if (n.includes('микс')) return 'mix';
+    return 'smooth';
+  }
+
   function loadCart(){
-    const cart = getCart();
+    const items = getCart();
     const tbody = document.querySelector('#cartTable tbody');
     const empty = document.getElementById('cartEmpty');
     const totalEl = document.getElementById('totalPrice');
 
     tbody.innerHTML = '';
 
-    let hasItems = false;
-    let total = 0;
-
-    // сначала считаем общие количества для градации
-    let smoothTotal = 0;
-    let terryTotal  = 0;
-
-    for (const id in cart){
-      const item = cart[id];
-      if (!item || !item.qty) continue;
-      hasItems = true;
-      if (item.type === 'terry') terryTotal += item.qty;
-      else smoothTotal += item.qty; // гладкие + микс
+    if (!items.length){
+      empty.style.display = 'block';
+      totalEl.textContent = '0 ₽';
+      return;
+    } else {
+      empty.style.display = 'none';
     }
 
-    const priceSmooth = getPriceByTiers(tiersSmooth, smoothTotal);
-    const priceTerry  = getPriceByTiers(tiersTerry, terryTotal);
+    // считаем общие количества для градации
+    let smoothTotal = 0;
+    let terryTotal = 0;
 
-    // теперь рендерим строки
-    for (const id in cart){
-      const item = cart[id];
-      if (!item || !item.qty) continue;
+    items.forEach(item => {
+      const qty = parseInt(item.qty) || 0;
+      const type = getType(item);
+      if (type === 'terry') terryTotal += qty;
+      else smoothTotal += qty; // гладкие + микс
+    });
 
-      const unitPrice = (item.type === 'terry') ? priceTerry : priceSmooth;
-      const sum = unitPrice * item.qty;
+    const smoothPrice = getPriceByTiers(tiersSmooth, smoothTotal);
+    const terryPrice  = getPriceByTiers(tiersTerry, terryTotal);
+
+    let total = 0;
+
+    items.forEach((item, index) => {
+      const qty = parseInt(item.qty) || 0;
+      if (!qty) return;
+
+      const type = getType(item);
+      const unitPrice = (type === 'terry') ? terryPrice : smoothPrice;
+      const sum = unitPrice * qty;
       total += sum;
+
+      const typeLabel =
+        type === 'terry' ? 'Махровый' :
+        type === 'mix'   ? 'Микс' :
+                           'Гладкий';
 
       tbody.insertAdjacentHTML('beforeend', `
         <tr>
-          <td>${item.name}</td>
-          <td>${item.type === 'terry' ? 'Махровый' : (item.type === 'mix' ? 'Микс' : 'Гладкий')}</td>
+          <td>${item.name || item.title || 'Тюльпан'}</td>
+          <td>${typeLabel}</td>
           <td>
             <input
               type="number"
               class="qty"
               min="20"
               step="20"
-              value="${item.qty}"
+              value="${qty}"
               oninput="highlightInvalid(this)"
-              onblur="updateQty('${id}', this)"
+              onblur="updateQty(${index}, this)"
             >
           </td>
           <td>${format(unitPrice)} ₽</td>
           <td>${format(sum)} ₽</td>
-          <td><a href="#" onclick="removeItem('${id}');return false;">Удалить</a></td>
+          <td><a href="#" onclick="removeItem(${index});return false;">Удалить</a></td>
         </tr>
       `);
-    }
-
-    if (!hasItems){
-      empty.style.display = 'block';
-    } else {
-      empty.style.display = 'none';
-    }
+    });
 
     totalEl.textContent = format(total) + ' ₽';
   }
@@ -304,11 +320,10 @@
     }
   }
 
-  function updateQty(id, input){
+  function updateQty(index, input){
     let q = parseInt(input.value);
 
     if (!q || q < PACK) q = PACK;
-
     if (q % PACK !== 0){
       q = Math.round(q / PACK) * PACK;
     }
@@ -317,19 +332,19 @@
     input.value = q;
     input.classList.remove('invalid');
 
-    const cart = getCart();
-    if (cart[id]){
-      cart[id].qty = q;
-      saveCart(cart);
+    const items = getCart();
+    if (items[index]){
+      items[index].qty = q;
+      saveCart(items);
     }
 
     loadCart();
   }
 
-  function removeItem(id){
-    const cart = getCart();
-    delete cart[id];
-    saveCart(cart);
+  function removeItem(index){
+    const items = getCart();
+    items.splice(index, 1);
+    saveCart(items);
     loadCart();
   }
 
@@ -339,40 +354,44 @@
   }
 
   function buildMessage(){
-    const cart = getCart();
+    const items = getCart();
+    if (!items.length) return '';
+
     let text = 'Заказ тюльпанов:\n';
-    let total = 0;
 
     let smoothTotal = 0;
     let terryTotal  = 0;
 
-    for (const id in cart){
-      const item = cart[id];
-      if (!item || !item.qty) continue;
-      if (item.type === 'terry') terryTotal += item.qty;
-      else smoothTotal += item.qty;
-    }
+    items.forEach(item => {
+      const qty = parseInt(item.qty) || 0;
+      const type = getType(item);
+      if (type === 'terry') terryTotal += qty;
+      else smoothTotal += qty;
+    });
 
-    const priceSmooth = getPriceByTiers(tiersSmooth, smoothTotal);
-    const priceTerry  = getPriceByTiers(tiersTerry, terryTotal);
+    const smoothPrice = getPriceByTiers(tiersSmooth, smoothTotal);
+    const terryPrice  = getPriceByTiers(tiersTerry, terryTotal);
 
-    for (const id in cart){
-      const item = cart[id];
-      if (!item || !item.qty) continue;
+    let total = 0;
 
-      const unitPrice = (item.type === 'terry') ? priceTerry : priceSmooth;
-      const sum = unitPrice * item.qty;
+    items.forEach(item => {
+      const qty = parseInt(item.qty) || 0;
+      if (!qty) return;
+      const type = getType(item);
+      const unitPrice = (type === 'terry') ? terryPrice : smoothPrice;
+      const sum = unitPrice * qty;
       total += sum;
-      text += `${item.name} — ${item.qty} шт × ${unitPrice} ₽ = ${sum} ₽\n`;
-    }
+
+      text += `${item.name || item.title || 'Тюльпан'} — ${qty} шт × ${unitPrice} ₽ = ${sum} ₽\n`;
+    });
 
     text += `\nИтого: ${total} ₽`;
     return text;
   }
 
   function sendWhatsApp(){
-    const cart = getCart();
-    if (!Object.keys(cart).length){
+    const items = getCart();
+    if (!items.length){
       alert('Корзина пуста');
       return;
     }
@@ -382,8 +401,8 @@
   }
 
   function sendTelegram(){
-    const cart = getCart();
-    if (!Object.keys(cart).length){
+    const items = getCart();
+    if (!items.length){
       alert('Корзина пуста');
       return;
     }
