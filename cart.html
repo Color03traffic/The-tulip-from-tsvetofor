@@ -1,417 +1,237 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Корзина — Тюльпан03</title>
+
   <style>
     :root{
-      --bg:#f7c1d9;
-      --card:#ffffff;
-      --text:#111;
+      --bg:#f7b3d0; /* мягкий розовый фон */
+      --white:#ffffff;
+      --text:#222;
       --muted:#666;
-      --brand:#E33478;
-      --radius:16px;
-      --stroke:#e5e7eb;
+      --brand:#e33474;
+      --radius:18px;
     }
 
     *{box-sizing:border-box;}
-
     body{
       margin:0;
-      font-family:system-ui,-apple-system,Inter,sans-serif;
       background:var(--bg);
+      font-family:system-ui,Roboto,Arial,sans-serif;
       color:var(--text);
     }
 
     .container{
-      max-width:1100px;
-      margin:0 auto;
-      padding:16px;
-    }
-
-    header{
-      margin-bottom:10px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-    }
-
-    .logo{
-      font-size:22px;
-      font-weight:800;
-    }
-
-    .back-btn{
-      display:inline-block;
-      background:var(--brand);
-      color:#fff;
-      padding:8px 14px;
-      border-radius:12px;
-      text-decoration:none;
-      font-weight:600;
-      font-size:14px;
+      max-width:900px;
+      margin:40px auto;
+      padding:20px;
+      background:var(--white);
+      border-radius:var(--radius);
     }
 
     h1{
-      margin:10px 0 16px;
-      text-align:left;
-    }
-
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:20px;
-      border:1px solid var(--stroke);
-      box-shadow:0 4px 12px rgba(0,0,0,.06);
-      margin-bottom:20px;
+      margin-top:0;
+      font-size:30px;
+      font-weight:700;
     }
 
     table{
       width:100%;
       border-collapse:collapse;
-      font-size:14px;
+      margin-top:20px;
     }
 
-    th, td{
-      padding:8px;
-      border-bottom:1px solid var(--stroke);
+    th,td{
+      padding:12px 10px;
+      border-bottom:1px solid #ddd;
       text-align:left;
     }
 
-    th:last-child, td:last-child{
-      text-align:right;
+    .qtyBox{
+      display:flex;
+      align-items:center;
+      gap:6px;
     }
 
-    .empty{
-      padding:10px 0;
-      color:var(--muted);
-    }
-
-    .total{
-      margin-top:10px;
+    .qtyBox button{
+      width:32px;
+      height:32px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      background:#fff;
+      cursor:pointer;
       font-size:18px;
-      font-weight:700;
+    }
+
+    .qtyBox input{
+      width:60px;
+      text-align:center;
+      padding:6px;
+      border-radius:8px;
+      border:1px solid #ccc;
     }
 
     .btn{
-      padding:10px 16px;
-      border-radius:12px;
+      padding:12px 20px;
+      background:var(--brand);
+      border-radius:10px;
+      color:#fff;
+      font-weight:600;
       border:none;
       cursor:pointer;
-      font-weight:600;
-      color:#fff;
-      margin-right:10px;
-      font-size:14px;
-    }
-
-    .whatsapp{background:#25D366;}
-    .telegram{background:#229ED9;}
-    .clear-btn{background:#ff4d4d;}
-
-    .qty{
-      width:80px;
-      padding:6px;
-      border-radius:10px;
-      border:1px solid #ccc;
+      display:inline-block;
+      margin-top:20px;
       text-align:center;
-      font-size:14px;
     }
 
-    .qty.invalid{
-      border:2px solid red !important;
-      background:#ffe6e6 !important;
+    .btn:hover{
+      opacity:0.9;
     }
 
-    @media(max-width:768px){
-      header{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-      table{
-        font-size:13px;
-      }
+    .btnGreen{
+      background:#25D366;
+      border:none;
+    }
+
+    .btnBlue{
+      background:#229ED9;
+      border:none;
+    }
+
+    .btnSecondary{
+      background:#fff;
+      border:2px solid var(--brand);
+      color:var(--brand);
+      margin-right:12px;
+    }
+
+    .totalBox{
+      margin-top:20px;
+      font-size:22px;
+      font-weight:700;
+    }
+
+    @media(max-width:600px){
+      table,thead,tbody,tr,td,th{display:block;}
+      td{border:none;}
+      tr{margin-bottom:20px;border-bottom:1px solid #ddd;padding-bottom:10px;}
     }
   </style>
 </head>
+
 <body>
 
 <div class="container">
-
-  <header>
-    <div class="logo">🌷 Тюльпан03</div>
-    <a href="catalog.html" class="back-btn">← Вернуться в каталог</a>
-  </header>
-
   <h1>Корзина</h1>
 
-  <div class="card">
-    <table id="cartTable">
-      <thead>
-        <tr>
-          <th>Товар</th>
-          <th>Тип</th>
-          <th>Количество (шт)</th>
-          <th>Цена за шт</th>
-          <th>Сумма</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <p class="muted">Количество кратно 20 шт. Нажмите «+» или «−» для изменения количества.</p>
 
-    <div id="cartEmpty" class="empty" style="display:none;">
-      Корзина пуста. Добавьте тюльпаны в каталоге.
-    </div>
+  <table id="cartTable">
+    <thead>
+      <tr>
+        <th>Товар</th>
+        <th>Цена</th>
+        <th>Количество</th>
+        <th>Сумма</th>
+      </tr>
+    </thead>
+    <tbody id="cartBody"></tbody>
+  </table>
 
-    <div class="total">Итого: <span id="totalPrice">0 ₽</span></div>
+  <div class="totalBox">Итого: <span id="cartTotal">0 ₽</span></div>
 
-    <div style="margin-top:12px;">
-      <button class="btn whatsapp" type="button" onclick="sendWhatsApp()">Отправить в WhatsApp</button>
-      <button class="btn telegram" type="button" onclick="sendTelegram()">Отправить в Telegram</button>
-      <button class="btn clear-btn" type="button" onclick="clearCart()">Очистить корзину</button>
-    </div>
+  <!-- Кнопки -->
+  <div style="margin-top:25px;">
+    <a href="/catalog.html" class="btn btnSecondary">Вернуться в каталог</a>
+    <button class="btn" onclick="clearCart()">Очистить корзину</button>
   </div>
 
+  <div style="margin-top:25px;">
+    <button class="btn btnGreen" onclick="sendWhatsApp()">Отправить в WhatsApp</button>
+    <button class="btn btnBlue" onclick="sendTelegram()">Отправить в Telegram</button>
+  </div>
 </div>
 
 <script>
-  const CART_KEY = 'cart';
-  const PACK = 20;
+  // === Загрузка корзины ===
+  let cart = JSON.parse(localStorage.getItem("tulpanCart") || "[]");
 
-  // Градация гладкие + микс
-  const tiersSmooth = [
-    {min:20,   max:500,    price:99},
-    {min:500,  max:1000,   price:88},
-    {min:1000, max:2000,   price:80},
-    {min:2000, max:3000,   price:79},
-    {min:3000, max:5000,   price:78},
-    {min:5000, max:10000,  price:77},
-    {min:10000,max:50000,  price:76},
-    {min:50000,max:1000000,price:75}
-  ];
-
-  // Градация махровые
-  const tiersTerry = [
-    {min:20,   max:500,    price:109},
-    {min:500,  max:1000,   price:98},
-    {min:1000, max:2000,   price:90},
-    {min:2000, max:3000,   price:89},
-    {min:3000, max:5000,   price:88},
-    {min:5000, max:10000,  price:87},
-    {min:10000,max:50000,  price:86},
-    {min:50000,max:1000000,price:85}
-  ];
-
-  function getPriceByTiers(tiers, qty){
-    for (const t of tiers){
-      if (qty >= t.min && qty < t.max) return t.price;
-    }
-    return tiers[tiers.length-1].price;
+  function saveCart(){
+    localStorage.setItem("tulpanCart", JSON.stringify(cart));
   }
 
-  // читаем корзину ВСЕГДА как МАССИВ
-  function getCart(){
-    const raw = localStorage.getItem(CART_KEY);
-    if (!raw) return [];
+  function updateCart(){
+    const body = document.getElementById("cartBody");
+    const totalEl = document.getElementById("cartTotal");
 
-    try{
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
-      // если вдруг объект — берём values, чтобы ничего не потерять
-      return Object.values(parsed);
-    }catch(e){
-      return [];
-    }
-  }
-
-  function saveCart(items){
-    localStorage.setItem(CART_KEY, JSON.stringify(items));
-  }
-
-  function format(num){return num.toLocaleString('ru-RU');}
-
-  function getType(item){
-    if (item.type) return item.type; // smooth / mix / terry
-    const n = (item.name || item.title || '').toLowerCase();
-    if (n.includes('махров')) return 'terry';
-    if (n.includes('микс')) return 'mix';
-    return 'smooth';
-  }
-
-  function loadCart(){
-    const items = getCart();
-    const tbody = document.querySelector('#cartTable tbody');
-    const empty = document.getElementById('cartEmpty');
-    const totalEl = document.getElementById('totalPrice');
-
-    tbody.innerHTML = '';
-
-    if (!items.length){
-      empty.style.display = 'block';
-      totalEl.textContent = '0 ₽';
+    if(cart.length === 0){
+      body.innerHTML = "<tr><td colspan='4'>Корзина пуста.</td></tr>";
+      totalEl.textContent = "0 ₽";
       return;
-    } else {
-      empty.style.display = 'none';
     }
-
-    // считаем общие количества для градации
-    let smoothTotal = 0;
-    let terryTotal = 0;
-
-    items.forEach(item => {
-      const qty = parseInt(item.qty) || 0;
-      const type = getType(item);
-      if (type === 'terry') terryTotal += qty;
-      else smoothTotal += qty; // гладкие + микс
-    });
-
-    const smoothPrice = getPriceByTiers(tiersSmooth, smoothTotal);
-    const terryPrice  = getPriceByTiers(tiersTerry, terryTotal);
 
     let total = 0;
 
-    items.forEach((item, index) => {
-      const qty = parseInt(item.qty) || 0;
-      if (!qty) return;
-
-      const type = getType(item);
-      const unitPrice = (type === 'terry') ? terryPrice : smoothPrice;
-      const sum = unitPrice * qty;
+    body.innerHTML = cart.map((item, index) => {
+      const sum = item.price * item.qty;
       total += sum;
 
-      const typeLabel =
-        type === 'terry' ? 'Махровый' :
-        type === 'mix'   ? 'Микс' :
-                           'Гладкий';
-
-      tbody.insertAdjacentHTML('beforeend', `
+      return `
         <tr>
-          <td>${item.name || item.title || 'Тюльпан'}</td>
-          <td>${typeLabel}</td>
+          <td>${item.name}</td>
+          <td>${item.price} ₽</td>
           <td>
-            <input
-              type="number"
-              class="qty"
-              min="20"
-              step="20"
-              value="${qty}"
-              oninput="highlightInvalid(this)"
-              onblur="updateQty(${index}, this)"
-            >
+            <div class="qtyBox">
+              <button onclick="changeQty(${index}, -20)">−</button>
+              <input type="number" value="${item.qty}" readonly>
+              <button onclick="changeQty(${index}, 20)">+</button>
+            </div>
           </td>
-          <td>${format(unitPrice)} ₽</td>
-          <td>${format(sum)} ₽</td>
-          <td><a href="#" onclick="removeItem(${index});return false;">Удалить</a></td>
+          <td>${sum} ₽</td>
         </tr>
-      `);
-    });
+      `;
+    }).join("");
 
-    totalEl.textContent = format(total) + ' ₽';
+    totalEl.textContent = total + " ₽";
   }
 
-  function highlightInvalid(input){
-    let v = parseInt(input.value);
-    if (!v || v < PACK || v % PACK !== 0){
-      input.classList.add('invalid');
-    } else {
-      input.classList.remove('invalid');
-    }
-  }
-
-  function updateQty(index, input){
-    let q = parseInt(input.value);
-
-    if (!q || q < PACK) q = PACK;
-    if (q % PACK !== 0){
-      q = Math.round(q / PACK) * PACK;
-    }
-    if (q < PACK) q = PACK;
-
-    input.value = q;
-    input.classList.remove('invalid');
-
-    const items = getCart();
-    if (items[index]){
-      items[index].qty = q;
-      saveCart(items);
-    }
-
-    loadCart();
-  }
-
-  function removeItem(index){
-    const items = getCart();
-    items.splice(index, 1);
-    saveCart(items);
-    loadCart();
+  function changeQty(i, delta){
+    cart[i].qty += delta;
+    if(cart[i].qty < 20) cart[i].qty = 20;
+    saveCart();
+    updateCart();
   }
 
   function clearCart(){
-    localStorage.removeItem(CART_KEY);
-    loadCart();
+    localStorage.removeItem("tulpanCart");
+    cart = [];
+    updateCart();
   }
 
   function buildMessage(){
-    const items = getCart();
-    if (!items.length) return '';
+    if(cart.length === 0) return "Корзина пуста";
 
-    let text = 'Заказ тюльпанов:\n';
-
-    let smoothTotal = 0;
-    let terryTotal  = 0;
-
-    items.forEach(item => {
-      const qty = parseInt(item.qty) || 0;
-      const type = getType(item);
-      if (type === 'terry') terryTotal += qty;
-      else smoothTotal += qty;
+    let msg = "Заказ тюльпанов%0A-----------------%0A";
+    cart.forEach(i=>{
+      msg += `${i.name}: ${i.qty} шт = ${i.price*i.qty} ₽%0A`;
     });
-
-    const smoothPrice = getPriceByTiers(tiersSmooth, smoothTotal);
-    const terryPrice  = getPriceByTiers(tiersTerry, terryTotal);
-
-    let total = 0;
-
-    items.forEach(item => {
-      const qty = parseInt(item.qty) || 0;
-      if (!qty) return;
-      const type = getType(item);
-      const unitPrice = (type === 'terry') ? terryPrice : smoothPrice;
-      const sum = unitPrice * qty;
-      total += sum;
-
-      text += `${item.name || item.title || 'Тюльпан'} — ${qty} шт × ${unitPrice} ₽ = ${sum} ₽\n`;
-    });
-
-    text += `\nИтого: ${total} ₽`;
-    return text;
+    msg += "-----------------%0AИтого: " + document.getElementById("cartTotal").innerText;
+    return msg;
   }
 
   function sendWhatsApp(){
-    const items = getCart();
-    if (!items.length){
-      alert('Корзина пуста');
-      return;
-    }
     const msg = buildMessage();
-    const url = 'https://wa.me/79148416115?text=' + encodeURIComponent(msg);
-    window.open(url, '_blank');
+    window.location.href = "https://wa.me/79148416115?text=" + msg;
   }
 
   function sendTelegram(){
-    const items = getCart();
-    if (!items.length){
-      alert('Корзина пуста');
-      return;
-    }
     const msg = buildMessage();
-    const url = 'https://t.me/share/url?url=&text=' + encodeURIComponent(msg);
-    window.open(url, '_blank');
+    window.location.href = "tg://msg?text=" + msg;
   }
 
-  loadCart();
+  updateCart();
 </script>
 
 </body>
