@@ -6,7 +6,7 @@
   <title>Корзина — Тюльпан03</title>
   <style>
     :root{
-      --bg:#f7c1d9; 
+      --bg:#f7c1d9;
       --card:#ffffff;
       --text:#111;
       --muted:#666;
@@ -15,9 +15,11 @@
       --stroke:#e5e7eb;
     }
 
+    *{box-sizing:border-box;}
+
     body{
       margin:0;
-      font-family:system-ui, sans-serif;
+      font-family:system-ui,-apple-system,Inter,sans-serif;
       background:var(--bg);
       color:var(--text);
     }
@@ -28,9 +30,33 @@
       padding:16px;
     }
 
+    header{
+      margin-bottom:10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+
+    .logo{
+      font-size:22px;
+      font-weight:800;
+    }
+
+    .back-btn{
+      display:inline-block;
+      background:var(--brand);
+      color:#fff;
+      padding:8px 14px;
+      border-radius:12px;
+      text-decoration:none;
+      font-weight:600;
+      font-size:14px;
+    }
+
     h1{
-      text-align:center;
-      margin-bottom:20px;
+      margin:10px 0 16px;
+      text-align:left;
     }
 
     .card{
@@ -38,40 +64,35 @@
       border-radius:var(--radius);
       padding:20px;
       border:1px solid var(--stroke);
+      box-shadow:0 4px 12px rgba(0,0,0,.06);
       margin-bottom:20px;
-    }
-
-    .back-btn{
-      display:inline-block;
-      background:var(--brand);
-      color:#fff;
-      padding:10px 18px;
-      border-radius:12px;
-      text-decoration:none;
-      font-weight:600;
-    }
-
-    .clear-btn{
-      display:inline-block;
-      background:#ff4d4d;
-      color:#fff;
-      padding:10px 18px;
-      border-radius:12px;
-      text-decoration:none;
-      font-weight:600;
-      margin-left:10px;
-      cursor:pointer;
     }
 
     table{
       width:100%;
       border-collapse:collapse;
-      margin-top:10px;
+      font-size:14px;
     }
 
-    table td, table th{
-      padding:10px;
+    th, td{
+      padding:8px;
       border-bottom:1px solid var(--stroke);
+      text-align:left;
+    }
+
+    th:last-child, td:last-child{
+      text-align:right;
+    }
+
+    .empty{
+      padding:10px 0;
+      color:var(--muted);
+    }
+
+    .total{
+      margin-top:10px;
+      font-size:18px;
+      font-weight:700;
     }
 
     .btn{
@@ -82,23 +103,37 @@
       font-weight:600;
       color:#fff;
       margin-right:10px;
+      font-size:14px;
     }
 
-    .whatsapp{ background:#25D366; }
-    .telegram{ background:#229ED9; }
+    .whatsapp{background:#25D366;}
+    .telegram{background:#229ED9;}
+    .clear-btn{
+      background:#ff4d4d;
+    }
 
-    input.qty{
-      width:70px;
+    .qty{
+      width:80px;
       padding:6px;
-      text-align:center;
       border-radius:10px;
       border:1px solid #ccc;
+      text-align:center;
+      font-size:14px;
     }
 
-    /* Подсветка некорректного количества */
-    input.qty.invalid{
+    .qty.invalid{
       border:2px solid red !important;
       background:#ffe6e6 !important;
+    }
+
+    @media(max-width:768px){
+      header{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      table{
+        font-size:13px;
+      }
     }
   </style>
 </head>
@@ -106,7 +141,10 @@
 
 <div class="container">
 
-  <a href="catalog.html" class="back-btn">← Вернуться в каталог</a>
+  <header>
+    <div class="logo">🌷 Тюльпан03</div>
+    <a href="catalog.html" class="back-btn">← Вернуться в каталог</a>
+  </header>
 
   <h1>Корзина</h1>
 
@@ -116,8 +154,8 @@
         <tr>
           <th>Товар</th>
           <th>Тип</th>
-          <th>Количество</th>
-          <th>Цена</th>
+          <th>Количество (шт)</th>
+          <th>Цена за шт</th>
           <th>Сумма</th>
           <th></th>
         </tr>
@@ -125,309 +163,170 @@
       <tbody></tbody>
     </table>
 
-    <h2>Итого: <span id="totalPrice">0 ₽</span></h2>
+    <div id="cartEmpty" class="empty" style="display:none;">
+      Корзина пуста. Добавьте тюльпаны в каталоге.
+    </div>
 
-    <button class="btn whatsapp" onclick="sendWhatsApp()">Отправить в WhatsApp</button>
-    <button class="btn telegram" onclick="sendTelegram()">Отправить в Telegram</button>
-    <button class="clear-btn" onclick="clearCart()">Очистить корзину</button>
+    <div class="total">Итого: <span id="totalPrice">0 ₽</span></div>
+
+    <div style="margin-top:12px;">
+      <button class="btn whatsapp" type="button" onclick="sendWhatsApp()">Отправить в WhatsApp</button>
+      <button class="btn telegram" type="button" onclick="sendTelegram()">Отправить в Telegram</button>
+      <button class="btn clear-btn" type="button" onclick="clearCart()">Очистить корзину</button>
+    </div>
   </div>
 
 </div>
 
 <script>
-/*
-  Ожидаемый формат cart в localStorage:
-  {
-    "yellow": { name:"Жёлтый", type:"Гладкий", qty: 40, price: 99 },
-    "mahrovyi": { name:"Махровый розовый", type:"Махровый", qty: 60, price: 109 }
-  }
-  Ключ: "cart"
-*/
+  const CART_KEY = 'cart'; // тот же ключ, который использует каталог
 
-// Загрузка корзины
-function loadCart(){
-  const cart = JSON.parse(localStorage.getItem('cart') || '{}');
-  const tbody = document.querySelector('#cartTable tbody');
-  tbody.innerHTML = '';
-  let total = 0;
-
-  const ids = Object.keys(cart);
-  if(!ids.length){
-    tbody.innerHTML = '<tr><td colspan="6">Корзина пуста. Добавьте тюльпаны в каталоге.</td></tr>';
-    document.getElementById('totalPrice').innerText = '0 ₽';
-    return;
+  function getCart(){
+    return JSON.parse(localStorage.getItem(CART_KEY) || '{}');
   }
 
-  ids.forEach(id => {
-    const item = cart[id];
-    const sum = item.price * item.qty;
-    total += sum;
+  function saveCart(cart){
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }
 
-    tbody.innerHTML += `
-      <tr>
-        <td>${item.name}</td>
-        <td>${item.type || ""}</td>
-        <td>
-          <input
-            type="number"
-            class="qty"
-            min="20"
-            step="20"
-            value="${item.qty}"
-            oninput="highlightInvalid(this)"
-            onblur="updateQty('${id}', this.value)"
-          >
-        </td>
-        <td>${item.price} ₽</td>
-        <td>${sum.toLocaleString('ru-RU')} ₽</td>
-        <td><a href="#" onclick="removeItem('${id}');return false;">Удалить</a></td>
-      </tr>
-    `;
-  });
+  function format(num){
+    return num.toLocaleString('ru-RU');
+  }
 
-  document.getElementById('totalPrice').innerText = total.toLocaleString('ru-RU') + ' ₽';
-}
+  function loadCart(){
+    const cart = getCart();
+    const tbody = document.querySelector('#cartTable tbody');
+    const empty = document.getElementById('cartEmpty');
+    const totalEl = document.getElementById('totalPrice');
 
-// Подсветка некорректного ввода
-function highlightInvalid(input){
-  const v = parseInt(input.value);
-  if (!v || v < 20 || v % 20 !== 0){
-    input.classList.add('invalid');
-  } else {
+    tbody.innerHTML = '';
+    let total = 0;
+    let hasItems = false;
+
+    for (const id in cart){
+      const item = cart[id];
+      hasItems = true;
+      const sum = item.price * item.qty;
+      total += sum;
+
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.type || ''}</td>
+          <td>
+            <input
+              type="number"
+              class="qty"
+              min="20"
+              step="20"
+              value="${item.qty}"
+              oninput="highlightInvalid(this)"
+              onblur="updateQty('${id}', this)"
+            >
+          </td>
+          <td>${format(item.price)} ₽</td>
+          <td>${format(sum)} ₽</td>
+          <td><a href="#" onclick="removeItem('${id}');return false;">Удалить</a></td>
+        </tr>
+      `);
+    }
+
+    if (!hasItems){
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+    }
+
+    totalEl.textContent = format(total) + ' ₽';
+  }
+
+  function highlightInvalid(input){
+    let v = parseInt(input.value);
+    if (!v || v < 20 || v % 20 !== 0){
+      input.classList.add('invalid');
+    } else {
+      input.classList.remove('invalid');
+    }
+  }
+
+  function updateQty(id, input){
+    let q = parseInt(input.value);
+
+    // Минимум 20
+    if (!q || q < 20) q = 20;
+
+    // Округление до ближайших 20
+    if (q % 20 !== 0){
+      q = Math.round(q / 20) * 20;
+    }
+
+    // Обновляем значение в поле
+    input.value = q;
     input.classList.remove('invalid');
-  }
-}
 
-// Обновление количества (кратно 20)
-function updateQty(id, qty){
-  let q = parseInt(qty);
+    // Обновляем корзину
+    const cart = getCart();
+    if (cart[id]){
+      cart[id].qty = q;
+      saveCart(cart);
+    }
 
-  if (!q || q < 20) q = 20;
-
-  // округляем до ближайших 20
-  if (q % 20 !== 0){
-    q = Math.round(q / 20) * 20;
-  }
-  if (q < 20) q = 20;
-
-  const cart = JSON.parse(localStorage.getItem('cart') || '{}');
-  if (!cart[id]) return;
-
-  cart[id].qty = q;
-  localStorage.setItem('cart', JSON.stringify(cart));
-
-  // снимаем подсветку и перерисовываем
-  loadCart();
-}
-
-// Удаление одной позиции
-function removeItem(id){
-  const cart = JSON.parse(localStorage.getItem('cart') || '{}');
-  delete cart[id];
-  localStorage.setItem('cart', JSON.stringify(cart));
-  loadCart();
-}
-
-// Очистить корзину полностью
-function clearCart(){
-  localStorage.removeItem('cart');
-  loadCart();
-}
-
-// Сбор текста заказа
-function buildMessage(){
-  const cart = JSON.parse(localStorage.getItem('cart') || '{}');
-  const ids = Object.keys(cart);
-  if(!ids.length) return 'Корзина пуста.';
-
-  let text = 'Заказ тюльпанов:\n\n';
-  let total = 0;
-
-  ids.forEach(id => {
-    const item = cart[id];
-    const sum = item.price * item.qty;
-    total += sum;
-    text += `${item.name} — ${item.qty} шт × ${item.price} ₽ = ${sum.toLocaleString('ru-RU')} ₽\n`;
-  });
-
-  text += `\nИтого: ${total.toLocaleString('ru-RU')} ₽`;
-  return text;
-}
-
-// Отправка WhatsApp
-function sendWhatsApp(){
-  const msg = buildMessage();
-  const url = 'https://wa.me/79148416115?text=' + encodeURIComponent(msg);
-  window.open(url, '_blank');
-}
-
-// Отправка Telegram
-function sendTelegram(){
-  const msg = buildMessage();
-  // можно заменить на конкретный username/чат, если используешь deeplink
-  const url = 'https://t.me/share/url?url=' + encodeURIComponent('tulpan03') +
-              '&text=' + encodeURIComponent(msg);
-  window.open(url, '_blank');
-}
-
-// инициализация
-loadCart();
-</script>
-
-</body>
-</html>
-
-
-<div class="container">
-
-  <a href="catalog.html" class="back-btn">← Вернуться в каталог</a>
-
-  <h1>Корзина</h1>
-
-  <div class="card">
-    <table id="cartTable">
-      <thead>
-        <tr>
-          <th>Товар</th>
-          <th>Тип</th>
-          <th>Количество</th>
-          <th>Цена</th>
-          <th>Сумма</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <h2>Итого: <span id="totalPrice">0 ₽</span></h2>
-
-    <button class="btn whatsapp" onclick="sendWhatsApp()">Отправить в WhatsApp</button>
-    <button class="btn telegram" onclick="sendTelegram()">Отправить в Telegram</button>
-    <button class="clear-btn" onclick="clearCart()">Очистить корзину</button>
-  </div>
-
-</div>
-
-
-<script>
-
-// ==============================================
-// ЗАГРУЗКА КОРЗИНЫ
-// ==============================================
-
-function loadCart(){
-  const cart = JSON.parse(localStorage.getItem('cart') || '{}');
-  const tbody = document.querySelector('#cartTable tbody');
-  tbody.innerHTML = '';
-  let total = 0;
-
-  for (const id in cart){
-    const item = cart[id];
-    const sum = item.price * item.qty;
-    total += sum;
-
-    tbody.innerHTML += `
-      <tr>
-        <td>${item.name}</td>
-        <td>${item.type}</td>
-        <td>
-          <input type="number" class="qty" min="20" step="20" value="${item.qty}" onchange="updateQty('${id}', this.value)">
-        </td>
-        <td>${item.price} ₽</td>
-        <td>${sum} ₽</td>
-        <td><a href="#" onclick="removeItem('${id}')">Удалить</a></td>
-      </tr>
-    `;
+    loadCart();
   }
 
-  document.getElementById('totalPrice').innerText = total + " ₽";
-}
-
-loadCart();
-
-// ==============================================
-// ОБНОВЛЕНИЕ КОЛИЧЕСТВА
-// ==============================================
-
-function updateQty(id, qty){
-  let q = parseInt(qty);
-
-  // Минимум 20
-  if (q < 20) q = 20;
-
-  // Округление до ближайших 20
-  if (q % 20 !== 0){
-    q = Math.round(q / 20) * 20;
+  function removeItem(id){
+    const cart = getCart();
+    delete cart[id];
+    saveCart(cart);
+    loadCart();
   }
 
-  // Но если получилось 0 — ставим 20
-  if (q < 20) q = 20;
-
-  // Обновляем cart
-  const cart = JSON.parse(localStorage.getItem('cart') || '{}');
-  cart[id].qty = q;
-  localStorage.setItem('cart', JSON.stringify(cart));
-
-  // Перерисовываем
-  loadCart();
-}
-
-}
-
-// ==============================================
-// УДАЛЕНИЕ ОДНОГО ТОВАРА
-// ==============================================
-
-function removeItem(id){
-  const cart = JSON.parse(localStorage.getItem('cart') || '{}');
-  delete cart[id];
-  localStorage.setItem('cart', JSON.stringify(cart));
-  loadCart();
-}
-
-// ==============================================
-// ОЧИСТИТЬ ВСЮ КОРЗИНУ
-// ==============================================
-
-function clearCart(){
-  localStorage.removeItem('cart');
-  loadCart();
-}
-
-// ==============================================
-// ОТПРАВКА WHATSAPP
-// ==============================================
-
-function sendWhatsApp(){
-  const msg = buildMessage();
-  window.open(`https://wa.me/79148416115?text=${encodeURIComponent(msg)}`, "_blank");
-}
-
-// ==============================================
-// ОТПРАВКА TELEGRAM
-// ==============================================
-
-function sendTelegram(){
-  const msg = buildMessage();
-  window.open(`tg://msg?text=${encodeURIComponent(msg)}`, "_blank");
-}
-
-// ==============================================
-// СБОР СООБЩЕНИЯ
-// ==============================================
-
-function buildMessage(){
-  const cart = JSON.parse(localStorage.getItem('cart') || '{}');
-  let text = "Заказ тюльпанов:\n";
-
-  for (const id in cart){
-    const item = cart[id];
-    text += `${item.name} — ${item.qty} шт по ${item.price} ₽\n`;
+  function clearCart(){
+    localStorage.removeItem(CART_KEY);
+    loadCart();
   }
 
-  return text;
-}
+  function buildMessage(){
+    const cart = getCart();
+    let text = 'Заказ тюльпанов:\n';
+    let total = 0;
 
+    for (const id in cart){
+      const item = cart[id];
+      const sum = item.price * item.qty;
+      total += sum;
+      text += `${item.name} — ${item.qty} шт × ${item.price} ₽ = ${sum} ₽\n`;
+    }
+
+    text += `\nИтого: ${total} ₽`;
+    return text;
+  }
+
+  function sendWhatsApp(){
+    const cart = getCart();
+    if (!Object.keys(cart).length){
+      alert('Корзина пуста');
+      return;
+    }
+    const msg = buildMessage();
+    const url = 'https://wa.me/79148416115?text=' + encodeURIComponent(msg);
+    window.open(url, '_blank');
+  }
+
+  function sendTelegram(){
+    const cart = getCart();
+    if (!Object.keys(cart).length){
+      alert('Корзина пуста');
+      return;
+    }
+    const msg = buildMessage();
+    // если у тебя есть юзернейм/бот, можно заменить ссылку
+    const url = 'https://t.me/share/url?url=&text=' + encodeURIComponent(msg);
+    window.open(url, '_blank');
+  }
+
+  // старт
+  loadCart();
 </script>
 
 </body>
