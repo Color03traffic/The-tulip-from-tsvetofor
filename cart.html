@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Корзина — Тюльпан03.рф</title>
+<style>
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;
+    background:#E04297;
+    color:#111;
+  }
+  .container{
+    max-width:1100px;
+    margin:0 auto;
+    padding:16px;
+  }
+  header{
+    background:#fff;
+    padding:16px;
+    border-radius:14px;
+    border:1px solid #e5e7eb;
+    margin-bottom:20px;
+  }
+  a.back{
+    display:inline-block;
+    margin-bottom:10px;
+    text-decoration:none;
+    color:#111;
+  }
+  h1{margin:10px 0 6px;font-size:26px;}
+  .subtitle{color:#666;margin-bottom:14px;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    border-radius:14px;
+    overflow:hidden;
+  }
+  th,td{
+    padding:8px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+  }
+  tfoot td{font-weight:700;}
+  .qty-ctrl{
+    display:inline-flex;
+    border:1px solid #ccc;
+    border-radius:8px;
+    overflow:hidden;
+    background:#fff;
+  }
+  .qty-ctrl button{
+    width:26px;height:26px;border:0;background:#fff;font-size:18px;cursor:pointer;
+  }
+  .qty-ctrl input{
+    width:60px;text-align:center;border:0;font-size:14px;
+  }
+  .btn-wa{
+    background:#25D366;
+    padding:10px 14px;
+    border-radius:10px;
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    display:inline-block;
+  }
+  .btn-tg{
+    background:#229ED9;
+    padding:10px 14px;
+    border-radius:10px;
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    display:inline-block;
+  }
+  .inputs{
+    margin:16px 0;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .inputs input{
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #ccc;
+  }
+  .muted{
+    font-size:13px;
+    color:#555;
+    margin-top:4px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <a href="catalog.html" class="back">← Вернуться в каталог</a>
+    <h1>Корзина</h1>
+    <p class="subtitle">Цены рассчитываются по общей градации: гладкие / махровые / микс.</p>
+  </header>
+
+  <div id="cartBox"></div>
+
+</div>
+
+<script>
+const PACK = 20;
+const WA_PHONE = "79148416115";
+const TG_USERNAME = "tulpan03";
+
+/* Градации — как ты прописал */
+const smoothTiers = [
+  {max:499,  price:99},
+  {max:999,  price:88},
+  {max:1999, price:80},
+  {max:2999, price:79},
+  {max:4999, price:78},
+  {max:9999, price:77},
+  {max:49999,price:76},
+  {max:99999,price:75}
+];
+
+const terryTiers = [
+  {max:499,  price:109},
+  {max:999,  price:98},
+  {max:1999, price:90},
+  {max:2999, price:89},
+  {max:4999, price:88},
+  {max:9999, price:87},
+  {max:49999,price:86},
+  {max:99999,price:85}
+];
+
+const mixTiers = [
+  {max:499,  price:99},
+  {max:999,  price:88},
+  {max:1999, price:80},
+  {max:2999, price:79},
+  {max:4999, price:78},
+  {max:9999, price:77},
+  {max:49999,price:76},
+  {max:100000,price:75}
+];
+
+/* Общий индекс ступени по суммарному количеству ВСЕХ тюльпанов */
+function findTierIndex(total){
+  for(let i=0;i<smoothTiers.length;i++){
+    if(total <= smoothTiers[i].max) return i;
+  }
+  return smoothTiers.length-1;
+}
+
+function getUnitPrice(type,total){
+  const idx = findTierIndex(total);
+  if(type==="smooth") return smoothTiers[idx].price;
+  if(type==="terry")  return terryTiers[idx].price;
+  if(type==="mix")    return mixTiers[idx].price;
+  return smoothTiers[idx].price;
+}
+
+function loadCart(){
+  return JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
+}
+function saveCart(cart){
+  localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
+}
+
+function renderCart(){
+  let cart = loadCart();
+  const box = document.getElementById("cartBox");
+
+  if(!cart.length){
+    box.innerHTML = `<p>Корзина пуста. Вернитесь в каталог и добавьте товары.</p>`;
+    return;
+  }
+
+  // суммарное количество всех тюльпанов
+  let totalQty = 0;
+  cart.forEach(i => totalQty += i.qty);
+
+  // рендер таблицы
+  let rows = "";
+  let totalSum = 0;
+
+  cart.forEach((i,idx)=>{
+    const unit = getUnitPrice(i.type,totalQty);
+    const sum  = unit * i.qty;
+    totalSum  += sum;
+    rows += `
+      <tr>
+        <td>${i.name}<div class="muted">${i.type==="terry"?"Махровые":(i.type==="mix"?"Микс":"Гладкие")}</div></td>
+        <td>
+          <div class="qty-ctrl">
+            <button onclick="changeQty(${idx},- ${PACK})">−</button>
+            <input id="row_${idx}" value="${i.qty}">
+            <button onclick="changeQty(${idx}, ${PACK})">+</button>
+          </div>
+        </td>
+        <td>${unit} ₽</td>
+        <td>${sum.toLocaleString('ru-RU')} ₽</td>
+        <td><a href="#" onclick="removeItem(${idx});return false;">Удалить</a></td>
+      </tr>
+    `;
+  });
+
+  box.innerHTML = `
+    <table>
+      <thead>
+        <tr><th>Товар</th><th>Кол-во</th><th>Цена за шт</th><th>Сумма</th><th></th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+      <tfoot>
+        <tr><td colspan="3">ИТОГО:</td><td>${totalSum.toLocaleString('ru-RU')} ₽</td><td></td></tr>
+      </tfoot>
+    </table>
+
+    <div class="inputs">
+      <input id="fio" placeholder="ФИО">
+      <input id="phone" placeholder="+7">
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a id="waBtn" class="btn-wa" href="#" target="_blank">Отправить WhatsApp</a>
+      <a id="tgBtn" class="btn-tg" href="#" target="_blank">Отправить Telegram</a>
+    </div>
+  `;
+
+  document.getElementById("waBtn").onclick = function(e){
+    e.preventDefault();
+    const txt = buildMessage();
+    if(!txt) return;
+    this.href = "https://wa.me/"+WA_PHONE+"?text="+encodeURIComponent(txt);
+    window.open(this.href,"_blank");
+  };
+
+  document.getElementById("tgBtn").onclick = function(e){
+    e.preventDefault();
+    const txt = buildMessage();
+    if(!txt) return;
+    const link = "tg://resolve?domain="+encodeURIComponent(TG_USERNAME)+"&text="+encodeURIComponent(txt);
+    window.location.href = link;
+  };
+}
+
+function changeQty(index,delta){
+  let cart = loadCart();
+  const item = cart[index];
+  if(!item) return;
+  let newQty = item.qty + delta;
+  if(newQty < PACK) newQty = PACK;
+  item.qty = newQty;
+  saveCart(cart);
+  renderCart();
+}
+
+function removeItem(index){
+  let cart = loadCart();
+  cart.splice(index,1);
+  saveCart(cart);
+  renderCart();
+}
+
+function buildMessage(){
+  let cart = loadCart();
+  if(!cart.length){
+    alert("Корзина пуста");
+    return null;
+  }
+
+  let fio   = document.getElementById("fio").value.trim();
+  let phone = document.getElementById("phone").value.trim();
+
+  if(!fio){ alert("Введите ФИО"); return null; }
+  if(!phone){ alert("Введите телефон"); return null; }
+
+  let totalQty = 0;
+  cart.forEach(i=>totalQty+=i.qty);
+
+  let txt = "Новый заказ с tulpan03.рф%0A%0A";
+  cart.forEach(i=>{
+    const unit = getUnitPrice(i.type,totalQty);
+    const sum  = unit * i.qty;
+    txt += `${i.name}: ${i.qty} шт × ${unit} ₽ = ${sum.toLocaleString('ru-RU')} ₽%0A`;
+  });
+
+  txt += `%0AФИО: ${fio}%0AТелефон: ${phone}`;
+  return decodeURIComponent(txt); // вернём нормальный текст, а encode сделаем в кнопках
+}
+
+renderCart();
+</script>
+
+</body>
+</html>
