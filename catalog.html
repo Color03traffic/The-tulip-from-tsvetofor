@@ -1,148 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог Краснодарских тюльпанов</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Каталог тюльпанов — Тюльпан03.рф</title>
+  <meta name="description" content="Каталог краснодарских тюльпанов оптом. Цена на карточках — от 75 ₽.">
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;
+      background:#E04297;
+      color:#111;
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:16px;
+    }
+    header{
+      background:#fff;
+      padding:16px;
+      border-radius:14px;
+      border:1px solid #e5e7eb;
+      margin-bottom:20px;
+    }
+    h1{margin:10px 0 6px;font-size:26px;}
+    .subtitle{color:#666;margin-bottom:20px;}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+      gap:16px;
+    }
+    .card{
+      background:#fff;
+      border:1px solid #e5e7eb;
+      border-radius:14px;
+      overflow:hidden;
+    }
+    .card img{
+      width:100%;
+      height:200px;
+      object-fit:cover;
+    }
+    .card .body{
+      padding:12px;
+    }
+    .price{
+      font-weight:700;
+      color:#E33400;
+      margin:4px 0;
+    }
+    .qty-ctrl{
+      display:inline-flex;
+      border:1px solid #ccc;
+      border-radius:8px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .qty-ctrl button{
+      width:34px;height:34px;
+      border:0;background:#fff;font-size:20px;cursor:pointer;
+    }
+    .qty-ctrl input{
+      width:80px;text-align:center;border:0;font-size:18px;
+    }
+    .btn-add{
+      margin-top:10px;
+      background:#E33400;
+      color:#fff;
+      border:0;
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .btn-cart{
+      display:block;
+      margin:24px auto 0;
+      max-width:320px;
+      text-align:center;
+      background:#111827;
+      color:#fff;
+      padding:12px 16px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:700;
+    }
+  </style>
 </head>
 <body>
+<div class="container">
 
-<header>
-    <a href="index.html" class="logo">Краснодарские тюльпаны</a>
-    <nav>
-        <a href="index.html">Главная</a>
-        <a href="catalog.html" class="active">Каталог</a>
-        <a href="cart.html">Корзина</a>
-    </nav>
-</header>
+  <header>
+    <h1>Каталог тюльпанов</h1>
+    <p class="subtitle">Прямые поставки из теплиц Краснодарского края. Цены на карточках — «от 75 ₽», точная цена считается в корзине по градации.</p>
+  </header>
 
-<section class="catalog">
-    <h1>Каталог Краснодарских тюльпанов</h1>
-    <p class="subtitle">Прямые поставки с теплиц Краснодарского края</p>
+  <div class="grid" id="catalog"></div>
 
-    <div class="products">
+  <a href="cart.html" class="btn-cart">Перейти в корзину</a>
 
-        <!-- ЖЁЛТЫЙ -->
-        <div class="product-card">
-            <img src="img/yellow.jpg" alt="Жёлтый">
-            <h3>Жёлтый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Жёлтый" data-type="smooth">Добавить в корзину</button>
-        </div>
+</div>
 
-        <!-- БЕЛЫЙ -->
-        <div class="product-card">
-            <img src="img/white.jpg" alt="Белый">
-            <h3>Белый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Белый" data-type="smooth">Добавить в корзину</button>
-        </div>
+<script>
+/* Товары. СОРТ «РОЗОВО-СИРЕНЕВЫЙ» УБРАН */
+const products = [
+  {name:"Жёлтый",         img:"yellow.jpg",         type:"smooth"},
+  {name:"Белый",          img:"white.jpg",          type:"smooth"},
+  {name:"Кремовый",       img:"cream.jpg",          type:"smooth"},
+  {name:"Розовый",        img:"pink.jpg",           type:"smooth"},
+  {name:"Красный",        img:"red.jpg",            type:"smooth"},
+  {name:"Красно-жёлтый",  img:"redyellow.jpg",      type:"smooth"},
+  {name:"Красно-белый",   img:"redwhite.jpg",       type:"smooth"},
+  {name:"Бело-сиреневый", img:"whiteviolet.jpg",    type:"smooth"},
+  {name:"Бело-розовый",   img:"whitepink.jpg",      type:"smooth"},
+  {name:"Оранжевый",      img:"orange.jpg",         type:"smooth"},
+  {name:"Фиолетовый",     img:"violet.jpg",         type:"smooth"},
+  {name:"Микс",           img:"mix.jpg",            type:"mix"},
+  {name:"Махровый жёлтый",img:"mahrovy-yellow.jpg", type:"terry"},
+  {name:"Махровый розовый",img:"mahrovy-rozovyj.jpg",type:"terry"}
+];
 
-        <!-- КРЕМОВЫЙ -->
-        <div class="product-card">
-            <img src="img/cream.jpg" alt="Кремовый">
-            <h3>Кремовый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Кремовый" data-type="smooth">Добавить в корзину</button>
-        </div>
+const PACK = 20; // шаг по 20 штук
 
-        <!-- РОЗОВЫЙ -->
-        <div class="product-card">
-            <img src="img/pink.jpg" alt="Розовый">
-            <h3>Розовый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Розовый" data-type="smooth">Добавить в корзину</button>
-        </div>
+/* Рендер карточек */
+const box = document.getElementById("catalog");
+box.innerHTML = products.map(p => `
+  <div class="card">
+    <img src="${p.img}" alt="${p.name}">
+    <div class="body">
+      <strong>${p.name}</strong>
+      <div class="price">от 75 ₽</div>
 
-        <!-- КРАСНЫЙ -->
-        <div class="product-card">
-            <img src="img/red.jpg" alt="Красный">
-            <h3>Красный</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Красный" data-type="smooth">Добавить в корзину</button>
-        </div>
+      <div class="qty-ctrl">
+        <button onclick="chgQty('${p.name}',-${PACK})">−</button>
+        <input id="qty_${p.name}" value="${PACK}">
+        <button onclick="chgQty('${p.name}',${PACK})">+</button>
+      </div>
 
-        <!-- БЕЛО-СИРЕНЕВЫЙ -->
-        <div class="product-card">
-            <img src="img/belo-sirenevyy.jpg" alt="Бело-сиреневый">
-            <h3>Бело-сиреневый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Бело-сиреневый" data-type="smooth">Добавить в корзину</button>
-        </div>
-
-        <!-- ОРАНЖЕВЫЙ -->
-        <div class="product-card">
-            <img src="img/orange.jpg" alt="Оранжевый">
-            <h3>Оранжевый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Оранжевый" data-type="smooth">Добавить в корзину</button>
-        </div>
-
-        <!-- КРАСНО-ЖЁЛТЫЙ -->
-        <div class="product-card">
-            <img src="img/red-yellow.jpg" alt="Красно-жёлтый">
-            <h3>Красно-жёлтый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Красно-жёлтый" data-type="smooth">Добавить в корзину</button>
-        </div>
-
-        <!-- КРАСНО-БЕЛЫЙ -->
-        <div class="product-card">
-            <img src="img/red-white.jpg" alt="Красно-белый">
-            <h3>Красно-белый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Красно-белый" data-type="smooth">Добавить в корзину</button>
-        </div>
-
-        <!-- ФИОЛЕТОВЫЙ -->
-        <div class="product-card">
-            <img src="img/purple.jpg" alt="Фиолетовый">
-            <h3>Фиолетовый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Фиолетовый" data-type="smooth">Добавить в корзину</button>
-        </div>
-
-        <!-- БЕЛО-РОЗОВЫЙ -->
-        <div class="product-card">
-            <img src="img/belo-rozovyy.jpg" alt="Бело-розовый">
-            <h3>Бело-розовый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Бело-розовый" data-type="smooth">Добавить в корзину</button>
-        </div>
-
-        <!-- МАХРОВЫЙ ЖЁЛТЫЙ -->
-        <div class="product-card">
-            <img src="img/mahrovyy-yellow.jpg" alt="Махровый жёлтый">
-            <h3>Махровый жёлтый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Махровый жёлтый" data-type="double">Добавить в корзину</button>
-        </div>
-
-        <!-- МАХРОВЫЙ РОЗОВЫЙ -->
-        <div class="product-card">
-            <img src="img/mahrovyy-pink.jpg" alt="Махровый розовый">
-            <h3>Махровый розовый</h3>
-            <p>Минимальный заказ от 100 шт</p>
-            <div class="price">от 75 ₽</div>
-            <button class="add-to-cart" data-name="Махровый розовый" data-type="double">Добавить в корзину</button>
-        </div>
-
+      <button class="btn-add" onclick="addToCart('${p.name}','${p.type}')">Добавить в корзину</button>
     </div>
-</section>
+  </div>
+`).join("");
 
-<script src="catalog.js"></script>
+function chgQty(name,delta){
+  const el = document.getElementById("qty_"+name);
+  let v = parseInt(el.value)||PACK;
+  v += delta;
+  if(v<PACK) v=PACK;
+  el.value = v;
+}
+
+/* Добавление в корзину (localStorage) */
+function addToCart(name,type){
+  const el = document.getElementById("qty_"+name);
+  const qty = parseInt(el.value)||PACK;
+
+  let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
+  const idx = cart.findIndex(i => i.name === name && i.type === type);
+  if(idx>=0){
+    cart[idx].qty += qty;
+  }else{
+    cart.push({name,type,qty});
+  }
+  localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
+  alert(name + " — добавлено " + qty + " шт в корзину");
+}
+</script>
+
 </body>
 </html>
