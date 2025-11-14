@@ -108,9 +108,7 @@
 
     .whatsapp{background:#25D366;}
     .telegram{background:#229ED9;}
-    .clear-btn{
-      background:#ff4d4d;
-    }
+    .clear-btn{background:#ff4d4d;}
 
     .qty{
       width:80px;
@@ -179,19 +177,57 @@
 </div>
 
 <script>
-  const CART_KEY = 'cart'; // тот же ключ, который использует каталог
+  const CART_KEY = 'cart';
+  const PACK = 20;
+
+  // градация гладкие+микс
+  const tiersSmooth = [
+    {min:20,   max:500,    price:99},
+    {min:500,  max:1000,   price:88},
+    {min:1000, max:2000,   price:80},
+    {min:2000, max:3000,   price:79},
+    {min:3000, max:5000,   price:78},
+    {min:5000, max:10000,  price:77},
+    {min:10000,max:50000,  price:76},
+    {min:50000,max:1000000,price:75}
+  ];
+
+  // градация махровые
+  const tiersTerry = [
+    {min:20,   max:500,    price:109},
+    {min:500,  max:1000,   price:98},
+    {min:1000, max:2000,   price:90},
+    {min:2000, max:3000,   price:89},
+    {min:3000, max:5000,   price:88},
+    {min:5000, max:10000,  price:87},
+    {min:10000,max:50000,  price:86},
+    {min:50000,max:1000000,price:85}
+  ];
+
+  function getPriceByTiers(tiers, qty){
+    for (const t of tiers){
+      if (qty >= t.min && qty < t.max) return t.price;
+    }
+    return tiers[tiers.length-1].price;
+  }
 
   function getCart(){
-    return JSON.parse(localStorage.getItem(CART_KEY) || '{}');
+    const raw = localStorage.getItem(CART_KEY);
+    if (!raw) return {};
+    try{
+      const parsed = JSON.parse(raw);
+      // ожидаем объект {id: {id,name,type,qty}}
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    }catch(e){
+      return {};
+    }
   }
 
   function saveCart(cart){
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
   }
 
-  function format(num){
-    return num.toLocaleString('ru-RU');
-  }
+  function format(num){return num.toLocaleString('ru-RU');}
 
   function loadCart(){
     const cart = getCart();
@@ -200,19 +236,38 @@
     const totalEl = document.getElementById('totalPrice');
 
     tbody.innerHTML = '';
-    let total = 0;
+
     let hasItems = false;
+    let total = 0;
+
+    // сначала считаем общие количества для градации
+    let smoothTotal = 0;
+    let terryTotal  = 0;
 
     for (const id in cart){
       const item = cart[id];
+      if (!item || !item.qty) continue;
       hasItems = true;
-      const sum = item.price * item.qty;
+      if (item.type === 'terry') terryTotal += item.qty;
+      else smoothTotal += item.qty; // гладкие + микс
+    }
+
+    const priceSmooth = getPriceByTiers(tiersSmooth, smoothTotal);
+    const priceTerry  = getPriceByTiers(tiersTerry, terryTotal);
+
+    // теперь рендерим строки
+    for (const id in cart){
+      const item = cart[id];
+      if (!item || !item.qty) continue;
+
+      const unitPrice = (item.type === 'terry') ? priceTerry : priceSmooth;
+      const sum = unitPrice * item.qty;
       total += sum;
 
       tbody.insertAdjacentHTML('beforeend', `
         <tr>
           <td>${item.name}</td>
-          <td>${item.type || ''}</td>
+          <td>${item.type === 'terry' ? 'Махровый' : (item.type === 'mix' ? 'Микс' : 'Гладкий')}</td>
           <td>
             <input
               type="number"
@@ -224,7 +279,7 @@
               onblur="updateQty('${id}', this)"
             >
           </td>
-          <td>${format(item.price)} ₽</td>
+          <td>${format(unitPrice)} ₽</td>
           <td>${format(sum)} ₽</td>
           <td><a href="#" onclick="removeItem('${id}');return false;">Удалить</a></td>
         </tr>
@@ -242,7 +297,7 @@
 
   function highlightInvalid(input){
     let v = parseInt(input.value);
-    if (!v || v < 20 || v % 20 !== 0){
+    if (!v || v < PACK || v % PACK !== 0){
       input.classList.add('invalid');
     } else {
       input.classList.remove('invalid');
@@ -252,19 +307,16 @@
   function updateQty(id, input){
     let q = parseInt(input.value);
 
-    // Минимум 20
-    if (!q || q < 20) q = 20;
+    if (!q || q < PACK) q = PACK;
 
-    // Округление до ближайших 20
-    if (q % 20 !== 0){
-      q = Math.round(q / 20) * 20;
+    if (q % PACK !== 0){
+      q = Math.round(q / PACK) * PACK;
     }
+    if (q < PACK) q = PACK;
 
-    // Обновляем значение в поле
     input.value = q;
     input.classList.remove('invalid');
 
-    // Обновляем корзину
     const cart = getCart();
     if (cart[id]){
       cart[id].qty = q;
@@ -291,11 +343,27 @@
     let text = 'Заказ тюльпанов:\n';
     let total = 0;
 
+    let smoothTotal = 0;
+    let terryTotal  = 0;
+
     for (const id in cart){
       const item = cart[id];
-      const sum = item.price * item.qty;
+      if (!item || !item.qty) continue;
+      if (item.type === 'terry') terryTotal += item.qty;
+      else smoothTotal += item.qty;
+    }
+
+    const priceSmooth = getPriceByTiers(tiersSmooth, smoothTotal);
+    const priceTerry  = getPriceByTiers(tiersTerry, terryTotal);
+
+    for (const id in cart){
+      const item = cart[id];
+      if (!item || !item.qty) continue;
+
+      const unitPrice = (item.type === 'terry') ? priceTerry : priceSmooth;
+      const sum = unitPrice * item.qty;
       total += sum;
-      text += `${item.name} — ${item.qty} шт × ${item.price} ₽ = ${sum} ₽\n`;
+      text += `${item.name} — ${item.qty} шт × ${unitPrice} ₽ = ${sum} ₽\n`;
     }
 
     text += `\nИтого: ${total} ₽`;
@@ -320,12 +388,10 @@
       return;
     }
     const msg = buildMessage();
-    // если у тебя есть юзернейм/бот, можно заменить ссылку
     const url = 'https://t.me/share/url?url=&text=' + encodeURIComponent(msg);
     window.open(url, '_blank');
   }
 
-  // старт
   loadCart();
 </script>
 
