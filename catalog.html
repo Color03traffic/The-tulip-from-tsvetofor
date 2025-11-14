@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Каталог тюльпанов — Тюльпан03.рф</title>
 
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y7K52HYB39"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Y7K52HYB39');
+</script>
+
 <style>
   body{
     margin:0;
@@ -116,22 +125,22 @@
 </div>
 
 <script>
-// Товары (розово-сиреневый удалён)
+// Товары (без розово-сиреневого)
 const products = [
-  {name:"Жёлтый",         img:"yellow.jpg",         type:"smooth"},
-  {name:"Белый",          img:"white.jpg",          type:"smooth"},
-  {name:"Кремовый",       img:"cream.jpg",          type:"smooth"},
-  {name:"Розовый",        img:"pink.jpg",           type:"smooth"},
-  {name:"Красный",        img:"red.jpg",            type:"smooth"},
-  {name:"Красно-жёлтый",  img:"redyellow.jpg",      type:"smooth"},
-  {name:"Красно-белый",   img:"redwhite.jpg",       type:"smooth"},
-  {name:"Бело-сиреневый", img:"whiteviolet.jpg",    type:"smooth"},
-  {name:"Бело-розовый",   img:"whitepink.jpg",      type:"smooth"},
-  {name:"Оранжевый",      img:"orange.jpg",         type:"smooth"},
-  {name:"Фиолетовый",     img:"violet.jpg",         type:"smooth"},
-  {name:"Микс",           img:"mix.jpg",            type:"mix"},
-  {name:"Махровый жёлтый",img:"mahrovy-yellow.jpg", type:"terry"},
-  {name:"Махровый розовый",img:"mahrovy-rozovyj.jpg",type:"terry"}
+  {name:"Жёлтый",           img:"yellow.jpg",         type:"smooth"},
+  {name:"Белый",            img:"white.jpg",          type:"smooth"},
+  {name:"Кремовый",         img:"cream.jpg",          type:"smooth"},
+  {name:"Розовый",          img:"pink.jpg",           type:"smooth"},
+  {name:"Красный",          img:"red.jpg",            type:"smooth"},
+  {name:"Красно-жёлтый",    img:"redyellow.jpg",      type:"smooth"},
+  {name:"Красно-белый",     img:"redwhite.jpg",       type:"smooth"},
+  {name:"Бело-сиреневый",   img:"whiteviolet.jpg",    type:"smooth"},
+  {name:"Бело-розовый",     img:"whitepink.jpg",      type:"smooth"},
+  {name:"Оранжевый",        img:"orange.jpg",         type:"smooth"},
+  {name:"Фиолетовый",       img:"violet.jpg",         type:"smooth"},
+  {name:"Микс",             img:"mix.jpg",            type:"mix"},
+  {name:"Махровый жёлтый",  img:"mahrovy-yellow.jpg", type:"terry"},
+  {name:"Махровый розовый", img:"mahrovy-rozovyj.jpg",type:"terry"}
 ];
 
 const PACK = 20;
@@ -157,20 +166,20 @@ box.innerHTML = products.map(p => `
 `).join("");
 
 function chgQty(name,delta){
-  let el=document.getElementById("qty_"+name);
-  let v=parseInt(el.value)||PACK;
+  let el = document.getElementById("qty_"+name);
+  let v = parseInt(el.value) || PACK;
   v += delta;
-  if(v<PACK) v=PACK;
-  el.value=v;
+  if(v < PACK) v = PACK;
+  el.value = v;
 }
 
 // Добавление в корзину — localStorage
 function addToCart(name,type){
-  let qty=parseInt(document.getElementById("qty_"+name).value)||PACK;
+  let qty = parseInt(document.getElementById("qty_"+name).value) || PACK;
 
   let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
+  let item = cart.find(i => i.name === name && i.type === type);
 
-  let item = cart.find(i => i.name===name && i.type===type);
   if(item) item.qty += qty;
   else cart.push({name,type,qty});
 
@@ -179,6 +188,36 @@ function addToCart(name,type){
   alert(`${name} — добавлено ${qty} шт`);
 }
 </script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+            if (document.scripts[j].src === r) { return; }
+        }
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0];
+        k.async=1;
+        k.src=r;
+        a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105324364', 'ym');
+
+    ym(105324364, 'init', {
+        ssr:true,
+        webvisor:true,
+        clickmap:true,
+        ecommerce:"dataLayer",
+        accurateTrackBounce:true,
+        trackLinks:true
+    });
+</script>
+<noscript>
+  <div>
+    <img src="https://mc.yandex.ru/watch/105324364" style="position:absolute; left:-9999px;" alt="" />
+  </div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
 
 </body>
 </html>
