@@ -1,371 +1,148 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Каталог краснодарских тюльпанов — Тюльпан03.рф</title>
-  <meta name="description" content="Каталог краснодарских тюльпанов оптом. Цены зависят от общего количества в корзине. Заказ кратно 20 шт.">
-  <style>
-    :root{
-      --bg:#E04297; --text:#111; --muted:#666;
-      --brand:#E33400; --stroke:#e5e7eb; --radius:16px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;background:var(--bg);color:var(--text)}
-    a{text-decoration:none;color:inherit}
-    header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--stroke);padding:12px 0;z-index:10}
-    .container{max-width:1100px;margin:0 auto;padding:0 16px}
-    .spread{display:flex;justify-content:space-between;align-items:center}
-    .logo{font-weight:800;font-size:22px}
-    nav a{margin-left:14px;font-weight:500}
-    nav a:hover{color:var(--brand)}
-    main.container{background:#fff;border-radius:18px;padding:0 16px 24px;margin-top:16px}
-
-    h1{font-size:30px;margin:24px 0 8px}
-    .subtitle{color:var(--muted);font-size:15px;margin:0 0 22px}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
-    .card{border:1px solid var(--stroke);border-radius:var(--radius);overflow:hidden;background:#f9fafb;display:flex;flex-direction:column}
-    .card img{width:100%;height:220px;object-fit:cover}
-    .card .body{padding:16px;display:flex;flex-direction:column;gap:8px}
-    .card strong{font-size:18px}
-    .meta{color:var(--muted);font-size:13px}
-
-    .qty-ctrl{display:inline-flex;align-items:center;border:1px solid #ccc;border-radius:10px;overflow:hidden;background:#fff}
-    .qty-ctrl button{width:36px;height:36px;border:0;background:#fff;font-size:20px;cursor:pointer}
-    .qty-ctrl button:hover{background:#f3f4f6}
-    .qty-ctrl input.qty{width:90px;text-align:center;border:0;border-left:1px solid #eee;border-right:1px solid #eee;height:36px}
-    .price{font-size:18px;font-weight:700;color:var(--brand)}
-    .btn{display:inline-block;padding:10px 16px;border-radius:10px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-weight:700;cursor:pointer}
-    .btn:hover{opacity:.92}
-
-    /* Корзина */
-    #cart{margin-top:28px;border-top:2px solid var(--stroke);padding-top:18px}
-    .table-scroll{width:100%;overflow-x:auto}
-    table{width:100%;border-collapse:collapse;min-width:760px}
-    th,td{padding:10px;border-bottom:1px solid var(--stroke);text-align:left;font-size:14px;vertical-align:top}
-    tfoot td{font-weight:800}
-    .sub{color:var(--muted);font-size:12px}
-    .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn-wa{background:#25D366;border-color:#25D366}
-    .btn-tg{background:#229ED9;border-color:#229ED9}
-
-    /* Тост */
-    .toast{position:fixed;right:16px;bottom:16px;background:#111;color:#fff;padding:12px 14px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .25s,transform .25s;max-width:90vw;z-index:9999;font-size:14px;line-height:1.35}
-    .toast.show{opacity:1;transform:translateY(0)}
-
-    @media (max-width: 640px){
-      .qty-ctrl input.qty{width:70px}
-      th,td{padding:8px}
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог Краснодарских тюльпанов</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <div class="container spread">
-    <div class="logo">🌷 Тюльпан03</div>
+    <a href="index.html" class="logo">Краснодарские тюльпаны</a>
     <nav>
-      <a href="index.html">Главная</a>
-      <a href="#cart">Корзина</a>
+        <a href="index.html">Главная</a>
+        <a href="catalog.html" class="active">Каталог</a>
+        <a href="cart.html">Корзина</a>
     </nav>
-  </div>
 </header>
 
-<main class="container">
+<section class="catalog">
+    <h1>Каталог Краснодарских тюльпанов</h1>
+    <p class="subtitle">Прямые поставки с теплиц Краснодарского края</p>
 
-  <h1>Каталог краснодарских тюльпанов</h1>
-  <p class="subtitle">Прямые поставки из теплиц Краснодарского края</p>
+    <div class="products">
 
-  <div class="grid" id="grid"></div>
-
-  <section id="cart">
-    <h2>Корзина</h2>
-    <div id="cartBox">
-      <div id="cartEmpty" class="sub">Корзина пуста. Добавьте товары из каталога выше.</div>
-
-      <div id="cartTableWrap" style="display:none">
-        <div class="table-scroll">
-          <table id="cartTable">
-            <thead>
-              <tr>
-                <th>Товар</th>
-                <th>Кол-во</th>
-                <th>Цена за шт</th>
-                <th>Сумма</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-            <tfoot>
-              <tr>
-                <td colspan="3" style="text-align:right">Итого:</td>
-                <td id="cartTotal">0 ₽</td>
-                <td style="text-align:right"><button id="clearCart" class="btn" style="padding:8px 12px">Очистить</button></td>
-              </tr>
-            </tfoot>
-          </table>
+        <!-- ЖЁЛТЫЙ -->
+        <div class="product-card">
+            <img src="img/yellow.jpg" alt="Жёлтый">
+            <h3>Жёлтый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Жёлтый" data-type="smooth">Добавить в корзину</button>
         </div>
 
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-          <input id="fio" type="text" placeholder="Фамилия Имя Отчество" />
-          <input id="phone" type="tel" placeholder="+7 (9XX) XXX-XX-XX" inputmode="tel" autocomplete="tel"/>
+        <!-- БЕЛЫЙ -->
+        <div class="product-card">
+            <img src="img/white.jpg" alt="Белый">
+            <h3>Белый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Белый" data-type="smooth">Добавить в корзину</button>
         </div>
 
-        <div class="btn-row">
-          <a id="waCheckout" class="btn btn-wa" target="_blank" rel="noopener">Отправить в WhatsApp</a>
-          <a id="tgCheckout" class="btn btn-tg" target="_blank" rel="noopener">Отправить в Telegram</a>
+        <!-- КРЕМОВЫЙ -->
+        <div class="product-card">
+            <img src="img/cream.jpg" alt="Кремовый">
+            <h3>Кремовый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Кремовый" data-type="smooth">Добавить в корзину</button>
         </div>
-      </div>
+
+        <!-- РОЗОВЫЙ -->
+        <div class="product-card">
+            <img src="img/pink.jpg" alt="Розовый">
+            <h3>Розовый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Розовый" data-type="smooth">Добавить в корзину</button>
+        </div>
+
+        <!-- КРАСНЫЙ -->
+        <div class="product-card">
+            <img src="img/red.jpg" alt="Красный">
+            <h3>Красный</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Красный" data-type="smooth">Добавить в корзину</button>
+        </div>
+
+        <!-- БЕЛО-СИРЕНЕВЫЙ -->
+        <div class="product-card">
+            <img src="img/belo-sirenevyy.jpg" alt="Бело-сиреневый">
+            <h3>Бело-сиреневый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Бело-сиреневый" data-type="smooth">Добавить в корзину</button>
+        </div>
+
+        <!-- ОРАНЖЕВЫЙ -->
+        <div class="product-card">
+            <img src="img/orange.jpg" alt="Оранжевый">
+            <h3>Оранжевый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Оранжевый" data-type="smooth">Добавить в корзину</button>
+        </div>
+
+        <!-- КРАСНО-ЖЁЛТЫЙ -->
+        <div class="product-card">
+            <img src="img/red-yellow.jpg" alt="Красно-жёлтый">
+            <h3>Красно-жёлтый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Красно-жёлтый" data-type="smooth">Добавить в корзину</button>
+        </div>
+
+        <!-- КРАСНО-БЕЛЫЙ -->
+        <div class="product-card">
+            <img src="img/red-white.jpg" alt="Красно-белый">
+            <h3>Красно-белый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Красно-белый" data-type="smooth">Добавить в корзину</button>
+        </div>
+
+        <!-- ФИОЛЕТОВЫЙ -->
+        <div class="product-card">
+            <img src="img/purple.jpg" alt="Фиолетовый">
+            <h3>Фиолетовый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Фиолетовый" data-type="smooth">Добавить в корзину</button>
+        </div>
+
+        <!-- БЕЛО-РОЗОВЫЙ -->
+        <div class="product-card">
+            <img src="img/belo-rozovyy.jpg" alt="Бело-розовый">
+            <h3>Бело-розовый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Бело-розовый" data-type="smooth">Добавить в корзину</button>
+        </div>
+
+        <!-- МАХРОВЫЙ ЖЁЛТЫЙ -->
+        <div class="product-card">
+            <img src="img/mahrovyy-yellow.jpg" alt="Махровый жёлтый">
+            <h3>Махровый жёлтый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Махровый жёлтый" data-type="double">Добавить в корзину</button>
+        </div>
+
+        <!-- МАХРОВЫЙ РОЗОВЫЙ -->
+        <div class="product-card">
+            <img src="img/mahrovyy-pink.jpg" alt="Махровый розовый">
+            <h3>Махровый розовый</h3>
+            <p>Минимальный заказ от 100 шт</p>
+            <div class="price">от 75 ₽</div>
+            <button class="add-to-cart" data-name="Махровый розовый" data-type="double">Добавить в корзину</button>
+        </div>
+
     </div>
-  </section>
+</section>
 
-</main>
-
-<footer class="container" style="background:#fff;border-radius:18px;margin-top:12px;padding:12px 16px;color:#666;text-align:center">
-  © 2025 Тюльпан03.рф — свежие цветы оптом 🌷
-</footer>
-
-<div id="toast" class="toast">Добавлено в корзину</div>
-
-<script>
-const PACK=20;
-const WA_PHONE="79148416115";
-const TG_USERNAME="tulpan03";
-
-/* Пороги */
-const tiersDefault=[
-  {min:20,max:500,price:99},{min:500,max:1000,price:88},{min:1000,max:2000,price:80},{min:2000,max:3000,price:79},
-  {min:3000,max:5000,price:78},{min:5000,max:10000,price:77},{min:15000,max:50000,price:76},{min:50000,max:100000,price:75}
-];
-const tiersMahrovye=[
-  {min:20,max:500,price:109},{min:500,max:1000,price:98},{min:1000,max:2000,price:90},{min:2000,max:3000,price:89},
-  {min:3000,max:5000,price:88},{min:5000,max:10000,price:87},{min:15000,max:50000,price:86},{min:50000,max:100000,price:85}
-];
-
-/* Товары */
-const products=[
-  {id:"pink",name:"Розовый",type:"default",img:"pink.jpg"},
-  {id:"yellow",name:"Жёлтый",type:"default",img:"yellow.jpg"},
-  {id:"red",name:"Красный",type:"default",img:"red.jpg"},
-  {id:"white",name:"Белый",type:"default",img:"white.jpg"},
-  {id:"cream",name:"Кремовый",type:"default",img:"cream.jpg"},
-  {id:"roseviolet",name:"Розово-сиреневый",type:"default",img:"roseviolet.jpg"},
-  {id:"whiteviolet",name:"Бело-сиреневый",type:"default",img:"whiteviolet.jpg"},
-  {id:"orange",name:"Оранжевый",type:"default",img:"orange.jpg"},
-  {id:"redyellow",name:"Красно-жёлтый",type:"default",img:"redyellow.jpg"},
-  {id:"redwhite",name:"Красно-белый",type:"default",img:"redwhite.jpg"},
-  {id:"violet",name:"Фиолетовый",type:"default",img:"violet.jpg"},
-  {id:"whitepink",name:"Бело-розовый",type:"default",img:"whitepink.jpg"},
-  {id:"mahrovy-yellow",name:"Махровый жёлтый",type:"mahrovye",img:"mahrovy-yellow.jpg"},
-  {id:"mahrovy-roz",name:"Махровый розовый",type:"mahrovye",img:"mahrovy-rozovyj.jpg"}
-];
-
-/* Рендер карточек (цена на карточке фиксирована как «от 75 ₽») */
-const grid=document.getElementById('grid');
-grid.innerHTML=products.map(p=>`
-  <div class="card">
-    <img src="${p.img}" alt="${p.name}">
-    <div class="body">
-      <strong>${p.name}</strong>
-      <div class="meta">Цена зависит от общего количества в корзине</div>
-
-      <label class="sub">Количество (кратно ${PACK}):</label>
-      <div class="qty-ctrl">
-        <button data-act="dec" data-id="${p.id}">−</button>
-        <input type="number" class="qty" id="qty-${p.id}" min="${PACK}" step="${PACK}" value="${PACK}" data-id="${p.id}" data-type="${p.type}">
-        <button data-act="inc" data-id="${p.id}">+</button>
-      </div>
-
-      <div class="price">от 75 ₽</div>
-      <div><button class="btn add" data-id="${p.id}">Добавить в корзину</button></div>
-    </div>
-  </div>
-`).join('');
-
-/* Корзина и логика цен — без изменений */
-const cart=new Map();
-
-function roundToPacks(q){q=parseInt(q)||PACK;return Math.max(PACK,Math.ceil(q/PACK)*PACK);}
-function totalQtyCart(){let t=0;cart.forEach(i=>t+=i.qty);return t;}
-function findTierIndex(total){const b=tiersDefault;for(let i=0;i<b.length;i++){if(total>=b[i].min&&total<=b[i].max)return i;}return b.length-1;}
-function getUnitPriceByType(t,total){const i=findTierIndex(Math.max(total,PACK));return(t==='mahrovye'?tiersMahrovye[i].price:tiersDefault[i].price);}
-function money(n){return Math.round(n).toLocaleString('ru-RU')+' ₽';}
-
-/* Тост */
-const toast=document.getElementById('toast');let toastTimer=null;
-function showToast(t){toast.textContent=t;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2200);}
-
-/* Qty на карточках */
-document.addEventListener('click',e=>{
-  const b=e.target.closest('button[data-act]'); if(!b) return;
-  const id=b.dataset.id, inp=document.getElementById(`qty-${id}`);
-  let v=roundToPacks(inp.value);
-  if(b.dataset.act==='inc') v+=PACK; else v=Math.max(PACK,v-PACK);
-  inp.value=v;
-});
-document.addEventListener('input',e=>{
-  const i=e.target.closest('input.qty'); if(!i) return;
-  i.value=roundToPacks(i.value);
-});
-
-/* Добавление в корзину */
-document.addEventListener('click',e=>{
-  const a=e.target.closest('.add'); if(!a) return;
-  const id=a.dataset.id, p=products.find(x=>x.id===id);
-  const q=roundToPacks(document.getElementById(`qty-${id}`).value);
-  const prev=cart.get(id)||{id,name:p.name,type:p.type,qty:0};
-  prev.qty+=q; cart.set(id,prev);
-  renderCart(); showToast(`${p.name} — добавлено ${q} шт`);
-});
-
-/* Рендер корзины (реальные цены считаются как раньше) */
-function renderCart(){
-  const empty=document.getElementById('cartEmpty');
-  const wrap=document.getElementById('cartTableWrap');
-  const tbody=document.querySelector('#cartTable tbody');
-  const totalEl=document.getElementById('cartTotal');
-
-  if(cart.size===0){ empty.style.display='block'; wrap.style.display='none'; tbody.innerHTML=''; totalEl.textContent='0 ₽'; return; }
-  empty.style.display='none'; wrap.style.display='block'; tbody.innerHTML='';
-
-  const totalQty=totalQtyCart(); let grand=0;
-
-  cart.forEach(it=>{
-    const unit=getUnitPriceByType(it.type,totalQty);
-    const sum=unit*it.qty; grand+=sum;
-
-    const tr=document.createElement('tr'); tr.dataset.id=it.id;
-    tr.innerHTML=`
-      <td>${it.name}<div class="sub">${it.type==='mahrovye'?'Махровые':'Гладкие'}</div></td>
-      <td>
-        <div class="qty-ctrl">
-          <button data-cart-act="dec" data-id="${it.id}">−</button>
-          <input type="number" class="qty cart-qty" data-id="${it.id}" min="${PACK}" step="${PACK}" value="${it.qty}">
-          <button data-cart-act="inc" data-id="${it.id}">+</button>
-        </div>
-        <div class="sub">упаковок: ${it.qty/PACK} × ${PACK}</div>
-      </td>
-      <td data-cell="unit">${unit} ₽</td>
-      <td data-cell="sum">${money(sum)}</td>
-      <td><a href="#" data-act="del" data-id="${it.id}">Удалить</a></td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  // Пересчёт строк при смене порога
-  tbody.querySelectorAll('tr').forEach(tr=>{
-    const id=tr.dataset.id; const it=cart.get(id); if(!it) return;
-    const u=getUnitPriceByType(it.type,totalQty);
-    const s=u*it.qty;
-    tr.querySelector('[data-cell="unit"]').textContent=u+' ₽';
-    tr.querySelector('[data-cell="sum"]').textContent=money(s);
-  });
-
-  totalEl.textContent=money(grand);
-}
-
-/* События в корзине */
-document.getElementById('cartBox').addEventListener('click',e=>{
-  const del=e.target.closest('[data-act="del"]');
-  if(del){ e.preventDefault(); cart.delete(del.dataset.id); renderCart(); return; }
-  const b=e.target.closest('button[data-cart-act]'); if(b){
-    const id=b.dataset.id, it=cart.get(id); if(!it) return;
-    if(b.dataset.cartAct==='inc') it.qty+=PACK; else it.qty=Math.max(PACK,it.qty-PACK);
-    cart.set(id,it); renderCart();
-  }
-});
-document.getElementById('cartBox').addEventListener('input',e=>{
-  const inp=e.target.closest('input.cart-qty'); if(!inp) return;
-  const id=inp.dataset.id, it=cart.get(id); if(!it) return;
-  it.qty=roundToPacks(inp.value); if(it.qty<PACK) it.qty=PACK;
-  cart.set(id,it); renderCart();
-});
-document.getElementById('clearCart').addEventListener('click',()=>{ cart.clear(); renderCart(); });
-
-/* Формирование текста заказа */
-function formatPhoneHuman(r){
-  let d=r.replace(/\D/g,'');
-  if(d.startsWith('8')) d='7'+d.slice(1);
-  if(!d.startsWith('7')) d='7'+d;
-  d=d.slice(0,11);
-  let res='+7';
-  if(d.length>1) res+=' ('+d.slice(1,4);
-  if(d.length>=4) res+=') '+d.slice(4,7);
-  if(d.length>=7) res+='-'+d.slice(7,9);
-  if(d.length>=9) res+='-'+d.slice(9,11);
-  return res;
-}
-function buildPlainText(){
-  if(cart.size===0){ alert('Корзина пуста'); return null; }
-  const fio=document.getElementById('fio').value.trim();
-  const phone=document.getElementById('phone').value.trim();
-  const digits=phone.replace(/\D/g,'');
-  if(!fio){ alert('Введите ФИО'); return null; }
-  if(digits.length!==11){ alert('Введите телефон в формате +7'); return null; }
-
-  const totalQty=totalQtyCart();
-  const lines=[];
-  let totalSum=0, packs=0;
-
-  cart.forEach(it=>{
-    const u=getUnitPriceByType(it.type,totalQty);
-    const s=u*it.qty; totalSum+=s; packs+=it.qty/PACK;
-    lines.push(`${it.name}: ${it.qty} шт (${it.qty/PACK} уп.) × ${u} ₽ = ${s.toLocaleString('ru-RU')} ₽`);
-  });
-
-  const header=`Новый заказ с tulpan03.рф`;
-  const footer=`Итого: ${totalSum.toLocaleString('ru-RU')} ₽
-Всего упаковок: ${packs}
-
-ФИО: ${fio}
-Телефон: ${formatPhoneHuman(phone)}`;
-
-  return `${header}\n\n${lines.join('\n')}\n\n${footer}`;
-}
-
-/* WhatsApp */
-document.getElementById('waCheckout').addEventListener('click',e=>{
-  const text=buildPlainText(); if(!text){e.preventDefault();return;}
-  e.currentTarget.href=`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`;
-});
-
-/* Telegram — открываем диалог с @username, при неудаче — веб-страница username */
-document.getElementById('tgCheckout').addEventListener('click', (e)=>{
-  const text = buildPlainText(); 
-  if(!text){ e.preventDefault(); return; }
-
-  const deeplink = `tg://resolve?domain=${encodeURIComponent(TG_USERNAME)}&text=${encodeURIComponent(text)}`;
-  const webshare = `https://t.me/${encodeURIComponent(TG_USERNAME)}?text=${encodeURIComponent(text)}`;
-
-  e.preventDefault();
-
-  // Пытаемся открыть приложение (системный диалог «Открыть в Telegram?»)
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.src = deeplink;
-  document.body.appendChild(iframe);
-  setTimeout(()=>{ window.location.href = deeplink; }, 50);
-
-  // Фолбэк через 800мс, если вкладка осталась видимой
-  const timer = setTimeout(()=>{
-    if (document.visibilityState === 'visible') {
-      window.open(webshare, '_blank', 'noopener');
-    }
-  }, 800);
-
-  const onVis = () => {
-    if (document.visibilityState === 'hidden') {
-      clearTimeout(timer);
-      document.removeEventListener('visibilitychange', onVis);
-    }
-  };
-  document.addEventListener('visibilitychange', onVis);
-});
-
-/* Инициализация */
-renderCart();
-</script>
-
+<script src="catalog.js"></script>
 </body>
 </html>
