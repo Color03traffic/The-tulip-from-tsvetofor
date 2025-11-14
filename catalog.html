@@ -1,109 +1,122 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Каталог тюльпанов — Тюльпан03.рф</title>
-  <meta name="description" content="Каталог краснодарских тюльпанов оптом. Цена на карточках — от 75 ₽.">
-  <style>
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;
-      background:#E04297;
-      color:#111;
-    }
-    .container{
-      max-width:1100px;
-      margin:0 auto;
-      padding:16px;
-    }
-    header{
-      background:#fff;
-      padding:16px;
-      border-radius:14px;
-      border:1px solid #e5e7eb;
-      margin-bottom:20px;
-    }
-    h1{margin:10px 0 6px;font-size:26px;}
-    .subtitle{color:#666;margin-bottom:20px;}
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-      gap:16px;
-    }
-    .card{
-      background:#fff;
-      border:1px solid #e5e7eb;
-      border-radius:14px;
-      overflow:hidden;
-    }
-    .card img{
-      width:100%;
-      height:200px;
-      object-fit:cover;
-    }
-    .card .body{
-      padding:12px;
-    }
-    .price{
-      font-weight:700;
-      color:#E33400;
-      margin:4px 0;
-    }
-    .qty-ctrl{
-      display:inline-flex;
-      border:1px solid #ccc;
-      border-radius:8px;
-      overflow:hidden;
-      background:#fff;
-    }
-    .qty-ctrl button{
-      width:34px;height:34px;
-      border:0;background:#fff;font-size:20px;cursor:pointer;
-    }
-    .qty-ctrl input{
-      width:80px;text-align:center;border:0;font-size:18px;
-    }
-    .btn-add{
-      margin-top:10px;
-      background:#E33400;
-      color:#fff;
-      border:0;
-      padding:8px 12px;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
-    }
-    .btn-cart{
-      display:block;
-      margin:24px auto 0;
-      max-width:320px;
-      text-align:center;
-      background:#111827;
-      color:#fff;
-      padding:12px 16px;
-      border-radius:10px;
-      text-decoration:none;
-      font-weight:700;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Каталог тюльпанов — Тюльпан03.рф</title>
+
+<style>
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;
+    background:#f4b6d2; /* мягкий розовый фон как на главной */
+    color:#111;
+  }
+
+  .container{
+    max-width:1100px;
+    margin:0 auto;
+    padding:16px;
+  }
+
+  header{
+    background:#fff;
+    padding:16px;
+    border-radius:14px;
+    border:1px solid #e5e7eb;
+    margin-bottom:20px;
+  }
+
+  h1{margin:10px 0 6px;font-size:26px;}
+  .subtitle{color:#666;margin-bottom:20px;}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:16px;
+  }
+
+  .card{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    overflow:hidden;
+  }
+
+  .card img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+  }
+
+  .card .body{
+    padding:12px;
+  }
+
+  .price{
+    font-weight:700;
+    color:#E33400;
+    margin:4px 0;
+  }
+
+  .qty-ctrl{
+    display:inline-flex;
+    border:1px solid #ccc;
+    border-radius:8px;
+    overflow:hidden;
+    background:#fff;
+  }
+
+  .qty-ctrl button{
+    width:34px;height:34px;border:0;background:#fff;font-size:20px;cursor:pointer;
+  }
+
+  .qty-ctrl input{
+    width:80px;text-align:center;border:0;font-size:18px;
+  }
+
+  .btn-add{
+    margin-top:10px;
+    background:#E33400;
+    color:#fff;
+    border:0;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+  }
+
+  .btn-cart{
+    display:block;
+    margin:24px auto 0;
+    max-width:320px;
+    text-align:center;
+    background:#111827;
+    color:#fff;
+    padding:12px 16px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+  }
+</style>
 </head>
+
 <body>
 <div class="container">
 
-  <header>
-    <h1>Каталог тюльпанов</h1>
-    <p class="subtitle">Прямые поставки из теплиц Краснодарского края. Цены на карточках — «от 75 ₽», точная цена считается в корзине по градации.</p>
-  </header>
+<header>
+  <h1>Каталог тюльпанов</h1>
+  <p class="subtitle">Прямые поставки из теплиц Краснодарского края. Точная цена считается автоматически в корзине.</p>
+</header>
 
-  <div class="grid" id="catalog"></div>
+<div class="grid" id="catalog"></div>
 
-  <a href="cart.html" class="btn-cart">Перейти в корзину</a>
+<a href="cart.html" class="btn-cart">Перейти в корзину</a>
 
 </div>
 
 <script>
-/* Товары. СОРТ «РОЗОВО-СИРЕНЕВЫЙ» УБРАН */
+// Товары (розово-сиреневый удалён)
 const products = [
   {name:"Жёлтый",         img:"yellow.jpg",         type:"smooth"},
   {name:"Белый",          img:"white.jpg",          type:"smooth"},
@@ -121,9 +134,9 @@ const products = [
   {name:"Махровый розовый",img:"mahrovy-rozovyj.jpg",type:"terry"}
 ];
 
-const PACK = 20; // шаг по 20 штук
+const PACK = 20;
 
-/* Рендер карточек */
+// Рендер карточек
 const box = document.getElementById("catalog");
 box.innerHTML = products.map(p => `
   <div class="card">
@@ -144,27 +157,26 @@ box.innerHTML = products.map(p => `
 `).join("");
 
 function chgQty(name,delta){
-  const el = document.getElementById("qty_"+name);
-  let v = parseInt(el.value)||PACK;
+  let el=document.getElementById("qty_"+name);
+  let v=parseInt(el.value)||PACK;
   v += delta;
   if(v<PACK) v=PACK;
-  el.value = v;
+  el.value=v;
 }
 
-/* Добавление в корзину (localStorage) */
+// Добавление в корзину — localStorage
 function addToCart(name,type){
-  const el = document.getElementById("qty_"+name);
-  const qty = parseInt(el.value)||PACK;
+  let qty=parseInt(document.getElementById("qty_"+name).value)||PACK;
 
   let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
-  const idx = cart.findIndex(i => i.name === name && i.type === type);
-  if(idx>=0){
-    cart[idx].qty += qty;
-  }else{
-    cart.push({name,type,qty});
-  }
+
+  let item = cart.find(i => i.name===name && i.type===type);
+  if(item) item.qty += qty;
+  else cart.push({name,type,qty});
+
   localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
-  alert(name + " — добавлено " + qty + " шт в корзину");
+
+  alert(`${name} — добавлено ${qty} шт`);
 }
 </script>
 
