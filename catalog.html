@@ -1,218 +1,233 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Каталог тюльпанов — Тюльпан03.рф</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог тюльпанов — Тюльпан03.рф</title>
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y7K52HYB39"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-Y7K52HYB39');
-</script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y7K52HYB39"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Y7K52HYB39');
+  </script>
 
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-  (function(m,e,t,r,i,k,a){
+  <!-- Yandex.Metrika counter (верхний блок, как у тебя) -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
       m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
       m[i].l=1*new Date();
-      k=e.createElement(t),a=e.getElementsByTagName(t)[0],
-      k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-  })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0];
+      k.async=1;k.src=r;a.parentNode.insertBefore(k,a);
+    })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-  ym(105324364, "init", {
+    ym(105324364, "init", {
       clickmap:true,
       trackLinks:true,
       accurateTrackBounce:true,
       webvisor:true
-  });
-</script>
-<noscript>
-  <div><img src="https://mc.yandex.ru/watch/105324364"
-  style="position:absolute; left:-9999px;" alt=""></div>
-</noscript>
-<!-- /Yandex.Metrika counter -->
+    });
+  </script>
+  <noscript>
+    <div><img src="https://mc.yandex.ru/watch/105324364" style="position:absolute; left:-9999px;" alt=""></div>
+  </noscript>
+  <!-- /Yandex.Metrika counter -->
 
-<style>
-  body{
-    margin:0;
-    font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;
-    background:#f4b6d2; /* мягкий розовый фон как на главной */
-    color:#111;
-  }
-
-  .container{
-    max-width:1100px;
-    margin:0 auto;
-    padding:16px;
-  }
-
-  header{
-    background:#fff;
-    padding:16px;
-    border-radius:14px;
-    border:1px solid #e5e7eb;
-    margin-bottom:20px;
-  }
-
-  h1{margin:10px 0 6px;font-size:26px;}
-  .subtitle{color:#666;margin-bottom:20px;}
-
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-    gap:16px;
-  }
-
-  .card{
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:14px;
-    overflow:hidden;
-  }
-
-  .card img{
-    width:100%;
-    height:200px;
-    object-fit:cover;
-  }
-
-  .card .body{
-    padding:12px;
-  }
-
-  .price{
-    font-weight:700;
-    color:#E33400;
-    margin:4px 0;
-  }
-
-  .qty-ctrl{
-    display:inline-flex;
-    border:1px solid #ccc;
-    border-radius:8px;
-    overflow:hidden;
-    background:#fff;
-  }
-
-  .qty-ctrl button{
-    width:34px;height:34px;border:0;background:#fff;font-size:20px;cursor:pointer;
-  }
-
-  .qty-ctrl input{
-    width:80px;text-align:center;border:0;font-size:18px;
-  }
-
-  .btn-add{
-    margin-top:10px;
-    background:#E33400;
-    color:#fff;
-    border:0;
-    padding:8px 12px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:700;
-  }
-
-  .btn-cart{
-    display:block;
-    margin:24px auto 0;
-    max-width:320px;
-    text-align:center;
-    background:#111827;
-    color:#fff;
-    padding:12px 16px;
-    border-radius:10px;
-    text-decoration:none;
-    font-weight:700;
-  }
-</style>
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;
+      background:#f4b6d2; /* мягкий розовый фон как на главной */
+      color:#111;
+    }
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:16px;
+    }
+    header{
+      background:#fff;
+      padding:16px;
+      border-radius:14px;
+      border:1px solid #e5e7eb;
+      margin-bottom:20px;
+    }
+    h1{margin:10px 0 6px;font-size:26px;}
+    .subtitle{color:#666;margin-bottom:20px;}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+      gap:16px;
+    }
+    .card{
+      background:#fff;
+      border:1px solid #e5e7eb;
+      border-radius:14px;
+      overflow:hidden;
+    }
+    .card img{
+      width:100%;
+      height:200px;
+      object-fit:cover;
+    }
+    .card .body{
+      padding:12px;
+    }
+    .price{
+      font-weight:700;
+      color:#E33400;
+      margin:4px 0;
+    }
+    .qty-ctrl{
+      display:inline-flex;
+      border:1px solid #ccc;
+      border-radius:8px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .qty-ctrl button{
+      width:34px;height:34px;border:0;background:#fff;font-size:20px;cursor:pointer;
+    }
+    .qty-ctrl input{
+      width:80px;text-align:center;border:0;font-size:18px;
+    }
+    .btn-add{
+      margin-top:10px;
+      background:#E33400;
+      color:#fff;
+      border:0;
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .btn-cart{
+      display:block;
+      margin:24px auto 0;
+      max-width:320px;
+      text-align:center;
+      background:#111827;
+      color:#fff;
+      padding:12px 16px;
+      border-radius:10px;
+      text-decoration:none;
+      font-weight:700;
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
+  <div class="container">
+    <header>
+      <h1>Каталог Краснодарских тюльпанов</h1>
+      <p class="subtitle">Прямые поставки из теплиц Краснодарского края. Точная цена считается автоматически в корзине.</p>
+    </header>
 
-<header>
-  <h1>Каталог Краснодарских тюльпанов</h1>
-  <p class="subtitle">Прямые поставки из теплиц Краснодарского края. Точная цена считается автоматически в корзине.</p>
-</header>
+    <div class="grid" id="catalog"></div>
 
-<div class="grid" id="catalog"></div>
-
-<a href="cart.html" class="btn-cart">Перейти в корзину</a>
-
-</div>
-
-<script>
-// Товары (без розово-сиреневого)
-const products = [
-  {name:"Жёлтый",           img:"yellow.jpg",         type:"smooth"},
-  {name:"Белый",            img:"white.jpg",          type:"smooth"},
-  {name:"Кремовый",         img:"cream.jpg",          type:"smooth"},
-  {name:"Розовый",          img:"pink.jpg",           type:"smooth"},
-  {name:"Красный",          img:"red.jpg",            type:"smooth"},
-  {name:"Красно-жёлтый",    img:"redyellow.jpg",      type:"smooth"},
-  {name:"Красно-белый",     img:"redwhite.jpg",       type:"smooth"},
-  {name:"Бело-сиреневый",   img:"whiteviolet.jpg",    type:"smooth"},
-  {name:"Бело-розовый",     img:"whitepink.jpg",      type:"smooth"},
-  {name:"Оранжевый",        img:"orange.jpg",         type:"smooth"},
-  {name:"Фиолетовый",       img:"violet.jpg",         type:"smooth"},
-  {name:"Микс",             img:"mix.jpg",            type:"mix"},
-  {name:"Махровый жёлтый",  img:"mahrovy-yellow.jpg", type:"terry"},
-  {name:"Махровый розовый", img:"mahrovy-rozovyj.jpg",type:"terry"}
-];
-
-const PACK = 20;
-
-// Рендер карточек
-const box = document.getElementById("catalog");
-box.innerHTML = products.map(p => `
-  <div class="card">
-    <img src="${p.img}" alt="${p.name}">
-    <div class="body">
-      <strong>${p.name}</strong>
-      <div class="price">от 75 ₽</div>
-
-      <div class="qty-ctrl">
-        <button onclick="chgQty('${p.name}',-${PACK})">−</button>
-        <input id="qty_${p.name}" value="${PACK}">
-        <button onclick="chgQty('${p.name}',${PACK})">+</button>
-      </div>
-
-      <button class="btn-add" onclick="addToCart('${p.name}','${p.type}')">Добавить в корзину</button>
-    </div>
+    <a href="cart.html" class="btn-cart">Перейти в корзину</a>
   </div>
-`).join("");
 
-function chgQty(name,delta){
-  let el = document.getElementById("qty_"+name);
-  let v = parseInt(el.value) || PACK;
-  v += delta;
-  if(v < PACK) v = PACK;
-  el.value = v;
-}
+  <script>
+  // Товары (без розово-сиреневого)
+  const products = [
+    {name:"Жёлтый",           img:"yellow.jpg",         type:"smooth"},
+    {name:"Белый",            img:"white.jpg",          type:"smooth"},
+    {name:"Кремовый",         img:"cream.jpg",          type:"smooth"},
+    {name:"Розовый",          img:"pink.jpg",           type:"smooth"},
+    {name:"Красный",          img:"red.jpg",            type:"smooth"},
+    {name:"Красно-жёлтый",    img:"redyellow.jpg",      type:"smooth"},
+    {name:"Красно-белый",     img:"redwhite.jpg",       type:"smooth"},
+    {name:"Бело-сиреневый",   img:"whiteviolet.jpg",    type:"smooth"},
+    {name:"Бело-розовый",     img:"whitepink.jpg",      type:"smooth"},
+    {name:"Оранжевый",        img:"orange.jpg",         type:"smooth"},
+    {name:"Фиолетовый",       img:"violet.jpg",         type:"smooth"},
 
-// Добавление в корзину — localStorage
-function addToCart(name,type){
-  let qty = parseInt(document.getElementById("qty_"+name).value) || PACK;
+    // 🔸 МИКС — без фото, с текстом
+    {
+      name:"Микс",
+      img:null,
+      type:"mix",
+      custom:true
+    },
 
-  let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
-  let item = cart.find(i => i.name === name && i.type === type);
+    {name:"Махровый жёлтый",  img:"mahrovy-yellow.jpg", type:"terry"},
+    {name:"Махровый розовый", img:"mahrovy-rozovyj.jpg",type:"terry"}
+  ];
 
-  if(item) item.qty += qty;
-  else cart.push({name,type,qty});
+  const PACK = 20;
 
-  localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
+  const box = document.getElementById("catalog");
 
-  alert(`${name} — добавлено ${qty} шт`);
-}
-</script>
+  // Рендер карточек (с особой обработкой для МИКС)
+  box.innerHTML = products.map(p => `
+    <div class="card">
+      ${
+        p.custom
+          ? `
+            <div style="
+              width:100%;
+              height:200px;
+              background:#fff2f6;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              text-align:center;
+              padding:10px;
+              font-size:15px;
+              font-weight:600;
+              color:#b3005a;
+              border-bottom:1px solid #eee;
+            ">
+              Эта позиция означает выбор расцветки на наше усмотрение.
+            </div>
+          `
+          : `<img src="${p.img}" alt="${p.name}">`
+      }
+      <div class="body">
+        <strong>${p.name}</strong>
+        <div class="price">от 75 ₽</div>
 
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
+        <div class="qty-ctrl">
+          <button onclick="chgQty('${p.name}',-${PACK})">−</button>
+          <input id="qty_${p.name}" value="${PACK}">
+          <button onclick="chgQty('${p.name}',${PACK})">+</button>
+        </div>
+
+        <button class="btn-add" onclick="addToCart('${p.name}','${p.type}')">
+          Добавить в корзину
+        </button>
+      </div>
+    </div>
+  `).join("");
+
+  function chgQty(name,delta){
+    let el = document.getElementById("qty_"+name);
+    let v = parseInt(el.value, 10) || PACK;
+    v += delta;
+    if(v < PACK) v = PACK;
+    el.value = v;
+  }
+
+  // Добавление в корзину — localStorage
+  function addToCart(name,type){
+    let qtyEl = document.getElementById("qty_"+name);
+    let qty = parseInt(qtyEl.value, 10) || PACK;
+
+    let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
+    let item = cart.find(i => i.name === name && i.type === type);
+
+    if(item) item.qty += qty;
+    else cart.push({name,type,qty});
+
+    localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
+    alert(`${name} — добавлено ${qty} шт`);
+  }
+  </script>
+
+  <!-- Yandex.Metrika counter (нижний блок, как у тебя) -->
+  <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
         m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
         m[i].l=1*new Date();
@@ -233,16 +248,13 @@ function addToCart(name,type){
         accurateTrackBounce:true,
         trackLinks:true
     });
-</script>
-<noscript>
-  <div>
-    <img src="https://mc.yandex.ru/watch/105324364" style="position:absolute; left:-9999px;" alt="" />
-  </div>
-</noscript>
-<!-- /Yandex.Metrika counter -->
+  </script>
+  <noscript>
+    <div>
+      <img src="https://mc.yandex.ru/watch/105324364" style="position:absolute; left:-9999px;" alt="" />
+    </div>
+  </noscript>
+  <!-- /Yandex.Metrika counter -->
 
 </body>
 </html>
-
-
-
