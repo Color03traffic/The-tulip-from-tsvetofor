@@ -54,8 +54,14 @@
       border:1px solid #e5e7eb;
       margin-bottom:20px;
     }
-    h1{margin:10px 0 6px;font-size:26px;}
-    .subtitle{color:#666;margin-bottom:20px;}
+    h1{
+      margin:10px 0 6px;
+      font-size:26px;
+    }
+    .subtitle{
+      color:#666;
+      margin-bottom:20px;
+    }
     .grid{
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
@@ -88,10 +94,18 @@
       background:#fff;
     }
     .qty-ctrl button{
-      width:34px;height:34px;border:0;background:#fff;font-size:20px;cursor:pointer;
+      width:34px;
+      height:34px;
+      border:0;
+      background:#fff;
+      font-size:20px;
+      cursor:pointer;
     }
     .qty-ctrl input{
-      width:80px;text-align:center;border:0;font-size:18px;
+      width:80px;
+      text-align:center;
+      border:0;
+      font-size:18px;
     }
     .btn-add{
       margin-top:10px;
@@ -121,7 +135,9 @@
   <div class="container">
     <header>
       <h1>Каталог Краснодарских тюльпанов</h1>
-      <p class="subtitle">Прямые поставки из теплиц Краснодарского края. Точная цена считается автоматически в корзине.</p>
+      <p class="subtitle">
+        Прямые поставки из теплиц Краснодарского края. Точная цена считается автоматически в корзине.
+      </p>
     </header>
 
     <div class="grid" id="catalog"></div>
@@ -157,36 +173,33 @@
   ];
 
   const PACK = 20;
-
-  const box = document.getElementById("catalog");
+  const box  = document.getElementById("catalog");
 
   // РЕНДЕР КАРТОЧЕК
   box.innerHTML = products.map(p => `
     <div class="card">
-
       ${
         p.custom
-        ? `
-          <div style="
-            width:100%;
-            height:200px;
-            background:#fff2f6;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:10px;
-            text-align:center;
-            font-size:15px;
-            font-weight:600;
-            color:#b3005a;
-            border-bottom:1px solid #eee;
-          ">
-            Эта позиция означает выбор расцветки на наше усмотрение.
-          </div>
-        `
-        : `<img src="${p.img}" alt="${p.name}">`
+          ? `
+            <div style="
+              width:100%;
+              height:200px;
+              background:#fff2f6;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              padding:10px;
+              text-align:center;
+              font-size:15px;
+              font-weight:600;
+              color:#b3005a;
+              border-bottom:1px solid #eee;
+            ">
+              Эта позиция означает выбор расцветки на наше усмотрение.
+            </div>
+          `
+          : `<img src="${p.img}" alt="${p.name}">`
       }
-
       <div class="body">
         <strong>${p.name}</strong>
         <div class="price">от 75 ₽</div>
@@ -207,20 +220,21 @@
   // Изменение количества
   function chgQty(name,delta){
     let el = document.getElementById("qty_"+name);
-    let v = parseInt(el.value, 10) || PACK;
+    let v  = parseInt(el.value, 10) || PACK;
     v += delta;
-    if(v < PACK) v = PACK;
+    if (v < PACK) v = PACK;
     el.value = v;
   }
 
   // Добавление в корзину
   function addToCart(name,type){
-    let qty = parseInt(document.getElementById("qty_"+name).value, 10) || PACK;
+    let qtyEl = document.getElementById("qty_"+name);
+    let qty   = parseInt(qtyEl.value, 10) || PACK;
 
     let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
     let item = cart.find(i => i.name === name && i.type === type);
 
-    if(item) item.qty += qty;
+    if (item) item.qty += qty;
     else cart.push({name,type,qty});
 
     localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
@@ -228,31 +242,6 @@
     alert(`${name} — добавлено ${qty} шт`);
   }
   </script>
-
-  <!-- Yandex.Metrika duplicate safe -->
-  <script type="text/javascript">
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {
-            if (document.scripts[j].src === r) return;
-        }
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0];
-        k.async=1;k.src=r;a.parentNode.insertBefore(k,a);
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105324364', 'ym');
-
-    ym(105324364, 'init', {
-        ssr:true,
-        webvisor:true,
-        clickmap:true,
-        ecommerce:"dataLayer",
-        accurateTrackBounce:true,
-        trackLinks:true
-    });
-  </script>
-  <noscript>
-    <div><img src="https://mc.yandex.ru/watch/105324364" style="position:absolute; left:-9999px;" alt=""></div>
-  </noscript>
 
 </body>
 </html>
