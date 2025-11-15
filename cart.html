@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Корзина — Тюльпан03</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+  <link rel="shortcut icon" type="image/png" href="favicon.png">
+
   <style>
     :root{
       --bg:#f7b3d0; /* мягкий розовый фон */
@@ -101,37 +107,38 @@
       font-size:22px;
       font-weight:700;
     }
-    .totalsInfo{
-      margin-top:8px;
+
+    .summary{
+      margin-top:4px;
       font-size:14px;
       color:var(--muted);
-      line-height:1.4;
     }
-    .contactBox{
-      margin-top:25px;
-      padding:14px 12px;
-      border-radius:12px;
-      border:1px solid #f2c1dd;
-      background:#fff6fb;
-      max-width:360px;
+
+    .formTitle{
+      margin-top:30px;
+      font-size:18px;
+      font-weight:600;
     }
-    .contactBox h3{
-      margin:0 0 10px;
-      font-size:16px;
+    .formBox{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      max-width:400px;
     }
-    .fieldLabel{
-      font-size:13px;
+    .formBox label{
+      font-size:14px;
       color:var(--muted);
-      margin-bottom:4px;
     }
-    .fieldInput{
+    .formBox input{
       width:100%;
+      margin-top:4px;
       padding:8px 10px;
-      margin-bottom:10px;
-      border-radius:8px;
-      border:1px solid #d4d4d4;
+      border-radius:10px;
+      border:1px solid #ccc;
       font-size:14px;
     }
+
     @media(max-width:600px){
       table,thead,tbody,tr,td,th{display:block;}
       td{border:none;}
@@ -159,16 +166,18 @@
   <div class="totalBox">
     Итого: <span id="cartTotal">0 ₽</span>
   </div>
-  <div class="totalsInfo" id="totalsInfo">
-    <!-- сюда JS подставит сводку по объёму и ценам -->
-  </div>
+  <div class="summary" id="cartSummary"></div>
 
-  <div class="contactBox">
-    <h3>Данные для связи</h3>
-    <div class="fieldLabel">ФИО</div>
-    <input id="fio" class="fieldInput" type="text" placeholder="Иванов Иван Иванович">
-    <div class="fieldLabel">Телефон</div>
-    <input id="phone" class="fieldInput" type="tel" placeholder="+7 ___ ___-__-__">
+  <h2 class="formTitle">Данные для связи</h2>
+  <div class="formBox">
+    <label>
+      ФИО
+      <input id="fio" placeholder="Иванов Иван Иванович">
+    </label>
+    <label>
+      Телефон
+      <input id="phone" placeholder="+7 ___ ___-__-__">
+    </label>
   </div>
 
   <!-- Кнопки -->
@@ -213,69 +222,58 @@
     for (const t of tiers){
       if (totalQty >= t.min && totalQty <= t.max) return t.price;
     }
-    if (totalQty < tiers[0].min) return tiers[0].price;
     return tiers[tiers.length - 1].price;
   }
 
-  // Считаем общие объёмы и цены
-  function getTotals(){
-    let totalSmoothMix = 0;
-    let totalTerry = 0;
-
-    cart.forEach(i => {
-      if (i.type === "terry") totalTerry += i.qty;
-      else totalSmoothMix += i.qty;
-    });
-
-    const totalQty = totalSmoothMix + totalTerry;
-
-    let priceSmoothMix = 0;
-    let priceTerry = 0;
-
-    if (totalQty > 0){
-      priceSmoothMix = getPriceFromTiers(tiersSmoothMix, totalQty);
-      priceTerry     = getPriceFromTiers(tiersTerry, totalQty);
+  function getUnitPrices(totalQty){
+    if (totalQty === 0){
+      return {priceSmoothMix:0, priceTerry:0};
     }
-
-    return { totalSmoothMix, totalTerry, totalQty, priceSmoothMix, priceTerry };
+    const priceSmoothMix = getPriceFromTiers(tiersSmoothMix, totalQty);
+    const priceTerry     = getPriceFromTiers(tiersTerry, totalQty);
+    return {priceSmoothMix, priceTerry};
   }
 
-  // === Загрузка корзины ===
-  // Ключ такой же, как в catalog.html
+  // === Загрузка корзины (ключ как в catalog.html) ===
   let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
 
   function saveCart(){
     localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
   }
 
-  function normalizeQty(value){
-    let q = parseInt(value, 10);
-    if (isNaN(q) || q < 20) q = 20;
-    // делаем кратным 20
-    q = Math.round(q / 20) * 20;
-    if (q < 20) q = 20;
-    return q;
+  function totalQuantities(){
+    let total = 0;
+    let smoothMix = 0;
+    let terry = 0;
+    cart.forEach(i => {
+      total += i.qty;
+      if (i.type === "terry") terry += i.qty;
+      else smoothMix += i.qty;
+    });
+    return {total, smoothMix, terry};
   }
 
   function updateCart(){
-    const body     = document.getElementById("cartBody");
-    const totalEl  = document.getElementById("cartTotal");
-    const infoEl   = document.getElementById("totalsInfo");
+    const body       = document.getElementById("cartBody");
+    const totalEl    = document.getElementById("cartTotal");
+    const summaryEl  = document.getElementById("cartSummary");
 
     if (cart.length === 0){
       body.innerHTML = "<tr><td colspan='4'>Корзина пуста.</td></tr>";
       totalEl.textContent = "0 ₽";
-      infoEl.textContent = "";
+      summaryEl.textContent = "";
       return;
     }
 
-    const { totalSmoothMix, totalTerry, totalQty, priceSmoothMix, priceTerry } = getTotals();
+    const {total, smoothMix, terry} = totalQuantities();
+    const {priceSmoothMix, priceTerry} = getUnitPrices(total);
 
-    let total = 0;
+    let totalSum = 0;
+
     body.innerHTML = cart.map((item, index) => {
       const unitPrice = (item.type === "terry") ? priceTerry : priceSmoothMix;
       const sum       = unitPrice * item.qty;
-      total += sum;
+      totalSum += sum;
       return `
         <tr>
           <td>${item.name}</td>
@@ -292,12 +290,21 @@
       `;
     }).join("");
 
-    totalEl.textContent = total + " ₽";
+    totalEl.textContent = totalSum + " ₽";
 
-    infoEl.textContent =
-      `Общий объём: ${totalQty} шт ` +
-      `(гладкие и микс: ${totalSmoothMix} шт, махровые: ${totalTerry} шт). ` +
+    summaryEl.textContent =
+      `Общий объём ${total} шт ` +
+      `(гладкие и микс: ${smoothMix} шт, махровые: ${terry} шт). ` +
       `Цена гладких и микса: ${priceSmoothMix} ₽, махровых: ${priceTerry} ₽.`;
+  }
+
+  function normalizeQty(value){
+    let q = parseInt(value, 10) || 0;
+    if (q < 20) q = 20;
+    // делаем кратным 20
+    q = Math.round(q / 20) * 20;
+    if (q < 20) q = 20;
+    return q;
   }
 
   function changeQty(i, delta){
@@ -321,49 +328,43 @@
   function buildMessage(){
     if (cart.length === 0) return "Корзина пуста";
 
-    const fio   = document.getElementById("fio").value.trim();
-    const phone = document.getElementById("phone").value.trim();
+    const {total, smoothMix, terry} = totalQuantities();
+    const {priceSmoothMix, priceTerry} = getUnitPrices(total);
 
-    const { totalSmoothMix, totalTerry, totalQty, priceSmoothMix, priceTerry } = getTotals();
-
-    let total = 0;
-    let msg = "Заказ тюльпанов%0A-----------------%0A";
+    let totalSum = 0;
+    let msg = "Заказ тюльпанов\n-----------------\n";
 
     cart.forEach(i => {
       const unitPrice = (i.type === "terry") ? priceTerry : priceSmoothMix;
       const sum       = unitPrice * i.qty;
-      total += sum;
-      msg += `${i.name}: ${i.qty} шт × ${unitPrice} ₽ = ${sum} ₽%0A`;
+      totalSum += sum;
+      msg += `${i.name}: ${i.qty} шт × ${unitPrice} ₽ = ${sum} ₽\n`;
     });
 
-    msg += "-----------------%0A";
-    msg += `Всего стеблей: ${totalQty} шт (гладкие и микс: ${totalSmoothMix}, махровые: ${totalTerry})%0A`;
-    msg += `Итого: ${total} ₽%0A%0A`;
-    msg += `Контакты:%0AФИО: ${fio || "-"}%0AТелефон: ${phone || "-"}%0A`;
+    msg += "-----------------\n";
+    msg += `Итого: ${totalSum} ₽\n`;
+    msg += `Общий объём: ${total} шт (гладкие и микс: ${smoothMix}, махровые: ${terry}).\n`;
+    msg += `Цена гладких и микса: ${priceSmoothMix} ₽, махровых: ${priceTerry} ₽.\n\n`;
+
+    const fio   = (document.getElementById("fio").value   || "").trim();
+    const phone = (document.getElementById("phone").value || "").trim();
+
+    msg += "Данные для связи:\n";
+    msg += `ФИО: ${fio || "не указано"}\n`;
+    msg += `Телефон: ${phone || "не указан"}`;
 
     return msg;
   }
 
-  function checkContacts(){
-    const fio   = document.getElementById("fio").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    if (!fio || !phone){
-      alert("Пожалуйста, укажите ФИО и телефон для связи.");
-      return false;
-    }
-    return true;
-  }
-
   function sendWhatsApp(){
-    if (!checkContacts()) return;
-    const msg = buildMessage();
-    window.location.href = "https://wa.me/79148416115?text=" + msg;
+    const text = encodeURIComponent(buildMessage());
+    window.location.href = "https://wa.me/79148416115?text=" + text;
   }
 
   function sendTelegram(){
-    if (!checkContacts()) return;
-    const msg = buildMessage();
-    window.location.href = "tg://msg?text=" + msg;
+    const text = encodeURIComponent(buildMessage());
+    // стандартная схема для открытия клиента Telegram с текстом
+    window.location.href = "tg://msg?text=" + text;
   }
 
   updateCart();
