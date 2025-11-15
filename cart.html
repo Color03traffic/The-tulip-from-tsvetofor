@@ -4,15 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Корзина — Тюльпан03</title>
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-  <link rel="shortcut icon" type="image/png" href="favicon.png">
-
   <style>
     :root{
-      --bg:#f7b3d0;
+      --bg:#f7b3d0; /* мягкий розовый фон */
       --white:#ffffff;
       --text:#222;
       --muted:#666;
@@ -85,7 +79,9 @@
       margin-top:20px;
       text-align:center;
     }
-    .btn:hover{opacity:0.9;}
+    .btn:hover{
+      opacity:0.9;
+    }
     .btnGreen{
       background:#25D366;
       border:none;
@@ -105,6 +101,41 @@
       font-size:22px;
       font-weight:700;
     }
+
+    /* Блок с данными клиента */
+    .client-box{
+      margin-top:25px;
+      padding:15px 15px 5px;
+      background:#fdf2f8;
+      border-radius:14px;
+      border:1px solid #f9a8d4;
+    }
+    .client-box h2{
+      margin:0 0 10px;
+      font-size:18px;
+    }
+    .client-row{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .client-field{
+      flex:1 1 220px;
+      margin-bottom:10px;
+    }
+    .client-field label{
+      display:block;
+      font-size:14px;
+      margin-bottom:4px;
+    }
+    .client-field input{
+      width:100%;
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid #d1d5db;
+      font-size:14px;
+    }
+
     @media(max-width:600px){
       table,thead,tbody,tr,td,th{display:block;}
       td{border:none;}
@@ -112,7 +143,6 @@
     }
   </style>
 </head>
-
 <body>
 <div class="container">
   <h1>Корзина</h1>
@@ -132,6 +162,22 @@
 
   <div class="totalBox">Итого: <span id="cartTotal">0 ₽</span></div>
 
+  <!-- Данные клиента -->
+  <div class="client-box">
+    <h2>Данные для связи</h2>
+    <div class="client-row">
+      <div class="client-field">
+        <label for="clientName">ФИО</label>
+        <input id="clientName" type="text" placeholder="Иванов Иван Иванович">
+      </div>
+      <div class="client-field">
+        <label for="clientPhone">Телефон</label>
+        <input id="clientPhone" type="tel" placeholder="+7 ___ ___-__-__">
+      </div>
+    </div>
+  </div>
+
+  <!-- Кнопки -->
   <div style="margin-top:25px;">
     <a href="catalog.html" class="btn btnSecondary">Вернуться в каталог</a>
     <button class="btn" onclick="clearCart()">Очистить корзину</button>
@@ -145,101 +191,81 @@
 
 <script>
   // === Градации цен ===
+  // Гладкие + микс
   const tiersSmoothMix = [
-    {min:20, max:499, price:99},
-    {min:500, max:999, price:88},
-    {min:1000, max:1999, price:80},
-    {min:2000, max:2999, price:79},
-    {min:3000, max:4999, price:78},
-    {min:5000, max:9999, price:77},
+    {min:20,    max:499,   price:99},
+    {min:500,   max:999,   price:88},
+    {min:1000,  max:1999,  price:80},
+    {min:2000,  max:2999,  price:79},
+    {min:3000,  max:4999,  price:78},
+    {min:5000,  max:9999,  price:77},
     {min:10000, max:49999, price:76},
     {min:50000, max:99999, price:75}
   ];
 
+  // Махровые
   const tiersTerry = [
-    {min:20, max:499, price:109},
-    {min:500, max:999, price:98},
-    {min:1000, max:1999, price:90},
-    {min:2000, max:2999, price:89},
-    {min:3000, max:4999, price:88},
-    {min:5000, max:9999, price:87},
+    {min:20,    max:499,   price:109},
+    {min:500,   max:999,   price:98},
+    {min:1000,  max:1999,  price:90},
+    {min:2000,  max:2999,  price:89},
+    {min:3000,  max:4999,  price:88},
+    {min:5000,  max:9999,  price:87},
     {min:10000, max:49999, price:86},
     {min:50000, max:99999, price:85}
   ];
 
-  function getPriceFromTiers(tiers, qty){
+  function getPriceFromTiers(tiers, totalQty){
     for (const t of tiers){
-      if (qty >= t.min && qty <= t.max) return t.price;
+      if (totalQty >= t.min && totalQty <= t.max) return t.price;
     }
-    return tiers[tiers.length-1].price;
+    return tiers[tiers.length - 1].price;
   }
 
   function getUnitPrices(){
-    const totalQty = cart.reduce((s,i)=>s+i.qty,0);
-    if(totalQty===0) return {priceSmoothMix:0, priceTerry:0};
-    return {
-      priceSmoothMix: getPriceFromTiers(tiersSmoothMix,totalQty),
-      priceTerry: getPriceFromTiers(tiersTerry,totalQty)
-    };
+    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+    if (totalQty === 0){
+      return {priceSmoothMix:0, priceTerry:0};
+    }
+    const priceSmoothMix = getPriceFromTiers(tiersSmoothMix, totalQty);
+    const priceTerry     = getPriceFromTiers(tiersTerry, totalQty);
+    return {priceSmoothMix, priceTerry};
   }
 
-  // === Корзина ===
+  // === Загрузка корзины ===
+  // ключ тот же, что и в catalog.html
   let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
 
-  function saveCart(){ localStorage.setItem("tulpan03_cart", JSON.stringify(cart)); }
-
-  function normalizeQty(v){
-    let q = parseInt(v,10) || 20;
-    if(q < 20) q = 20;
-    q = Math.round(q/20)*20;
-    if(q<20) q = 20;
-    return q;
-  }
-
-  function changeQty(i,delta){
-    cart[i].qty = normalizeQty(cart[i].qty + delta);
-    saveCart();
-    updateCart();
-  }
-
-  function manualQtyChange(i,v){
-    cart[i].qty = normalizeQty(v);
-    saveCart();
-    updateCart();
-  }
-
-  function clearCart(){
-    localStorage.removeItem("tulpan03_cart");
-    cart=[];
-    updateCart();
+  function saveCart(){
+    localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
   }
 
   function updateCart(){
-    const body=document.getElementById("cartBody");
-    const totalEl=document.getElementById("cartTotal");
+    const body    = document.getElementById("cartBody");
+    const totalEl = document.getElementById("cartTotal");
 
-    if(cart.length===0){
-      body.innerHTML="<tr><td colspan='4'>Корзина пуста.</td></tr>";
-      totalEl.textContent="0 ₽";
+    if (cart.length === 0){
+      body.innerHTML = "<tr><td colspan='4'>Корзина пуста.</td></tr>";
+      totalEl.textContent = "0 ₽";
       return;
     }
 
-    const {priceSmoothMix,priceTerry}=getUnitPrices();
-    let total=0;
+    const {priceSmoothMix, priceTerry} = getUnitPrices();
 
-    body.innerHTML = cart.map((item,i)=>{
-      const unit = item.type==="terry" ? priceTerry : priceSmoothMix;
-      const sum  = unit * item.qty;
+    let total = 0;
+    body.innerHTML = cart.map((item, index) => {
+      const unitPrice = (item.type === "terry") ? priceTerry : priceSmoothMix;
+      const sum       = unitPrice * item.qty;
       total += sum;
       return `
         <tr>
           <td>${item.name}</td>
-          <td>${unit} ₽</td>
+          <td>${unitPrice} ₽</td>
           <td>
             <div class="qtyBox">
-              <button onclick="changeQty(${i},-20)">−</button>
-              <input type="number" value="${item.qty}" onchange="manualQtyChange(${i},this.value)">
-              <button onclick="changeQty(${i},20)">+</button>
+              <button onclick="changeQty(${index}, -20)">−</button>
+              <input type="number" value="${item.qty}" onchange="manualQtyChange(${index}, this.value)">
+              <button onclick="changeQty(${index}, 20)">+</button>
             </div>
           </td>
           <td>${sum} ₽</td>
@@ -250,23 +276,81 @@
     totalEl.textContent = total + " ₽";
   }
 
+  function normalizeQty(value){
+    let q = parseInt(value, 10) || 20;
+    if (q < 20) q = 20;
+    q = Math.round(q / 20) * 20;
+    if (q < 20) q = 20;
+    return q;
+  }
+
+  function changeQty(i, delta){
+    cart[i].qty = normalizeQty(cart[i].qty + delta);
+    saveCart();
+    updateCart();
+  }
+
+  function manualQtyChange(i, value){
+    cart[i].qty = normalizeQty(value);
+    saveCart();
+    updateCart();
+  }
+
+  function clearCart(){
+    localStorage.removeItem("tulpan03_cart");
+    cart = [];
+    updateCart();
+  }
+
   function buildMessage(){
-    if(cart.length===0) return "Корзина пуста";
-    const {priceSmoothMix,priceTerry}=getUnitPrices();
-    let msg="Заказ тюльпанов%0A-----------------%0A";
-    let total=0;
-    cart.forEach(i=>{
-      const unit=i.type==="terry"?priceTerry:priceSmoothMix;
-      const sum=unit*i.qty;
-      total+=sum;
-      msg+=`${i.name}: ${i.qty} шт × ${unit} ₽ = ${sum} ₽%0A`;
+    if (cart.length === 0) return "Корзина пуста";
+
+    const name  = (document.getElementById("clientName")  || {}).value?.trim()  || "";
+    const phone = (document.getElementById("clientPhone") || {}).value?.trim() || "";
+
+    const {priceSmoothMix, priceTerry} = getUnitPrices();
+    let total = 0;
+    let msg = "Заказ тюльпанов%0A-----------------%0A";
+
+    if (name || phone){
+      msg += "Данные клиента:%0A";
+      if (name)  msg += "Имя: " + name + "%0A";
+      if (phone) msg += "Телефон: " + phone + "%0A";
+      msg += "-----------------%0A";
+    }
+
+    cart.forEach(i => {
+      const unitPrice = (i.type === "terry") ? priceTerry : priceSmoothMix;
+      const sum       = unitPrice * i.qty;
+      total += sum;
+      msg += `${i.name}: ${i.qty} шт × ${unitPrice} ₽ = ${sum} ₽%0A`;
     });
-    msg+="-----------------%0AИтого: "+total+" ₽";
+
+    msg += "-----------------%0AИтого: " + total + " ₽";
     return msg;
   }
 
-  function sendWhatsApp(){ window.location.href="https://wa.me/79148416115?text="+buildMessage(); }
-  function sendTelegram(){ window.location.href="tg://msg?text="+buildMessage(); }
+  function sendWhatsApp(){
+    const phoneField = document.getElementById("clientPhone");
+    if (phoneField && phoneField.value.trim() === ""){
+      alert("Пожалуйста, укажите телефон для связи.");
+      phoneField.focus();
+      return;
+    }
+    const msg = buildMessage();
+    window.location.href = "https://wa.me/79148416115?text=" + msg;
+  }
+
+  function sendTelegram(){
+    const phoneField = document.getElementById("clientPhone");
+    if (phoneField && phoneField.value.trim() === ""){
+      alert("Пожалуйста, укажите телефон для связи.");
+      phoneField.focus();
+      return;
+    }
+    const msg = buildMessage();
+    window.location.href = "tg://msg?text=" + msg;
+  }
 
   updateCart();
 </script>
