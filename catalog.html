@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Каталог тюльпанов — Тюльпан03.рф</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+  <link rel="shortcut icon" type="image/png" href="favicon.png">
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y7K52HYB39"></script>
@@ -22,7 +28,6 @@
       k=e.createElement(t);a=e.getElementsByTagName(t)[0];
       k.async=1;k.src=r;a.parentNode.insertBefore(k,a);
     })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
     ym(105324364, "init", {
       clickmap:true,
       trackLinks:true,
@@ -33,7 +38,6 @@
   <noscript>
     <div><img src="https://mc.yandex.ru/watch/105324364" style="position:absolute; left:-9999px;" alt=""></div>
   </noscript>
-  <!-- /Yandex.Metrika counter -->
 
   <style>
     body{
@@ -131,6 +135,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <header>
@@ -145,7 +150,7 @@
     <a href="cart.html" class="btn-cart">Перейти в корзину</a>
   </div>
 
-  <script>
+<script>
   // Все сорта (без розово-сиреневого)
   const products = [
     {name:"Жёлтый",           img:"yellow.jpg",         type:"smooth"},
@@ -160,7 +165,7 @@
     {name:"Оранжевый",        img:"orange.jpg",         type:"smooth"},
     {name:"Фиолетовый",       img:"violet.jpg",         type:"smooth"},
 
-    // 🔸 Микс — без фото, с текстовым блоком
+    // Микс (без фото — текстовая карточка)
     {
       name:"Микс",
       img:null,
@@ -173,32 +178,32 @@
   ];
 
   const PACK = 20;
-  const box  = document.getElementById("catalog");
+  const box = document.getElementById("catalog");
 
-  // РЕНДЕР КАРТОЧЕК
+  // Рендер карточек
   box.innerHTML = products.map(p => `
     <div class="card">
       ${
         p.custom
-          ? `
-            <div style="
-              width:100%;
-              height:200px;
-              background:#fff2f6;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              padding:10px;
-              text-align:center;
-              font-size:15px;
-              font-weight:600;
-              color:#b3005a;
-              border-bottom:1px solid #eee;
-            ">
-              Эта позиция означает выбор расцветки на наше усмотрение.
-            </div>
-          `
-          : `<img src="${p.img}" alt="${p.name}">`
+        ? `
+          <div style="
+            width:100%;
+            height:200px;
+            background:#fff2f6;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:10px;
+            text-align:center;
+            font-size:15px;
+            font-weight:600;
+            color:#b3005a;
+            border-bottom:1px solid #eee;
+          ">
+            Эта позиция означает выбор расцветки на наше усмотрение.
+          </div>
+        `
+        : `<img src="${p.img}" alt="${p.name}">`
       }
       <div class="body">
         <strong>${p.name}</strong>
@@ -222,7 +227,7 @@
     let el = document.getElementById("qty_"+name);
     let v  = parseInt(el.value, 10) || PACK;
     v += delta;
-    if (v < PACK) v = PACK;
+    if(v < PACK) v = PACK;
     el.value = v;
   }
 
@@ -232,16 +237,15 @@
     let qty   = parseInt(qtyEl.value, 10) || PACK;
 
     let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
-    let item = cart.find(i => i.name === name && i.type === type);
 
-    if (item) item.qty += qty;
+    let item = cart.find(i => i.name === name && i.type === type);
+    if(item) item.qty += qty;
     else cart.push({name,type,qty});
 
     localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
-
     alert(`${name} — добавлено ${qty} шт`);
   }
-  </script>
+</script>
 
 </body>
 </html>
