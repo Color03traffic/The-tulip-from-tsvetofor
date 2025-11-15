@@ -23,7 +23,7 @@
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
-      m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i]=m[i]||function(){(m[i].a=m[i].a[]).push(arguments)};
       m[i].l=1*new Date();
       k=e.createElement(t);a=e.getElementsByTagName(t)[0];
       k.async=1;k.src=r;a.parentNode.insertBefore(k,a);
@@ -203,7 +203,7 @@
             Эта позиция означает выбор расцветки на наше усмотрение.
           </div>
         `
-        : `<img src="${p.img}" alt="${p.name}">`
+        : '<img src="${p.img}" alt="${p.name}">'
       }
       <div class="body">
         <strong>${p.name}</strong>
@@ -211,7 +211,7 @@
 
         <div class="qty-ctrl">
           <button onclick="chgQty('${p.name}',-${PACK})">−</button>
-          <input id="qty_${p.name}" value="${PACK}">
+          <input id="qty_${p.name}" value="${PACK}" onchange="manualQtyChange('${p.name}', this.value)">
           <button onclick="chgQty('${p.name}',${PACK})">+</button>
         </div>
 
@@ -222,10 +222,25 @@
     </div>
   `).join("");
 
-  // Изменение количества
+  // Нормализация количества (минимум 20, кратно 20)
+  function normalizeQtyCatalog(value){
+    let q = parseInt(value, 10) || PACK;
+    if (q < PACK) q = PACK;
+    q = Math.round(q / PACK) * PACK;
+    if (q < PACK) q = PACK;
+    return q;
+  }
+
+  // Пользователь вручную изменил количество
+  function manualQtyChange(name, value){
+    let el = document.getElementById("qty_" + name);
+    el.value = normalizeQtyCatalog(value);
+  }
+
+  // Изменение количества кнопками +/−
   function chgQty(name,delta){
     let el = document.getElementById("qty_"+name);
-    let v  = parseInt(el.value, 10) || PACK;
+    let v  = normalizeQtyCatalog(el.value);
     v += delta;
     if(v < PACK) v = PACK;
     el.value = v;
@@ -234,7 +249,7 @@
   // Добавление в корзину
   function addToCart(name,type){
     let qtyEl = document.getElementById("qty_"+name);
-    let qty   = parseInt(qtyEl.value, 10) || PACK;
+    let qty   = normalizeQtyCatalog(qtyEl.value);
 
     let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
 
