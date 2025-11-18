@@ -97,6 +97,17 @@
       font-weight:700;
     }
 
+    .field{
+      margin-top:20px;
+    }
+    input[type="text"], input[type="tel"]{
+      width:100%;
+      padding:12px;
+      font-size:16px;
+      border-radius:10px;
+      border:1px solid #ccc;
+    }
+
     @media(max-width:600px){
       table,thead,tbody,tr,td,th{display:block;}
       td{border:none;}
@@ -131,6 +142,19 @@
     Итого: <span id="cartTotal">0 ₽</span>
   </div>
 
+  <!-- Contact data -->
+  <div class="field"><b>Данные для связи:</b></div>
+
+  <div class="field">
+    <label>ФИО</label>
+    <input id="fio" type="text" placeholder="Иванов Иван Иванович">
+  </div>
+
+  <div class="field">
+    <label>Телефон</label>
+    <input id="phone" type="tel" placeholder="+7 ___ ___-__-__">
+  </div>
+
   <div style="margin-top:25px;">
     <a href="catalog.html" class="btn btnSecondary">Вернуться в каталог</a>
     <button class="btn" onclick="clearCart()">Очистить корзину</button>
@@ -143,7 +167,7 @@
 </div>
 
 <script>
-/* === Градации цен — ВСЁ КАК БЫЛО === */
+/* === Ценовые диапазоны (как было раньше) === */
 const tiersSmoothMix = [
   {min:20, max:499, price:99},
   {min:500, max:999, price:88},
@@ -182,7 +206,7 @@ function getUnitPrices(){
   };
 }
 
-/* === КОРЗИНА === */
+/* === Корзина === */
 let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
 
 function saveCart(){ localStorage.setItem("tulpan03_cart", JSON.stringify(cart)); }
@@ -250,9 +274,10 @@ function clearCart(){
   updateCart();
 }
 
-/* === Формирование текста заказа === */
+/* === Формирование сообщения === */
 function buildMessage(){
-  if(cart.length === 0) return "Корзина пуста";
+  const fio = document.getElementById("fio").value || "-";
+  const phone = document.getElementById("phone").value || "-";
 
   const {priceSmoothMix, priceTerry} = getUnitPrices();
   let total = 0;
@@ -266,24 +291,20 @@ function buildMessage(){
     msg += `${i.name}: ${i.qty} шт × ${unit} ₽ = ${sum} ₽%0A`;
   });
 
-  msg += "-----------------%0AИтого: " + total + " ₽";
+  msg += "-----------------%0AИтого: " + total + " ₽%0A";
+  msg += "%0AКонтакты:%0A" + fio + "%0A" + phone;
   return msg;
 }
 
-/* === WhatsApp — работает как раньше === */
+/* === WhatsApp === */
 function sendWhatsApp(){
   window.location.href = "https://wa.me/79148416115?text=" + buildMessage();
 }
 
-/* === Telegram — исправлено, работает на любых устройствах === */
-/* Отправляем в @tulpan03 */
+/* === Telegram — исправлено === */
 function sendTelegram(){
   const text = encodeURIComponent(buildMessage());
-  const url  = "https://tulpan03.ru"; // просто чтобы не было пустым
-
-  window.location.href =
-    "https://t.me/share/url?url=" + encodeURIComponent(url) +
-    "&text=" + text;
+  window.location.href = "https://t.me/share/url?url=" + encodeURIComponent("https://tulpan03.ru") + "&text=" + text;
 }
 
 updateCart();
