@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Каталог — Тюльпан03</title>
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
   <link rel="shortcut icon" type="image/png" href="favicon.png">
@@ -111,6 +110,14 @@
       font-size:12px;
       color:var(--muted);
       margin-top:4px;
+      line-height:1.4;
+    }
+    .thumb{
+      width:100%;
+      border-radius:12px;
+      margin-bottom:6px;
+      object-fit:cover;
+      max-height:160px;
     }
   </style>
 </head>
@@ -130,18 +137,29 @@
 
     <h1>Каталог тюльпанов</h1>
     <p class="muted">
-      Цены зависят от общего количества в корзине. Минимальный шаг — 20 шт.
-      Все обычные сорта (кроме махровых и МИКС) считаются по одной сетке, махровые — по своей, МИКС — по своей.
+      Цены зависят от общего количества в корзине. Минимальный шаг — 20 шт.<br>
+      Окончательная цена считается в корзине автоматически.
     </p>
 
     <div class="grid">
-      <!-- Обычные сорта (smooth) -->
+      <!-- ОСТАЛЬНЫЕ СОРТА (обычные, type = smooth) -->
+
       <div class="card">
         <span class="tag">Обычный сорт</span>
         <h3>Тюльпан стандарт красный</h3>
+        <!-- пример картинки, подставь свой файл -->
+        <!-- <img src="tulip-red.jpg" alt="Тюльпан стандарт красный" class="thumb"> -->
         <div class="muted">Классический красный тюльпан с ровным стеблем и крупным бутоном.</div>
         <div class="price-hint">
-          Все обычные сорта, кроме махровых и МИКС — от 106 ₽ до 82 ₽/шт в зависимости от объёма.
+          <b>Остальные (обычные) сорта:</b><br>
+          20–499 шт — 106 ₽/шт<br>
+          500–999 шт — 95 ₽/шт<br>
+          1 000–1 999 шт — 87 ₽/шт<br>
+          2 000–2 999 шт — 86 ₽/шт<br>
+          3 000–4 999 шт — 85 ₽/шт<br>
+          5 000–9 999 шт — 84 ₽/шт<br>
+          10 000–49 999 шт — 83 ₽/шт<br>
+          50 000–99 999 шт — 82 ₽/шт
         </div>
         <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт красный')">В корзину</button>
       </div>
@@ -150,52 +168,136 @@
         <span class="tag">Обычный сорт</span>
         <h3>Тюльпан стандарт белый</h3>
         <div class="muted">Белый сорт, универсален для свадебных и праздничных композиций.</div>
-        <div class="price-hint">
-          Все обычные сорта, кроме махровых и МИКС — от 106 ₽ до 82 ₽/шт.
-        </div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
         <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт белый')">В корзину</button>
       </div>
 
-      <!-- МИКС (mix) -->
       <div class="card">
-        <span class="tag">МИКС</span>
-        <h3>Тюльпан МИКС стандарт</h3>
-        <div class="muted">Смесь стандартных сортов разных цветов — удобно для витрин и микс-букетов.</div>
-        <div class="price-hint">
-          МИКС — от 105 ₽ до 81 ₽/шт в зависимости от объёма.
-        </div>
-        <button class="btn" onclick="addToCart('mix', 'Тюльпан МИКС стандарт')">В корзину</button>
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт жёлтый</h3>
+        <div class="muted">Ярко-жёлтый сорт для солнечных витрин и весенних букетов.</div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт жёлтый')">В корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">МИКС</span>
-        <h3>Тюльпан МИКС премиум</h3>
-        <div class="muted">Отборные крупные бутоны и трендовые расцветки для премиальных букетов.</div>
-        <div class="price-hint">
-          МИКС — от 105 ₽ до 81 ₽/шт в зависимости от объёма.
-        </div>
-        <button class="btn" onclick="addToCart('mix', 'Тюльпан МИКС премиум')">В корзину</button>
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт кремовый</h3>
+        <div class="muted">Нежный кремовый оттенок, хорошо смотрится в пастельных композициях.</div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт кремовый')">В корзину</button>
       </div>
 
-      <!-- Махровые (terry) -->
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт розовый</h3>
+        <div class="muted">Мягкий розовый цвет, популярный для романтических букетов.</div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт розовый')">В корзину</button>
+      </div>
+
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт белосиреневый</h3>
+        <div class="muted">Интересное сочетание белого и сиреневого оттенков.</div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт белосиреневый')">В корзину</button>
+      </div>
+
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт оранжевый</h3>
+        <div class="muted">Яркий оранжевый сорт, хорошо привлекает внимание в витрине.</div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт оранжевый')">В корзину</button>
+      </div>
+
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт красно-жёлтый</h3>
+        <div class="muted">Двухцветный сорт с красно-жёлтым сочетанием.</div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт красно-жёлтый')">В корзину</button>
+      </div>
+
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт красно-белый</h3>
+        <div class="muted">Контрастный красно-белый окрас лепестков.</div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт красно-белый')">В корзину</button>
+      </div>
+
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт фиолетовый</h3>
+        <div class="muted">Глубокий фиолетовый цвет, эффектно смотрится в моно-букетах.</div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт фиолетовый')">В корзину</button>
+      </div>
+
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт белорозовый</h3>
+        <div class="muted">Нежный бело-розовый градиент для лёгких весенних букетов.</div>
+        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт белорозовый')">В корзину</button>
+      </div>
+
+      <!-- МАХРОВЫЕ (type = terry) -->
+
       <div class="card">
         <span class="tag">Махровый</span>
         <h3>Тюльпан махровый белый</h3>
         <div class="muted">Пышный махровый бутон, эффектно смотрится в монобукетах и композициях.</div>
         <div class="price-hint">
-          Махровые — от 116 ₽ до 92 ₽/шт в зависимости от объёма.
+          <b>Махровые:</b><br>
+          20–499 шт — 116 ₽/шт<br>
+          500–999 шт — 105 ₽/шт<br>
+          1 000–1 999 шт — 97 ₽/шт<br>
+          2 000–2 999 шт — 96 ₽/шт<br>
+          3 000–4 999 шт — 95 ₽/шт<br>
+          5 000–9 999 шт — 94 ₽/шт<br>
+          10 000–49 999 шт — 93 ₽/шт<br>
+          50 000–99 999 шт — 92 ₽/шт
         </div>
         <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый белый')">В корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Махровый</span>
+        <h3>Тюльпан махровый жёлтый</h3>
+        <div class="muted">Яркий жёлтый махровый сорт с очень плотным бутоном.</div>
+        <div class="price-hint">Цены как у всех махровых (см. белый).</div>
+        <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый жёлтый')">В корзину</button>
+      </div>
+
+      <div class="card">
+        <span class="tag">Махровый</span>
         <h3>Тюльпан махровый розовый</h3>
         <div class="muted">Розовый махровый сорт, премиальный сегмент для подарочных букетов.</div>
-        <div class="price-hint">
-          Махровые — от 116 ₽ до 92 ₽/шт в зависимости от объёма.
-        </div>
+        <div class="price-hint">Цены как у всех махровых (см. белый).</div>
         <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый розовый')">В корзину</button>
+      </div>
+
+      <!-- МИКС (type = mix) -->
+
+      <div class="card">
+        <span class="tag">МИКС</span>
+        <h3>Тюльпан МИКС</h3>
+        <div class="muted">Смесь разных сортов и расцветок в одной поставке — удобно для витрин и микс-букетов.</div>
+        <div class="price-hint">
+          <b>МИКС:</b><br>
+          20–499 шт — 105 ₽/шт<br>
+          500–999 шт — 94 ₽/шт<br>
+          1 000–1 999 шт — 86 ₽/шт<br>
+          2 000–2 999 шт — 85 ₽/шт<br>
+          3 000–4 999 шт — 84 ₽/шт<br>
+          5 000–9 999 шт — 83 ₽/шт<br>
+          10 000–49 999 шт — 82 ₽/шт<br>
+          50 000–100 000 шт — 81 ₽/шт
+        </div>
+        <button class="btn" onclick="addToCart('mix', 'Тюльпан МИКС')">В корзину</button>
       </div>
     </div>
   </div>
@@ -208,10 +310,8 @@
       const existing = cart.find(item => item.name === name && item.type === type);
 
       if (existing) {
-        // добавляем ещё 20 шт
-        existing.qty += 20;
+        existing.qty += 20; // добавляем ещё 20 шт
       } else {
-        // создаём новую позицию
         cart.push({
           name: name,
           type: type,  // smooth / terry / mix
