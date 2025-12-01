@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Корзина — Тюльпан03</title>
+  <title>Каталог — Тюльпан03</title>
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
   <link rel="shortcut icon" type="image/png" href="favicon.png">
@@ -28,7 +27,7 @@
     }
     a{text-decoration:none;color:inherit}
     .page{
-      max-width:900px;
+      max-width:1000px;
       margin:40px auto;
       padding:20px;
       background:var(--white);
@@ -59,7 +58,7 @@
       color:#d6286a;
     }
     h1{
-      margin:10px 0;
+      margin:10px 0 5px;
       font-size:30px;
       font-weight:700;
     }
@@ -67,98 +66,50 @@
       color:var(--muted);
       font-size:14px;
     }
-    table{
-      width:100%;
-      border-collapse:collapse;
+
+    .grid{
       margin-top:20px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:18px;
     }
-    th,td{
-      padding:12px 10px;
-      border-bottom:1px solid #ddd;
-      text-align:left;
-    }
-    .qtyBox{
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-    .qtyBox button{
-      width:32px;
-      height:32px;
-      border-radius:8px;
-      border:1px solid #ccc;
-      background:#fff;
-      cursor:pointer;
-      font-size:18px;
-    }
-    .qtyBox input{
-      width:60px;
-      text-align:center;
-      padding:6px;
-      border-radius:8px;
-      border:1px solid #ccc;
-    }
-    .btn{
-      padding:12px 20px;
-      background:var(--brand);
-      border-radius:10px;
-      color:#fff;
-      font-weight:600;
-      border:none;
-      cursor:pointer;
-      display:inline-block;
-      margin-top:20px;
-      text-align:center;
-    }
-    .btn:hover{opacity:0.9;}
-    .btnGreen{background:#25D366;}
-    .btnBlue{background:#229ED9;}
-    .btnSecondary{
-      background:#fff;
-      border:2px solid var(--brand);
-      color:var(--brand);
-      margin-right:12px;
-    }
-    .totalBox{
-      margin-top:20px;
-      font-size:22px;
-      font-weight:700;
-    }
-    .form-block{
-      margin-top:20px;
-      padding:16px;
-      border-radius:12px;
+    .card{
+      border-radius:16px;
       border:1px solid #e5e7eb;
-      background:#faf5f7;
-    }
-    .form-block h2{
-      margin:0 0 10px;
-      font-size:18px;
-    }
-    .form-row{
+      padding:14px;
       display:flex;
       flex-direction:column;
-      margin-bottom:10px;
+      gap:6px;
+      background:#fff;
     }
-    .form-row label{
+    .card h3{
+      margin:0;
+      font-size:18px;
+    }
+    .tag{
+      display:inline-block;
+      font-size:12px;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      color:var(--muted);
+    }
+    .btn{
+      margin-top:8px;
+      padding:8px 12px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
       font-size:14px;
-      margin-bottom:4px;
+      font-weight:600;
+      background:var(--brand);
+      color:#fff;
     }
-    .form-row input{
-      padding:8px 10px;
-      border-radius:8px;
-      border:1px solid #d1d5db;
-      font-size:14px;
-    }
-    .form-note{
+    .btn:hover{opacity:0.9;}
+    .price-hint{
       font-size:12px;
       color:var(--muted);
       margin-top:4px;
-    }
-    @media(max-width:600px){
-      table,thead,tbody,tr,td,th{display:block;}
-      td{border:none;}
-      tr{margin-bottom:20px;border-bottom:1px solid #ddd;padding-bottom:10px;}
     }
   </style>
 </head>
@@ -170,248 +121,89 @@
         <nav>
           <a href="index.html">Главная</a>
           <a href="catalog.html">Каталог</a>
+          <a href="cart.html">Корзина</a>
           <a href="contacts.html">Контакты</a>
         </nav>
       </div>
     </header>
 
-    <h1>Корзина</h1>
-    <p class="muted">Количество кратно 20 шт. Можно менять вручную или кнопками.</p>
+    <h1>Каталог тюльпанов</h1>
+    <p class="muted">Цены зависят от общего количества в корзине. Минимальный шаг — 20 шт.</p>
 
-    <table id="cartTable">
-      <thead>
-        <tr>
-          <th>Товар</th>
-          <th>Цена за шт.</th>
-          <th>Количество</th>
-          <th>Сумма</th>
-        </tr>
-      </thead>
-      <tbody id="cartBody"></tbody>
-    </table>
-
-    <div class="totalBox">
-      Итого: <span id="cartTotal">0 ₽</span>
-    </div>
-
-    <div class="form-block">
-      <h2>Данные покупателя</h2>
-      <div class="form-row">
-        <label>ФИО *</label>
-        <input id="clientName" placeholder="Иванов Иван Иванович">
+    <div class="grid">
+      <!-- Обычные сорта (smooth) -->
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт красный</h3>
+        <div class="muted">Классический красный тюльпан с ровным стеблем.</div>
+        <div class="price-hint">Все обычные сорта, кроме махровых и микс — от 106 ₽ до 82 ₽/шт в зависимости от объёма.</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт красный')">В корзину</button>
       </div>
-      <div class="form-row">
-        <label>Телефон *</label>
-        <input id="clientPhone" placeholder="+7 9.. .. ..">
-        <div class="form-note">Без этих данных заказ не отправится.</div>
+
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт белый</h3>
+        <div class="muted">Белый сорт, подходит для любых композиций.</div>
+        <div class="price-hint">Все обычные сорта, кроме махровых и микс — от 106 ₽ до 82 ₽/шт.</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт белый')">В корзину</button>
       </div>
-    </div>
 
-    <div style="margin-top:25px;">
-      <a href="catalog.html" class="btn btnSecondary">Вернуться в каталог</a>
-      <button class="btn" onclick="clearCart()">Очистить корзину</button>
-    </div>
+      <!-- МИКС (mix) -->
+      <div class="card">
+        <span class="tag">Микс</span>
+        <h3>Тюльпан МИКС стандарт</h3>
+        <div class="muted">Смесь стандартных сортов разных цветов.</div>
+        <div class="price-hint">МИКС — от 105 ₽ до 81 ₽/шт в зависимости от объёма.</div>
+        <button class="btn" onclick="addToCart('mix', 'Тюльпан МИКС стандарт')">В корзину</button>
+      </div>
 
-    <div style="margin-top:25px;">
-      <button class="btn btnGreen" onclick="sendWhatsApp()">Отправить в WhatsApp</button>
-      <button class="btn btnBlue"  onclick="sendTelegram()">Отправить в Telegram</button>
+      <div class="card">
+        <span class="tag">Микс</span>
+        <h3>Тюльпан МИКС премиум</h3>
+        <div class="muted">Более крупный бутон, отборные цвета.</div>
+        <div class="price-hint">МИКС — от 105 ₽ до 81 ₽/шт.</div>
+        <button class="btn" onclick="addToCart('mix', 'Тюльпан МИКС премиум')">В корзину</button>
+      </div>
+
+      <!-- Махровые (terry) -->
+      <div class="card">
+        <span class="tag">Махровый</span>
+        <h3>Тюльпан махровый белый</h3>
+        <div class="muted">Пышный бутон, эффектная засечка в букетах.</div>
+        <div class="price-hint">Махровые — от 116 ₽ до 92 ₽/шт в зависимости от объёма.</div>
+        <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый белый')">В корзину</button>
+      </div>
+
+      <div class="card">
+        <span class="tag">Махровый</span>
+        <h3>Тюльпан махровый розовый</h3>
+        <div class="muted">Розовый махровый сорт, премиальный сегмент.</div>
+        <div class="price-hint">Махровые — от 116 ₽ до 92 ₽/шт.</div>
+        <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый розовый')">В корзину</button>
+      </div>
     </div>
   </div>
 
   <script>
-    /* === НОВАЯ ГРАДАЦИЯ ЦЕН (3 ТИПА ТЮЛЬПАНОВ) === */
+    // Добавление в корзину
+    function addToCart(type, name) {
+      let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
 
-    // 1) Все сорта, кроме махровых и микс — "smooth"
-    const tiersSmooth = [
-      {min: 20, max: 499,    price: 106},
-      {min: 500, max: 999,   price: 95},
-      {min: 1000, max: 1999, price: 87},
-      {min: 2000, max: 2999, price: 86},
-      {min: 3000, max: 4999, price: 85},
-      {min: 5000, max: 9999, price: 84},
-      {min: 10000, max: 49999,price: 83},
-      {min: 50000, max: 99999,price: 82}
-    ];
+      const existing = cart.find(item => item.name === name && item.type === type);
 
-    // 2) Махровые — "terry"
-    const tiersTerry = [
-      {min: 20, max: 499,    price: 116},
-      {min: 500, max: 999,   price: 105},
-      {min: 1000, max: 1999, price: 97},
-      {min: 2000, max: 2999, price: 96},
-      {min: 3000, max: 4999, price: 95},
-      {min: 5000, max: 9999, price: 94},
-      {min: 10000, max: 49999,price: 93},
-      {min: 50000, max: 99999,price: 92}
-    ];
-
-    // 3) Микс — "mix"
-    const tiersMix = [
-      {min: 20, max: 499,    price: 105},
-      {min: 500, max: 999,   price: 94},
-      {min: 1000, max: 1999, price: 86},
-      {min: 2000, max: 2999, price: 85},
-      {min: 3000, max: 4999, price: 84},
-      {min: 5000, max: 9999, price: 83},
-      {min: 10000, max: 49999,price: 82},
-      {min: 50000, max: 100000,price: 81}
-    ];
-
-    function getPriceFromTiers(tiers, totalQty){
-      for(const t of tiers){
-        if(totalQty >= t.min && totalQty <= t.max) return t.price;
+      if (existing) {
+        existing.qty += 20; // добавляем ещё 20 шт
+      } else {
+        cart.push({
+          name: name,
+          type: type,  // smooth / terry / mix
+          qty: 20
+        });
       }
-      return tiers[tiers.length - 1].price;
-    }
 
-    function getUnitPrices(){
-      const totalQty = cart.reduce((s,i)=>s + i.qty, 0);
-      if(totalQty === 0) return {smooth:0, terry:0, mix:0};
-      return {
-        smooth: getPriceFromTiers(tiersSmooth, totalQty),
-        terry:  getPriceFromTiers(tiersTerry,  totalQty),
-        mix:    getPriceFromTiers(tiersMix,    totalQty)
-      };
-    }
-
-    /* === КОРЗИНА === */
-    let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
-
-    function saveCart(){
       localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
+      alert("Добавлено в корзину");
     }
-
-    function normalizeQty(v){
-      v = parseInt(v,10);
-      if(isNaN(v) || v < 20) v = 20;
-      return Math.round(v/20)*20;
-    }
-
-    function updateCart(){
-      const body    = document.getElementById("cartBody");
-      const totalEl = document.getElementById("cartTotal");
-
-      if(cart.length === 0){
-        body.innerHTML = "<tr><td colspan='4'>Корзина пуста.</td></tr>";
-        totalEl.textContent = "0 ₽";
-        return;
-      }
-
-      const prices = getUnitPrices();
-      let total = 0;
-
-      body.innerHTML = cart.map((item, index)=>{
-        let unitPrice = 0;
-        if(item.type === "terry")      unitPrice = prices.terry;
-        else if(item.type === "mix")   unitPrice = prices.mix;
-        else                           unitPrice = prices.smooth; // всё остальное — обычные
-
-        const sum = unitPrice * item.qty;
-        total += sum;
-
-        return `
-          <tr>
-            <td>${item.name}</td>
-            <td>${unitPrice} ₽</td>
-            <td>
-              <div class="qtyBox">
-                <button onclick="changeQty(${index}, -20)">−</button>
-                <input value="${item.qty}" onchange="manualQtyChange(${index}, this.value)">
-                <button onclick="changeQty(${index}, 20)">+</button>
-              </div>
-            </td>
-            <td>${sum} ₽</td>
-          </tr>
-        `;
-      }).join("");
-
-      totalEl.textContent = total + " ₽";
-    }
-
-    function changeQty(i, delta){
-      cart[i].qty = normalizeQty(cart[i].qty + delta);
-      saveCart();
-      updateCart();
-    }
-
-    function manualQtyChange(i,v){
-      cart[i].qty = normalizeQty(v);
-      saveCart();
-      updateCart();
-    }
-
-    function clearCart(){
-      localStorage.removeItem("tulpan03_cart");
-      cart = [];
-      updateCart();
-      document.getElementById("clientName").value = "";
-      document.getElementById("clientPhone").value = "";
-    }
-
-    /* === ПРОВЕРКА ДАННЫХ === */
-    function validateClient(){
-      const name  = document.getElementById("clientName").value.trim();
-      const phone = document.getElementById("clientPhone").value.trim();
-
-      if(cart.length === 0){
-        alert("Корзина пуста");
-        return false;
-      }
-      if(!name){
-        alert("Введите ФИО");
-        return false;
-      }
-      if(!phone){
-        alert("Введите телефон");
-        return false;
-      }
-      return {name, phone};
-    }
-
-    /* === ФОРМИРОВАНИЕ ТЕКСТА === */
-    function buildMessage(){
-      const client = validateClient();
-      if(!client) return null;
-
-      const prices = getUnitPrices();
-      let total = 0;
-
-      let msg = "Заказ%0A-----------------%0A";
-      msg += "ФИО: " + encodeURIComponent(client.name) + "%0A";
-      msg += "Телефон: " + encodeURIComponent(client.phone) + "%0A";
-      msg += "-----------------%0A";
-
-      cart.forEach(i=>{
-        let price = 0;
-        if(i.type === "terry")      price = prices.terry;
-        else if(i.type === "mix")   price = prices.mix;
-        else                        price = prices.smooth;
-
-        const sum = price * i.qty;
-        total += sum;
-
-        msg += `${encodeURIComponent(i.name)}%3A%20${i.qty}%20шт%20×%20${price}%20=%20${sum}%0A`;
-      });
-
-      msg += "-----------------%0AИтого: " + total + " ₽";
-      return msg;
-    }
-
-    /* === WhatsApp === */
-    function sendWhatsApp(){
-      const msg = buildMessage();
-      if(!msg) return;
-      window.location.href = "https://wa.me/79148416115?text=" + msg;
-    }
-
-    /* === Telegram === */
-    function sendTelegram(){
-      const msg = buildMessage();
-      if(!msg) return;
-      window.location.href = "https://t.me/tulpan03?text=" + msg;
-    }
-
-    updateCart();
   </script>
 </body>
 </html>
