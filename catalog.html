@@ -1,229 +1,209 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Каталог — Тюльпан03</title>
 
-  <title>Каталог тюльпанов — Тюльпан03.рф</title>
-
-  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
   <link rel="shortcut icon" type="image/png" href="favicon.png">
 
   <style>
+    :root{
+      --bg:#f7b3d0;
+      --white:#ffffff;
+      --text:#222;
+      --muted:#666;
+      --brand:#e33474;
+      --radius:18px;
+    }
+    *{box-sizing:border-box;}
     body{
       margin:0;
-      font-family:system-ui,-apple-system,Roboto,Inter,sans-serif;
-      background:#f4b6d2;
-      color:#111;
+      background:var(--bg);
+      font-family:system-ui,Roboto,Arial,sans-serif;
+      color:var(--text);
     }
-    .container{
-      max-width:1100px;
-      margin:0 auto;
-      padding:16px;
+    a{text-decoration:none;color:inherit}
+    .page{
+      max-width:1000px;
+      margin:40px auto;
+      padding:20px;
+      background:var(--white);
+      border-radius:var(--radius);
     }
     header{
       background:#fff;
-      padding:16px;
+      padding:12px 16px;
       border-radius:14px;
       border:1px solid #e5e7eb;
       margin-bottom:20px;
+    }
+    .header-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .logo{
+      font-size:22px;
+      font-weight:800;
+    }
+    nav{
+      display:flex;
+      gap:18px;
+      font-weight:500;
+    }
+    nav a:hover{
+      color:#d6286a;
     }
     h1{
-      margin:10px 0 6px;
-      font-size:26px;
+      margin:10px 0 5px;
+      font-size:30px;
+      font-weight:700;
     }
-    .subtitle{
-      color:#666;
-      margin-bottom:20px;
+    .muted{
+      color:var(--muted);
+      font-size:14px;
     }
+
     .grid{
+      margin-top:20px;
       display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-      gap:16px;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:18px;
     }
     .card{
-      background:#fff;
+      border-radius:16px;
       border:1px solid #e5e7eb;
-      border-radius:14px;
-      overflow:hidden;
-    }
-    .card img{
-      width:100%;
-      height:200px;
-      object-fit:cover;
-    }
-    .card .body{
-      padding:12px;
-    }
-    .price{
-      font-weight:700;
-      color:#E33400;
-      margin:4px 0;
-    }
-    .qty-ctrl{
-      display:inline-flex;
-      border:1px solid #ccc;
-      border-radius:8px;
-      overflow:hidden;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
       background:#fff;
     }
-    .qty-ctrl button{
-      width:34px;
-      height:34px;
-      border:0;
-      background:#fff;
-      font-size:20px;
-      cursor:pointer;
-    }
-    .qty-ctrl input{
-      width:80px;
-      text-align:center;
-      border:0;
+    .card h3{
+      margin:0;
       font-size:18px;
     }
-    .btn-add{
-      margin-top:10px;
-      background:#E33400;
-      color:#fff;
-      border:0;
-      padding:8px 12px;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
+    .tag{
+      display:inline-block;
+      font-size:12px;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid #e5e7eb;
+      color:var(--muted);
     }
-    .btn-cart{
-      display:block;
-      margin:24px auto 0;
-      max-width:320px;
-      text-align:center;
-      background:#111827;
-      color:#fff;
-      padding:12px 16px;
+    .btn{
+      margin-top:8px;
+      padding:8px 12px;
       border-radius:10px;
-      text-decoration:none;
-      font-weight:700;
+      border:none;
+      cursor:pointer;
+      font-size:14px;
+      font-weight:600;
+      background:var(--brand);
+      color:#fff;
+    }
+    .btn:hover{opacity:0.9;}
+    .price-hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
     }
   </style>
 </head>
-
 <body>
-<div class="container">
-  <header>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <div class="logo" style="font-size:22px;font-weight:800;">🌷 Тюльпан03</div>
+  <div class="page">
+    <header>
+      <div class="header-row">
+        <div class="logo">🌷 Тюльпан03</div>
+        <nav>
+          <a href="index.html">Главная</a>
+          <a href="catalog.html">Каталог</a>
+          <a href="cart.html">Корзина</a>
+          <a href="contacts.html">Контакты</a>
+        </nav>
+      </div>
+    </header>
 
-      <nav style="display:flex;gap:18px;font-weight:500;">
-        <a href="index.html">Главная</a>
-        <a href="catalog.html">Каталог</a>
-        <a href="contacts.html">Контакты</a>
-      </nav>
-    </div>
+    <h1>Каталог тюльпанов</h1>
+    <p class="muted">Цены зависят от общего количества в корзине. Минимальный шаг — 20 шт.</p>
 
-    <h1>Каталог Краснодарских тюльпанов</h1>
-    <p class="subtitle">
-      Прямые поставки из теплиц Краснодарского края. Точная цена считается автоматически в корзине.
-    </p>
-  </header>
+    <div class="grid">
+      <!-- Обычные сорта (smooth) -->
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт красный</h3>
+        <div class="muted">Классический красный тюльпан с ровным стеблем.</div>
+        <div class="price-hint">Все обычные сорта, кроме махровых и микс — от 106 ₽ до 82 ₽/шт в зависимости от объёма.</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт красный')">В корзину</button>
+      </div>
 
+      <div class="card">
+        <span class="tag">Обычный сорт</span>
+        <h3>Тюльпан стандарт белый</h3>
+        <div class="muted">Белый сорт, подходит для любых композиций.</div>
+        <div class="price-hint">Все обычные сорта, кроме махровых и микс — от 106 ₽ до 82 ₽/шт.</div>
+        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт белый')">В корзину</button>
+      </div>
 
-  <div class="grid" id="catalog"></div>
+      <!-- МИКС (mix) -->
+      <div class="card">
+        <span class="tag">Микс</span>
+        <h3>Тюльпан МИКС стандарт</h3>
+        <div class="muted">Смесь стандартных сортов разных цветов.</div>
+        <div class="price-hint">МИКС — от 105 ₽ до 81 ₽/шт в зависимости от объёма.</div>
+        <button class="btn" onclick="addToCart('mix', 'Тюльпан МИКС стандарт')">В корзину</button>
+      </div>
 
-  <a href="cart.html" class="btn-cart">Перейти в корзину</a>
-</div>
+      <div class="card">
+        <span class="tag">Микс</span>
+        <h3>Тюльпан МИКС премиум</h3>
+        <div class="muted">Более крупный бутон, отборные цвета.</div>
+        <div class="price-hint">МИКС — от 105 ₽ до 81 ₽/шт.</div>
+        <button class="btn" onclick="addToCart('mix', 'Тюльпан МИКС премиум')">В корзину</button>
+      </div>
 
-<script>
-  const products = [
-    {name:"Жёлтый",           img:"yellow.jpg",         type:"smooth"},
-    {name:"Белый",            img:"white.jpg",          type:"smooth"},
-    {name:"Кремовый",         img:"cream.jpg",          type:"smooth"},
-    {name:"Розовый",          img:"pink.jpg",           type:"smooth"},
-    {name:"Красный",          img:"red.jpg",            type:"smooth"},
-    {name:"Красно-жёлтый",    img:"redyellow.jpg",      type:"smooth"},
-    {name:"Красно-белый",     img:"redwhite.jpg",       type:"smooth"},
-    {name:"Бело-сиреневый",   img:"whiteviolet.jpg",    type:"smooth"},
-    {name:"Бело-розовый",     img:"whitepink.jpg",      type:"smooth"},
-    {name:"Оранжевый",        img:"orange.jpg",         type:"smooth"},
-    {name:"Фиолетовый",       img:"violet.jpg",         type:"smooth"},
+      <!-- Махровые (terry) -->
+      <div class="card">
+        <span class="tag">Махровый</span>
+        <h3>Тюльпан махровый белый</h3>
+        <div class="muted">Пышный бутон, эффектная засечка в букетах.</div>
+        <div class="price-hint">Махровые — от 116 ₽ до 92 ₽/шт в зависимости от объёма.</div>
+        <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый белый')">В корзину</button>
+      </div>
 
-    {name:"Микс", img:null, type:"mix", custom:true},
-
-    {name:"Махровый жёлтый",  img:"mahrovy-yellow.jpg", type:"terry"},
-    {name:"Махровый розовый", img:"mahrovy-rozovyj.jpg",type:"terry"}
-  ];
-
-  const PACK = 20;
-  const box = document.getElementById("catalog");
-
-  function normalizeQty(v){
-    v = parseInt(v,10);
-    if (isNaN(v)) v = PACK;
-    if (v < PACK) v = PACK;
-    return Math.round(v/PACK)*PACK;
-  }
-
-  box.innerHTML = products.map(p => `
-    <div class="card">
-
-      ${p.custom
-        ? `
-          <div style="
-            width:100%;height:200px;background:#fff2f6;
-            display:flex;align-items:center;justify-content:center;
-            padding:10px;text-align:center;font-size:15px;font-weight:600;
-            color:#b3005a;border-bottom:1px solid #eee;
-          ">
-            Эта позиция означает выбор расцветки на наше усмотрение.
-          </div>
-        `
-        : `<img src="${p.img}" alt="${p.name}">`
-      }
-
-      <div class="body">
-        <strong>${p.name}</strong>
-        <div class="price">от 75 ₽</div>
-
-        <div class="qty-ctrl">
-          <button onclick="chgQty('${p.name}',-PACK)">−</button>
-          <input id="qty_${p.name}" value="${PACK}" onchange="manual('${p.name}',this.value)">
-          <button onclick="chgQty('${p.name}',+PACK)">+</button>
-        </div>
-
-        <button class="btn-add" onclick="addToCart('${p.name}','${p.type}')">
-          Добавить в корзину
-        </button>
+      <div class="card">
+        <span class="tag">Махровый</span>
+        <h3>Тюльпан махровый розовый</h3>
+        <div class="muted">Розовый махровый сорт, премиальный сегмент.</div>
+        <div class="price-hint">Махровые — от 116 ₽ до 92 ₽/шт.</div>
+        <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый розовый')">В корзину</button>
       </div>
     </div>
-  `).join("");
+  </div>
 
-  function chgQty(name,delta){
-    let el = document.getElementById("qty_"+name);
-    let v = parseInt(el.value,10);
-    v = normalizeQty(v + delta);
-    el.value = v;
-  }
+  <script>
+    // Добавление в корзину
+    function addToCart(type, name) {
+      let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
 
-  function manual(name,value){
-    let el = document.getElementById("qty_"+name);
-    el.value = normalizeQty(value);
-  }
+      const existing = cart.find(item => item.name === name && item.type === type);
 
-  function addToCart(name,type){
-    let qty = parseInt(document.getElementById("qty_"+name).value,10);
-    qty = normalizeQty(qty);
+      if (existing) {
+        existing.qty += 20; // добавляем ещё 20 шт
+      } else {
+        cart.push({
+          name: name,
+          type: type,  // smooth / terry / mix
+          qty: 20
+        });
+      }
 
-    let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
-    let item = cart.find(i => i.name===name && i.type===type);
-
-    if(item) item.qty += qty;
-    else cart.push({name,type,qty});
-
-    localStorage.setItem("tulpan03_cart",JSON.stringify(cart));
-    alert(`${name} — добавлено ${qty} шт`);
-  }
-</script>
-
+      localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
+      alert("Добавлено в корзину");
+    }
+  </script>
 </body>
 </html>
-
