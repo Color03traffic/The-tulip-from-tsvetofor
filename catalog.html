@@ -86,14 +86,6 @@
       margin:0;
       font-size:18px;
     }
-    .tag{
-      display:inline-block;
-      font-size:12px;
-      padding:3px 8px;
-      border-radius:999px;
-      border:1px solid #e5e7eb;
-      color:var(--muted);
-    }
     .thumb{
       width:100%;
       height:150px;
@@ -104,6 +96,28 @@
     .price-line{
       font-weight:600;
       font-size:13px;
+    }
+    .qty-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:8px;
+    }
+    .qty-row button{
+      width:32px;
+      height:32px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      background:#fff;
+      font-size:18px;
+      cursor:pointer;
+    }
+    .qty-row input{
+      width:60px;
+      text-align:center;
+      padding:6px;
+      border-radius:8px;
+      border:1px solid #ccc;
     }
     .btn{
       margin-top:8px;
@@ -141,128 +155,204 @@
     <div class="grid">
       <!-- Обычные (smooth) -->
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="yellow.jpg" class="thumb">
+        <img src="yellow.jpg" class="thumb" alt="Жёлтый тюльпан">
         <h3>Жёлтый</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Жёлтый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-yellow',-20)">−</button>
+          <input id="qty-yellow" value="20" onblur="handleManual('qty-yellow')">
+          <button onclick="changeQty('qty-yellow',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Жёлтый','qty-yellow')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="white.jpg" class="thumb">
+        <img src="white.jpg" class="thumb" alt="Белый тюльпан">
         <h3>Белый</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Белый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-white',-20)">−</button>
+          <input id="qty-white" value="20" onblur="handleManual('qty-white')">
+          <button onclick="changeQty('qty-white',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Белый','qty-white')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="tulips-new.jpg" class="thumb">
+        <img src="tulips-new.jpg" class="thumb" alt="Кремовый тюльпан">
         <h3>Кремовый</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Кремовый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-cream',-20)">−</button>
+          <input id="qty-cream" value="20" onblur="handleManual('qty-cream')">
+          <button onclick="changeQty('qty-cream',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Кремовый','qty-cream')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="pink.jpg" class="thumb">
+        <img src="pink.jpg" class="thumb" alt="Розовый тюльпан">
         <h3>Розовый</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Розовый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-pink',-20)">−</button>
+          <input id="qty-pink" value="20" onblur="handleManual('qty-pink')">
+          <button onclick="changeQty('qty-pink',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Розовый','qty-pink')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="red.jpg" class="thumb">
+        <img src="red.jpg" class="thumb" alt="Красный тюльпан">
         <h3>Красный</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Красный')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-red',-20)">−</button>
+          <input id="qty-red" value="20" onblur="handleManual('qty-red')">
+          <button onclick="changeQty('qty-red',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Красный','qty-red')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="redyellow.jpg" class="thumb">
+        <img src="redyellow.jpg" class="thumb" alt="Красно-жёлтый тюльпан">
         <h3>Красно-жёлтый</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Красно-жёлтый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-redyellow',-20)">−</button>
+          <input id="qty-redyellow" value="20" onblur="handleManual('qty-redyellow')">
+          <button onclick="changeQty('qty-redyellow',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Красно-жёлтый','qty-redyellow')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="redwhite.jpg" class="thumb">
+        <img src="redwhite.jpg" class="thumb" alt="Красно-белый тюльпан">
         <h3>Красно-белый</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Красно-белый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-redwhite',-20)">−</button>
+          <input id="qty-redwhite" value="20" onblur="handleManual('qty-redwhite')">
+          <button onclick="changeQty('qty-redwhite',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Красно-белый','qty-redwhite')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="whiteviolet.jpg" class="thumb">
+        <img src="whiteviolet.jpg" class="thumb" alt="Бело-сиреневый тюльпан">
         <h3>Бело-сиреневый</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Бело-сиреневый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-whiteviolet',-20)">−</button>
+          <input id="qty-whiteviolet" value="20" onblur="handleManual('qty-whiteviolet')">
+          <button onclick="changeQty('qty-whiteviolet',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Бело-сиреневый','qty-whiteviolet')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="whitepink.jpg" class="thumb">
+        <img src="whitepink.jpg" class="thumb" alt="Бело-розовый тюльпан">
         <h3>Бело-розовый</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Бело-розовый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-whitepink',-20)">−</button>
+          <input id="qty-whitepink" value="20" onblur="handleManual('qty-whitepink')">
+          <button onclick="changeQty('qty-whitepink',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Бело-розовый','qty-whitepink')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <img src="violet.jpg" class="thumb">
+        <img src="violet.jpg" class="thumb" alt="Фиолетовый тюльпан">
         <h3>Фиолетовый</h3>
         <div class="price-line">от 82 ₽</div>
-        <button class="btn" onclick="addToCart('smooth','Фиолетовый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-violet',-20)">−</button>
+          <input id="qty-violet" value="20" onblur="handleManual('qty-violet')">
+          <button onclick="changeQty('qty-violet',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('smooth','Фиолетовый','qty-violet')">Добавить в корзину</button>
       </div>
 
-      <!-- Оранжевый – не показываем -->
-      
+      <!-- Оранжевого здесь нет, как ты просил -->
+
       <!-- Махровые (terry) -->
       <div class="card">
-        <span class="tag">Махровый</span>
-        <img src="mahrovy-yellow.jpg" class="thumb">
+        <img src="mahrovy-yellow.jpg" class="thumb" alt="Махровый жёлтый тюльпан">
         <h3>Махровый жёлтый</h3>
         <div class="price-line">от 92 ₽</div>
-        <button class="btn" onclick="addToCart('terry','Махровый жёлтый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-mah-yellow',-20)">−</button>
+          <input id="qty-mah-yellow" value="20" onblur="handleManual('qty-mah-yellow')">
+          <button onclick="changeQty('qty-mah-yellow',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('terry','Махровый жёлтый','qty-mah-yellow')">Добавить в корзину</button>
       </div>
 
       <div class="card">
-        <span class="tag">Махровый</span>
-        <img src="mahrovy-rozovyj.jpg" class="thumb">
+        <img src="mahrovy-rozovyj.jpg" class="thumb" alt="Махровый розовый тюльпан">
         <h3>Махровый розовый</h3>
         <div class="price-line">от 92 ₽</div>
-        <button class="btn" onclick="addToCart('terry','Махровый розовый')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-mah-pink',-20)">−</button>
+          <input id="qty-mah-pink" value="20" onblur="handleManual('qty-mah-pink')">
+          <button onclick="changeQty('qty-mah-pink',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('terry','Махровый розовый','qty-mah-pink')">Добавить в корзину</button>
       </div>
 
       <!-- МИКС -->
       <div class="card">
-        <span class="tag">МИКС</span>
-        <img src="mix.jpg" class="thumb">
+        <img src="mix.jpg" class="thumb" alt="Микс тюльпанов">
         <h3>Микс</h3>
         <div class="price-line">от 81 ₽</div>
-        <button class="btn" onclick="addToCart('mix','Микс')">Добавить в корзину</button>
+        <div class="qty-row">
+          <button onclick="changeQty('qty-mix',-20)">−</button>
+          <input id="qty-mix" value="20" onblur="handleManual('qty-mix')">
+          <button onclick="changeQty('qty-mix',20)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart('mix','Микс','qty-mix')">Добавить в корзину</button>
       </div>
     </div>
   </div>
 
   <script>
-    function addToCart(type, name) {
-      let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
+    // Округление вверх до кратно 20, минимум 20
+    function normalizeQty(v){
+      v = parseInt(v,10);
+      if(isNaN(v) || v <= 0) v = 20;
+      if(v < 20) v = 20;
+      return Math.ceil(v / 20) * 20;
+    }
 
+    function changeQty(inputId, delta){
+      const el = document.getElementById(inputId);
+      let current = normalizeQty(el.value);
+      current += delta;
+      if(current < 20) current = 20;
+      el.value = current;
+    }
+
+    function handleManual(inputId){
+      const el = document.getElementById(inputId);
+      el.value = normalizeQty(el.value);
+    }
+
+    // Добавление в корзину с учётом количества
+    function addToCart(type, name, inputId) {
+      const el = document.getElementById(inputId);
+      const qty = normalizeQty(el.value);
+
+      let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
       const existing = cart.find(item => item.name === name && item.type === type);
 
       if (existing) {
-        existing.qty += 20;
+        existing.qty += qty;
       } else {
         cart.push({
           name: name,
-          type: type,
-          qty: 20
+          type: type,   // smooth / terry / mix
+          qty: qty
         });
       }
 
