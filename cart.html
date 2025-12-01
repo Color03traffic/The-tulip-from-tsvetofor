@@ -27,7 +27,6 @@
       color:var(--text);
     }
     a{text-decoration:none;color:inherit}
-
     .page{
       max-width:900px;
       margin:40px auto;
@@ -35,7 +34,6 @@
       background:var(--white);
       border-radius:var(--radius);
     }
-
     header{
       background:#fff;
       padding:12px 16px;
@@ -60,7 +58,6 @@
     nav a:hover{
       color:#d6286a;
     }
-
     h1{
       margin:10px 0;
       font-size:30px;
@@ -70,7 +67,6 @@
       color:var(--muted);
       font-size:14px;
     }
-
     table{
       width:100%;
       border-collapse:collapse;
@@ -81,7 +77,6 @@
       border-bottom:1px solid #ddd;
       text-align:left;
     }
-
     .qtyBox{
       display:flex;
       align-items:center;
@@ -103,7 +98,6 @@
       border-radius:8px;
       border:1px solid #ccc;
     }
-
     .btn{
       padding:12px 20px;
       background:var(--brand);
@@ -125,13 +119,11 @@
       color:var(--brand);
       margin-right:12px;
     }
-
     .totalBox{
       margin-top:20px;
       font-size:22px;
       font-weight:700;
     }
-
     .form-block{
       margin-top:20px;
       padding:16px;
@@ -158,13 +150,11 @@
       border:1px solid #d1d5db;
       font-size:14px;
     }
-
     .form-note{
       font-size:12px;
       color:var(--muted);
       margin-top:4px;
     }
-
     @media(max-width:600px){
       table,thead,tbody,tr,td,th{display:block;}
       td{border:none;}
@@ -172,10 +162,8 @@
     }
   </style>
 </head>
-
 <body>
   <div class="page">
-
     <header>
       <div class="header-row">
         <div class="logo">🌷 Тюльпан03</div>
@@ -208,12 +196,10 @@
 
     <div class="form-block">
       <h2>Данные покупателя</h2>
-
       <div class="form-row">
         <label>ФИО *</label>
         <input id="clientName" placeholder="Иванов Иван Иванович">
       </div>
-
       <div class="form-row">
         <label>Телефон *</label>
         <input id="clientPhone" placeholder="+7 9.. .. ..">
@@ -230,187 +216,202 @@
       <button class="btn btnGreen" onclick="sendWhatsApp()">Отправить в WhatsApp</button>
       <button class="btn btnBlue"  onclick="sendTelegram()">Отправить в Telegram</button>
     </div>
-
   </div>
 
-<script>
-  /* === ГРАДАЦИЯ ЦЕН — КАК БЫЛО, НЕ МЕНЯЛ === */
+  <script>
+    /* === НОВАЯ ГРАДАЦИЯ ЦЕН (3 ТИПА ТЮЛЬПАНОВ) === */
 
-  const tiersSmoothMix = [
-    {min:20, max:499, price:99},
-    {min:500, max:999, price:88},
-    {min:1000, max:1999, price:80},
-    {min:2000, max:2999, price:79},
-    {min:3000, max:4999, price:78},
-    {min:5000, max:9999, price:77},
-    {min:10000, max:49999, price:76},
-    {min:50000, max:99999, price:75}
-  ];
+    // 1) Все сорта, кроме махровых и микс — "smooth"
+    const tiersSmooth = [
+      {min: 20, max: 499,    price: 106},
+      {min: 500, max: 999,   price: 95},
+      {min: 1000, max: 1999, price: 87},
+      {min: 2000, max: 2999, price: 86},
+      {min: 3000, max: 4999, price: 85},
+      {min: 5000, max: 9999, price: 84},
+      {min: 10000, max: 49999,price: 83},
+      {min: 50000, max: 99999,price: 82}
+    ];
 
-  const tiersTerry = [
-    {min:20, max:499, price:109},
-    {min:500, max:999, price:98},
-    {min:1000, max:1999, price:90},
-    {min:2000, max:2999, price:89},
-    {min:3000, max:4999, price:88},
-    {min:5000, max:9999, price:87},
-    {min:10000, max:49999, price:86},
-    {min:50000, max:99999, price:85}
-  ];
+    // 2) Махровые — "terry"
+    const tiersTerry = [
+      {min: 20, max: 499,    price: 116},
+      {min: 500, max: 999,   price: 105},
+      {min: 1000, max: 1999, price: 97},
+      {min: 2000, max: 2999, price: 96},
+      {min: 3000, max: 4999, price: 95},
+      {min: 5000, max: 9999, price: 94},
+      {min: 10000, max: 49999,price: 93},
+      {min: 50000, max: 99999,price: 92}
+    ];
 
-  function getPriceFromTiers(tiers, totalQty){
-    for(const t of tiers){
-      if(totalQty >= t.min && totalQty <= t.max) return t.price;
-    }
-    return tiers[tiers.length - 1].price;
-  }
+    // 3) Микс — "mix"
+    const tiersMix = [
+      {min: 20, max: 499,    price: 105},
+      {min: 500, max: 999,   price: 94},
+      {min: 1000, max: 1999, price: 86},
+      {min: 2000, max: 2999, price: 85},
+      {min: 3000, max: 4999, price: 84},
+      {min: 5000, max: 9999, price: 83},
+      {min: 10000, max: 49999,price: 82},
+      {min: 50000, max: 100000,price: 81}
+    ];
 
-  function getUnitPrices(){
-    const totalQty = cart.reduce((s,i)=>s+i.qty,0);
-    if(totalQty === 0) return {priceSmoothMix:0,priceTerry:0};
-    return {
-      priceSmoothMix: getPriceFromTiers(tiersSmoothMix,totalQty),
-      priceTerry: getPriceFromTiers(tiersTerry,totalQty)
-    };
-  }
-
-  /* === КОРЗИНА === */
-
-  let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
-
-  function saveCart(){
-    localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
-  }
-
-  function normalizeQty(v){
-    v = parseInt(v,10);
-    if(isNaN(v) || v < 20) v = 20;
-    return Math.round(v/20)*20;
-  }
-
-  function updateCart(){
-    const body = document.getElementById("cartBody");
-    const totalEl = document.getElementById("cartTotal");
-
-    if(cart.length === 0){
-      body.innerHTML = "<tr><td colspan='4'>Корзина пуста.</td></tr>";
-      totalEl.textContent = "0 ₽";
-      return;
+    function getPriceFromTiers(tiers, totalQty){
+      for(const t of tiers){
+        if(totalQty >= t.min && totalQty <= t.max) return t.price;
+      }
+      return tiers[tiers.length - 1].price;
     }
 
-    const {priceSmoothMix,priceTerry} = getUnitPrices();
-    let total = 0;
+    function getUnitPrices(){
+      const totalQty = cart.reduce((s,i)=>s + i.qty, 0);
+      if(totalQty === 0) return {smooth:0, terry:0, mix:0};
+      return {
+        smooth: getPriceFromTiers(tiersSmooth, totalQty),
+        terry:  getPriceFromTiers(tiersTerry,  totalQty),
+        mix:    getPriceFromTiers(tiersMix,    totalQty)
+      };
+    }
 
-    body.innerHTML = cart.map((item, index)=>{
-      const unitPrice = item.type === "terry" ? priceTerry : priceSmoothMix;
-      const sum = unitPrice * item.qty;
-      total += sum;
+    /* === КОРЗИНА === */
+    let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
 
-      return `
-        <tr>
-          <td>${item.name}</td>
-          <td>${unitPrice} ₽</td>
-          <td>
-            <div class="qtyBox">
-              <button onclick="changeQty(${index},-20)">−</button>
-              <input value="${item.qty}" onchange="manualQtyChange(${index},this.value)">
-              <button onclick="changeQty(${index},20)">+</button>
-            </div>
-          </td>
-          <td>${sum} ₽</td>
-        </tr>
-      `;
-    }).join("");
+    function saveCart(){
+      localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
+    }
 
-    totalEl.textContent = total + " ₽";
-  }
+    function normalizeQty(v){
+      v = parseInt(v,10);
+      if(isNaN(v) || v < 20) v = 20;
+      return Math.round(v/20)*20;
+    }
 
-  function changeQty(i,delta){
-    cart[i].qty = normalizeQty(cart[i].qty + delta);
-    saveCart();
+    function updateCart(){
+      const body    = document.getElementById("cartBody");
+      const totalEl = document.getElementById("cartTotal");
+
+      if(cart.length === 0){
+        body.innerHTML = "<tr><td colspan='4'>Корзина пуста.</td></tr>";
+        totalEl.textContent = "0 ₽";
+        return;
+      }
+
+      const prices = getUnitPrices();
+      let total = 0;
+
+      body.innerHTML = cart.map((item, index)=>{
+        let unitPrice = 0;
+        if(item.type === "terry")      unitPrice = prices.terry;
+        else if(item.type === "mix")   unitPrice = prices.mix;
+        else                           unitPrice = prices.smooth; // всё остальное — обычные
+
+        const sum = unitPrice * item.qty;
+        total += sum;
+
+        return `
+          <tr>
+            <td>${item.name}</td>
+            <td>${unitPrice} ₽</td>
+            <td>
+              <div class="qtyBox">
+                <button onclick="changeQty(${index}, -20)">−</button>
+                <input value="${item.qty}" onchange="manualQtyChange(${index}, this.value)">
+                <button onclick="changeQty(${index}, 20)">+</button>
+              </div>
+            </td>
+            <td>${sum} ₽</td>
+          </tr>
+        `;
+      }).join("");
+
+      totalEl.textContent = total + " ₽";
+    }
+
+    function changeQty(i, delta){
+      cart[i].qty = normalizeQty(cart[i].qty + delta);
+      saveCart();
+      updateCart();
+    }
+
+    function manualQtyChange(i,v){
+      cart[i].qty = normalizeQty(v);
+      saveCart();
+      updateCart();
+    }
+
+    function clearCart(){
+      localStorage.removeItem("tulpan03_cart");
+      cart = [];
+      updateCart();
+      document.getElementById("clientName").value = "";
+      document.getElementById("clientPhone").value = "";
+    }
+
+    /* === ПРОВЕРКА ДАННЫХ === */
+    function validateClient(){
+      const name  = document.getElementById("clientName").value.trim();
+      const phone = document.getElementById("clientPhone").value.trim();
+
+      if(cart.length === 0){
+        alert("Корзина пуста");
+        return false;
+      }
+      if(!name){
+        alert("Введите ФИО");
+        return false;
+      }
+      if(!phone){
+        alert("Введите телефон");
+        return false;
+      }
+      return {name, phone};
+    }
+
+    /* === ФОРМИРОВАНИЕ ТЕКСТА === */
+    function buildMessage(){
+      const client = validateClient();
+      if(!client) return null;
+
+      const prices = getUnitPrices();
+      let total = 0;
+
+      let msg = "Заказ%0A-----------------%0A";
+      msg += "ФИО: " + encodeURIComponent(client.name) + "%0A";
+      msg += "Телефон: " + encodeURIComponent(client.phone) + "%0A";
+      msg += "-----------------%0A";
+
+      cart.forEach(i=>{
+        let price = 0;
+        if(i.type === "terry")      price = prices.terry;
+        else if(i.type === "mix")   price = prices.mix;
+        else                        price = prices.smooth;
+
+        const sum = price * i.qty;
+        total += sum;
+
+        msg += `${encodeURIComponent(i.name)}%3A%20${i.qty}%20шт%20×%20${price}%20=%20${sum}%0A`;
+      });
+
+      msg += "-----------------%0AИтого: " + total + " ₽";
+      return msg;
+    }
+
+    /* === WhatsApp === */
+    function sendWhatsApp(){
+      const msg = buildMessage();
+      if(!msg) return;
+      window.location.href = "https://wa.me/79148416115?text=" + msg;
+    }
+
+    /* === Telegram === */
+    function sendTelegram(){
+      const msg = buildMessage();
+      if(!msg) return;
+      window.location.href = "https://t.me/tulpan03?text=" + msg;
+    }
+
     updateCart();
-  }
-
-  function manualQtyChange(i,v){
-    cart[i].qty = normalizeQty(v);
-    saveCart();
-    updateCart();
-  }
-
-  function clearCart(){
-    localStorage.removeItem("tulpan03_cart");
-    cart = [];
-    updateCart();
-    document.getElementById("clientName").value = "";
-    document.getElementById("clientPhone").value = "";
-  }
-
-  /* === ПРОВЕРКА ФИО И ТЕЛЕФОНА === */
-
-  function validateClient(){
-    const name = document.getElementById("clientName").value.trim();
-    const phone = document.getElementById("clientPhone").value.trim();
-
-    if(cart.length === 0){
-      alert("Корзина пуста");
-      return false;
-    }
-    if(!name){
-      alert("Введите ФИО");
-      return false;
-    }
-    if(!phone){
-      alert("Введите телефон");
-      return false;
-    }
-    return {name,phone};
-  }
-
-  /* === СФОРМИРОВАТЬ ТЕКСТ === */
-
-  function buildMessage(){
-    const client = validateClient();
-    if(!client) return null;
-
-    const {priceSmoothMix,priceTerry} = getUnitPrices();
-    let total = 0;
-
-    let msg = "Заказ%0A-----------------%0A";
-    msg += "ФИО: " + encodeURIComponent(client.name)  + "%0A";
-    msg += "Телефон: " + encodeURIComponent(client.phone) + "%0A";
-    msg += "-----------------%0A";
-
-    cart.forEach(i=>{
-      const price = i.type === "terry" ? priceTerry : priceSmoothMix;
-      const sum = price * i.qty;
-      total += sum;
-      msg += encodeURIComponent(i.name) + "%3A%20" + i.qty +
-             "%20шт%20×%20" + price + "%20=%20" + sum + "%0A";
-    });
-
-    msg += "-----------------%0AИтого: " + total + " ₽";
-    return msg;
-  }
-
-  /* === WhatsApp === */
-
-  function sendWhatsApp(){
-    const msg = buildMessage();
-    if(!msg) return;
-    window.location.href = "https://wa.me/79148416115?text=" + msg;
-  }
-
-  /* === Telegram === */
-
-  function sendTelegram(){
-    const msg = buildMessage();
-    if(!msg) return;
-    window.location.href = "https://t.me/tulpan03?text=" + msg;
-  }
-
-  /* === РЕНДЕР === */
-  updateCart();
-</script>
-
+  </script>
 </body>
 </html>
