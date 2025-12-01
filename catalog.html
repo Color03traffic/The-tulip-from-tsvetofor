@@ -134,7 +134,7 @@
     }
     .btn:hover{opacity:0.9;}
 
-    /* Кнопка "Перейти в корзину" — базово скрыта */
+    /* Кнопка "Перейти в корзину" фиксированная (мобильная) — базово скрыта */
     #goCartBtn{
       position:fixed;
       left:0;
@@ -153,11 +153,36 @@
     #goCartBtn:hover{
       opacity:0.9;
     }
-
-    /* Показываем кнопку только на мобильных, когда есть класс .visible */
+    /* Показываем фиксированную кнопку только на мобильных, когда есть класс .visible */
     @media (max-width:600px){
       #goCartBtn.visible{
         display:block;
+      }
+    }
+
+    /* Кнопка "Перейти в корзину" внизу страницы (для десктопа) */
+    .bottom-cart-btn-wrap{
+      margin-top:24px;
+      text-align:center;
+    }
+    .bottom-cart-btn{
+      display:inline-block;
+      padding:12px 28px;
+      border-radius:999px;
+      background:#e33474;
+      color:#fff;
+      font-weight:700;
+      font-size:16px;
+      border:none;
+      cursor:pointer;
+    }
+    .bottom-cart-btn:hover{
+      opacity:0.9;
+    }
+    /* На мобильных нижнюю кнопку можно скрыть, чтобы не дублировать с фиксированной */
+    @media (max-width:600px){
+      .bottom-cart-btn-wrap{
+        display:none;
       }
     }
   </style>
@@ -301,7 +326,7 @@
         <button class="btn" onclick="addToCart('smooth','Фиолетовый','qty-violet')">Добавить в корзину</button>
       </div>
 
-      <!-- Оранжевого нет, как ты просил -->
+      <!-- Оранжевого нет -->
 
       <!-- Махровые (terry) -->
       <div class="card">
@@ -341,9 +366,16 @@
         <button class="btn" onclick="addToCart('mix','Микс','qty-mix')">Добавить в корзину</button>
       </div>
     </div>
+
+    <!-- Кнопка ВНИЗУ ПРАЙСА (для десктопа) -->
+    <div class="bottom-cart-btn-wrap">
+      <button class="bottom-cart-btn" onclick="location.href='cart.html'">
+        Перейти в корзину
+      </button>
+    </div>
   </div>
 
-  <!-- Кнопка "Перейти в корзину" (появляется только на мобиле и если корзина не пустая) -->
+  <!-- Фиксированная кнопка для мобилок -->
   <div id="goCartBtn" onclick="location.href='cart.html'">
     Перейти в корзину
   </div>
@@ -403,7 +435,7 @@
       }
     }
 
-    // при открытии каталога сразу проверяем, вдруг корзина уже заполнена
+    // При открытии каталога сразу проверяем, вдруг корзина уже заполнена
     checkCartButton();
   </script>
 </body>
