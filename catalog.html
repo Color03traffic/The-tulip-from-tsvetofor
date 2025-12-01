@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Каталог — Тюльпан03</title>
+  <title>Каталог тюльпанов — Тюльпан03</title>
 
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
@@ -27,7 +27,7 @@
     }
     a{text-decoration:none;color:inherit}
     .page{
-      max-width:1000px;
+      max-width:1100px;
       margin:40px auto;
       padding:20px;
       background:var(--white);
@@ -94,6 +94,17 @@
       border:1px solid #e5e7eb;
       color:var(--muted);
     }
+    .thumb{
+      width:100%;
+      height:150px;
+      object-fit:cover;
+      border-radius:12px;
+      margin-bottom:6px;
+    }
+    .price-line{
+      font-weight:600;
+      font-size:13px;
+    }
     .btn{
       margin-top:8px;
       padding:8px 12px;
@@ -106,19 +117,6 @@
       color:#fff;
     }
     .btn:hover{opacity:0.9;}
-    .price-hint{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:4px;
-      line-height:1.4;
-    }
-    .thumb{
-      width:100%;
-      border-radius:12px;
-      margin-bottom:6px;
-      object-fit:cover;
-      max-height:160px;
-    }
   </style>
 </head>
 <body>
@@ -135,187 +133,136 @@
       </div>
     </header>
 
-    <h1>Каталог тюльпанов</h1>
+    <h1>Каталог Краснодарских тюльпанов</h1>
     <p class="muted">
-      Цены зависят от общего количества в корзине. Минимальный шаг — 20 шт.<br>
-      Окончательная цена считается в корзине автоматически.
+      Прямые поставки из теплиц Краснодарского края. Точная цена считается автоматически в корзине.
     </p>
 
     <div class="grid">
-      <!-- ОСТАЛЬНЫЕ СОРТА (обычные, type = smooth) -->
-
+      <!-- Обычные (smooth) -->
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт красный</h3>
-        <!-- пример картинки, подставь свой файл -->
-        <!-- <img src="tulip-red.jpg" alt="Тюльпан стандарт красный" class="thumb"> -->
-        <div class="muted">Классический красный тюльпан с ровным стеблем и крупным бутоном.</div>
-        <div class="price-hint">
-          <b>Остальные (обычные) сорта:</b><br>
-          20–499 шт — 106 ₽/шт<br>
-          500–999 шт — 95 ₽/шт<br>
-          1 000–1 999 шт — 87 ₽/шт<br>
-          2 000–2 999 шт — 86 ₽/шт<br>
-          3 000–4 999 шт — 85 ₽/шт<br>
-          5 000–9 999 шт — 84 ₽/шт<br>
-          10 000–49 999 шт — 83 ₽/шт<br>
-          50 000–99 999 шт — 82 ₽/шт
-        </div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт красный')">В корзину</button>
+        <img src="yellow.jpg" class="thumb">
+        <h3>Жёлтый</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Жёлтый')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт белый</h3>
-        <div class="muted">Белый сорт, универсален для свадебных и праздничных композиций.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт белый')">В корзину</button>
+        <img src="white.jpg" class="thumb">
+        <h3>Белый</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Белый')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт жёлтый</h3>
-        <div class="muted">Ярко-жёлтый сорт для солнечных витрин и весенних букетов.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт жёлтый')">В корзину</button>
+        <img src="tulips-new.jpg" class="thumb">
+        <h3>Кремовый</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Кремовый')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт кремовый</h3>
-        <div class="muted">Нежный кремовый оттенок, хорошо смотрится в пастельных композициях.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт кремовый')">В корзину</button>
+        <img src="pink.jpg" class="thumb">
+        <h3>Розовый</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Розовый')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт розовый</h3>
-        <div class="muted">Мягкий розовый цвет, популярный для романтических букетов.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт розовый')">В корзину</button>
+        <img src="red.jpg" class="thumb">
+        <h3>Красный</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Красный')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт белосиреневый</h3>
-        <div class="muted">Интересное сочетание белого и сиреневого оттенков.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт белосиреневый')">В корзину</button>
+        <img src="redyellow.jpg" class="thumb">
+        <h3>Красно-жёлтый</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Красно-жёлтый')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт оранжевый</h3>
-        <div class="muted">Яркий оранжевый сорт, хорошо привлекает внимание в витрине.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт оранжевый')">В корзину</button>
+        <img src="redwhite.jpg" class="thumb">
+        <h3>Красно-белый</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Красно-белый')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт красно-жёлтый</h3>
-        <div class="muted">Двухцветный сорт с красно-жёлтым сочетанием.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт красно-жёлтый')">В корзину</button>
+        <img src="whiteviolet.jpg" class="thumb">
+        <h3>Бело-сиреневый</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Бело-сиреневый')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт красно-белый</h3>
-        <div class="muted">Контрастный красно-белый окрас лепестков.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт красно-белый')">В корзину</button>
+        <img src="whitepink.jpg" class="thumb">
+        <h3>Бело-розовый</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Бело-розовый')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт фиолетовый</h3>
-        <div class="muted">Глубокий фиолетовый цвет, эффектно смотрится в моно-букетах.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт фиолетовый')">В корзину</button>
+        <img src="violet.jpg" class="thumb">
+        <h3>Фиолетовый</h3>
+        <div class="price-line">от 82 ₽</div>
+        <button class="btn" onclick="addToCart('smooth','Фиолетовый')">Добавить в корзину</button>
       </div>
 
-      <div class="card">
-        <span class="tag">Обычный сорт</span>
-        <h3>Тюльпан стандарт белорозовый</h3>
-        <div class="muted">Нежный бело-розовый градиент для лёгких весенних букетов.</div>
-        <div class="price-hint">Цены как у всех обычных сортов (см. красный).</div>
-        <button class="btn" onclick="addToCart('smooth', 'Тюльпан стандарт белорозовый')">В корзину</button>
-      </div>
-
-      <!-- МАХРОВЫЕ (type = terry) -->
-
+      <!-- Оранжевый – не показываем -->
+      
+      <!-- Махровые (terry) -->
       <div class="card">
         <span class="tag">Махровый</span>
-        <h3>Тюльпан махровый белый</h3>
-        <div class="muted">Пышный махровый бутон, эффектно смотрится в монобукетах и композициях.</div>
-        <div class="price-hint">
-          <b>Махровые:</b><br>
-          20–499 шт — 116 ₽/шт<br>
-          500–999 шт — 105 ₽/шт<br>
-          1 000–1 999 шт — 97 ₽/шт<br>
-          2 000–2 999 шт — 96 ₽/шт<br>
-          3 000–4 999 шт — 95 ₽/шт<br>
-          5 000–9 999 шт — 94 ₽/шт<br>
-          10 000–49 999 шт — 93 ₽/шт<br>
-          50 000–99 999 шт — 92 ₽/шт
-        </div>
-        <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый белый')">В корзину</button>
+        <img src="mahrovy-yellow.jpg" class="thumb">
+        <h3>Махровый жёлтый</h3>
+        <div class="price-line">от 92 ₽</div>
+        <button class="btn" onclick="addToCart('terry','Махровый жёлтый')">Добавить в корзину</button>
       </div>
 
       <div class="card">
         <span class="tag">Махровый</span>
-        <h3>Тюльпан махровый жёлтый</h3>
-        <div class="muted">Яркий жёлтый махровый сорт с очень плотным бутоном.</div>
-        <div class="price-hint">Цены как у всех махровых (см. белый).</div>
-        <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый жёлтый')">В корзину</button>
+        <img src="mahrovy-rozovyj.jpg" class="thumb">
+        <h3>Махровый розовый</h3>
+        <div class="price-line">от 92 ₽</div>
+        <button class="btn" onclick="addToCart('terry','Махровый розовый')">Добавить в корзину</button>
       </div>
 
-      <div class="card">
-        <span class="tag">Махровый</span>
-        <h3>Тюльпан махровый розовый</h3>
-        <div class="muted">Розовый махровый сорт, премиальный сегмент для подарочных букетов.</div>
-        <div class="price-hint">Цены как у всех махровых (см. белый).</div>
-        <button class="btn" onclick="addToCart('terry', 'Тюльпан махровый розовый')">В корзину</button>
-      </div>
-
-      <!-- МИКС (type = mix) -->
-
+      <!-- МИКС -->
       <div class="card">
         <span class="tag">МИКС</span>
-        <h3>Тюльпан МИКС</h3>
-        <div class="muted">Смесь разных сортов и расцветок в одной поставке — удобно для витрин и микс-букетов.</div>
-        <div class="price-hint">
-          <b>МИКС:</b><br>
-          20–499 шт — 105 ₽/шт<br>
-          500–999 шт — 94 ₽/шт<br>
-          1 000–1 999 шт — 86 ₽/шт<br>
-          2 000–2 999 шт — 85 ₽/шт<br>
-          3 000–4 999 шт — 84 ₽/шт<br>
-          5 000–9 999 шт — 83 ₽/шт<br>
-          10 000–49 999 шт — 82 ₽/шт<br>
-          50 000–100 000 шт — 81 ₽/шт
-        </div>
-        <button class="btn" onclick="addToCart('mix', 'Тюльпан МИКС')">В корзину</button>
+        <img src="mix.jpg" class="thumb">
+        <h3>Микс</h3>
+        <div class="price-line">от 81 ₽</div>
+        <button class="btn" onclick="addToCart('mix','Микс')">Добавить в корзину</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Добавление в корзину (совместимо с текущим cart.html)
     function addToCart(type, name) {
       let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
 
       const existing = cart.find(item => item.name === name && item.type === type);
 
       if (existing) {
-        existing.qty += 20; // добавляем ещё 20 шт
+        existing.qty += 20;
       } else {
         cart.push({
           name: name,
-          type: type,  // smooth / terry / mix
-          qty: 20      // минимальный шаг
+          type: type,
+          qty: 20
         });
       }
 
