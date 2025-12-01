@@ -32,6 +32,7 @@
       padding:20px;
       background:var(--white);
       border-radius:var(--radius);
+      padding-bottom:100px; /* запас под мобильную кнопку корзины */
     }
     header{
       background:#fff;
@@ -79,29 +80,30 @@
       padding:14px;
       display:flex;
       flex-direction:column;
-      gap:6px;
       background:#fff;
     }
     .card h3{
       margin:0;
       font-size:18px;
+      font-weight:700;
     }
     .thumb{
       width:100%;
-      height:150px;
+      height:160px;
       object-fit:cover;
       border-radius:12px;
-      margin-bottom:6px;
+      margin-bottom:10px;
     }
     .price-line{
       font-weight:600;
-      font-size:13px;
+      font-size:14px;
+      margin-top:4px;
     }
     .qty-row{
       display:flex;
       align-items:center;
       gap:8px;
-      margin-top:8px;
+      margin-top:10px;
     }
     .qty-row button{
       width:32px;
@@ -121,7 +123,7 @@
     }
     .btn{
       margin-top:8px;
-      padding:8px 12px;
+      padding:10px 12px;
       border-radius:10px;
       border:none;
       cursor:pointer;
@@ -131,6 +133,33 @@
       color:#fff;
     }
     .btn:hover{opacity:0.9;}
+
+    /* Кнопка "Перейти в корзину" — базово скрыта */
+    #goCartBtn{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      padding:16px;
+      background:#e33474;
+      color:#fff;
+      text-align:center;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+      z-index:999;
+      display:none;
+    }
+    #goCartBtn:hover{
+      opacity:0.9;
+    }
+
+    /* Показываем кнопку только на мобильных, когда есть класс .visible */
+    @media (max-width:600px){
+      #goCartBtn.visible{
+        display:block;
+      }
+    }
   </style>
 </head>
 <body>
@@ -147,15 +176,13 @@
       </div>
     </header>
 
-    <h1>Каталог Краснодарских тюльпанов</h1>
-    <p class="muted">
-      Прямые поставки из теплиц Краснодарского края. Точная цена считается автоматически в корзине.
-    </p>
+    <h1>Каталог тюльпанов</h1>
+    <p class="muted">Цены зависят от общего количества. Минимальный шаг — 20 шт.</p>
 
     <div class="grid">
       <!-- Обычные (smooth) -->
       <div class="card">
-        <img src="yellow.jpg" class="thumb" alt="Жёлтый тюльпан">
+        <img src="yellow.jpg" alt="Жёлтый тюльпан" class="thumb">
         <h3>Жёлтый</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -167,7 +194,7 @@
       </div>
 
       <div class="card">
-        <img src="white.jpg" class="thumb" alt="Белый тюльпан">
+        <img src="white.jpg" alt="Белый тюльпан" class="thumb">
         <h3>Белый</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -179,7 +206,7 @@
       </div>
 
       <div class="card">
-        <img src="tulips-new.jpg" class="thumb" alt="Кремовый тюльпан">
+        <img src="tulips-new.jpg" alt="Кремовый тюльпан" class="thumb">
         <h3>Кремовый</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -191,7 +218,7 @@
       </div>
 
       <div class="card">
-        <img src="pink.jpg" class="thumb" alt="Розовый тюльпан">
+        <img src="pink.jpg" alt="Розовый тюльпан" class="thumb">
         <h3>Розовый</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -203,7 +230,7 @@
       </div>
 
       <div class="card">
-        <img src="red.jpg" class="thumb" alt="Красный тюльпан">
+        <img src="red.jpg" alt="Красный тюльпан" class="thumb">
         <h3>Красный</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -215,7 +242,7 @@
       </div>
 
       <div class="card">
-        <img src="redyellow.jpg" class="thumb" alt="Красно-жёлтый тюльпан">
+        <img src="redyellow.jpg" alt="Красно-жёлтый тюльпан" class="thumb">
         <h3>Красно-жёлтый</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -227,7 +254,7 @@
       </div>
 
       <div class="card">
-        <img src="redwhite.jpg" class="thumb" alt="Красно-белый тюльпан">
+        <img src="redwhite.jpg" alt="Красно-белый тюльпан" class="thumb">
         <h3>Красно-белый</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -239,7 +266,7 @@
       </div>
 
       <div class="card">
-        <img src="whiteviolet.jpg" class="thumb" alt="Бело-сиреневый тюльпан">
+        <img src="whiteviolet.jpg" alt="Бело-сиреневый тюльпан" class="thumb">
         <h3>Бело-сиреневый</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -251,7 +278,7 @@
       </div>
 
       <div class="card">
-        <img src="whitepink.jpg" class="thumb" alt="Бело-розовый тюльпан">
+        <img src="whitepink.jpg" alt="Бело-розовый тюльпан" class="thumb">
         <h3>Бело-розовый</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -263,7 +290,7 @@
       </div>
 
       <div class="card">
-        <img src="violet.jpg" class="thumb" alt="Фиолетовый тюльпан">
+        <img src="violet.jpg" alt="Фиолетовый тюльпан" class="thumb">
         <h3>Фиолетовый</h3>
         <div class="price-line">от 82 ₽</div>
         <div class="qty-row">
@@ -274,11 +301,11 @@
         <button class="btn" onclick="addToCart('smooth','Фиолетовый','qty-violet')">Добавить в корзину</button>
       </div>
 
-      <!-- Оранжевого здесь нет, как ты просил -->
+      <!-- Оранжевого нет, как ты просил -->
 
       <!-- Махровые (terry) -->
       <div class="card">
-        <img src="mahrovy-yellow.jpg" class="thumb" alt="Махровый жёлтый тюльпан">
+        <img src="mahrovy-yellow.jpg" alt="Махровый жёлтый тюльпан" class="thumb">
         <h3>Махровый жёлтый</h3>
         <div class="price-line">от 92 ₽</div>
         <div class="qty-row">
@@ -290,7 +317,7 @@
       </div>
 
       <div class="card">
-        <img src="mahrovy-rozovyj.jpg" class="thumb" alt="Махровый розовый тюльпан">
+        <img src="mahrovy-rozovyj.jpg" alt="Махровый розовый тюльпан" class="thumb">
         <h3>Махровый розовый</h3>
         <div class="price-line">от 92 ₽</div>
         <div class="qty-row">
@@ -301,9 +328,9 @@
         <button class="btn" onclick="addToCart('terry','Махровый розовый','qty-mah-pink')">Добавить в корзину</button>
       </div>
 
-      <!-- МИКС -->
+      <!-- МИКС (mix) -->
       <div class="card">
-        <img src="mix.jpg" class="thumb" alt="Микс тюльпанов">
+        <img src="mix.jpg" alt="Микс тюльпанов" class="thumb">
         <h3>Микс</h3>
         <div class="price-line">от 81 ₽</div>
         <div class="qty-row">
@@ -314,6 +341,11 @@
         <button class="btn" onclick="addToCart('mix','Микс','qty-mix')">Добавить в корзину</button>
       </div>
     </div>
+  </div>
+
+  <!-- Кнопка "Перейти в корзину" (появляется только на мобиле и если корзина не пустая) -->
+  <div id="goCartBtn" onclick="location.href='cart.html'">
+    Перейти в корзину
   </div>
 
   <script>
@@ -358,7 +390,21 @@
 
       localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
       alert("Добавлено в корзину");
+      checkCartButton();
     }
+
+    function checkCartButton(){
+      let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
+      const btn = document.getElementById("goCartBtn");
+      if(cart.length > 0){
+        btn.classList.add("visible");
+      } else {
+        btn.classList.remove("visible");
+      }
+    }
+
+    // при открытии каталога сразу проверяем, вдруг корзина уже заполнена
+    checkCartButton();
   </script>
 </body>
 </html>
