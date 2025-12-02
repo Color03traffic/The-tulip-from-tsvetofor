@@ -23,7 +23,7 @@
       margin:0;
       background:var(--bg);
       font-family:system-ui,Roboto,Arial,sans-serif;
-      color:var(--text);
+      color:#222;
     }
     a{text-decoration:none;color:inherit}
     .page{
@@ -94,6 +94,12 @@
       border-radius:12px;
       margin-bottom:10px;
     }
+    /* чтобы картинка с текстом МИКС всегда целиком влезала и не обрезалась */
+    .thumb-mix{
+      object-fit:contain;
+      background:#d4d4d4; /* серый фон вокруг текста */
+    }
+
     .price-line{
       font-weight:600;
       font-size:14px;
@@ -355,7 +361,7 @@
 
       <!-- МИКС (mix) -->
       <div class="card">
-        <img src="mix.jpg" alt="Микс тюльпанов" class="thumb">
+        <img src="mix.jpg" alt="Микс тюльпанов" class="thumb thumb-mix">
         <h3>Микс</h3>
         <div class="price-line">от 81 ₽</div>
         <div class="qty-row">
