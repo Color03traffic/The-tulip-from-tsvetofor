@@ -2,19 +2,11 @@
 User-agent: *
 Allow: /
 
-# Запрещаем индексацию служебных разделов (если они появятся)
-Disallow: /admin/
-Disallow: /cart/
-Disallow: /checkout/
-Disallow: /search?
-Disallow: /privacy-policy/
-Disallow: /terms/
+# Корзина — служебная страница, в поиске не нужна
+Disallow: /cart.html
 
-# Основное зеркало для Яндекса
-Host: xn--03-6kc7blkt5fq.xn--p1ai
+# Метки рекламы (utm) не создают «новые» страницы для Яндекса
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content /
 
 # Карта сайта для Яндекса и Google
-Sitemap: https://тюльпан03.рф/sitemap.xml
-
-# Дополнительные рекомендации
-Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content /
+Sitemap: https://xn--03-6kc7blkt5fq.xn--p1ai/sitemap.xml
