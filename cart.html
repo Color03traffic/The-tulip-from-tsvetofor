@@ -1,14 +1,18 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Корзина — Тюльпан03</title>
+  <meta name="robots" content="noindex, follow">
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-  <link rel="shortcut icon" type="image/png" href="favicon.png">
+
+  <link rel="stylesheet" href="common.css">
+  <script src="prices.js"></script>
+  <script src="common.js"></script>
 
   <style>
     :root{
@@ -243,23 +247,47 @@
       td{border:none;}
       tr{margin-bottom:20px;border-bottom:1px solid #ddd;padding-bottom:10px;}
     }
+  
+    .qtyBox input{font-size:16px;}
+    .form-row input, .form-row textarea{font-size:16px;font-family:inherit;}
+    .form-row textarea{padding:8px 10px;border-radius:8px;border:1px solid #d1d5db;min-height:70px;resize:vertical;}
+    .removeBtn{
+      background:none;border:none;color:#999;font-size:22px;line-height:1;cursor:pointer;padding:4px 8px;
+    }
+    .removeBtn:hover{color:#e33474;}
+    .empty a{color:var(--brand);font-weight:600;text-decoration:underline;}
+    .hint{font-size:13px;color:var(--muted);margin-top:6px;}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+    .modal-btn{margin:0;}
+    .modal-btn.secondary{background:#fff;color:#666;border:1px solid #ccc;}
+    .send-row .btn{margin-right:8px;}
+    footer{text-align:center;color:var(--muted);font-size:14px;margin-top:30px;}
+    @media(max-width:600px){
+      thead{display:none !important;}
+      td[data-label]::before{content:attr(data-label) ": ";color:var(--muted);font-size:13px;}
+      td{padding:4px 0;}
+      .send-row .btn{width:100%;margin-right:0;margin-top:10px;}
+      .btnSecondary{margin-right:0;}
+    }
   </style>
 </head>
 <body>
   <div class="page">
     <header>
       <div class="header-row">
-        <div class="logo">🌷 Тюльпан03</div>
+        <a class="logo" href="index.html">🌷 Тюльпан03</a>
         <nav>
           <a href="index.html">Главная</a>
           <a href="catalog.html">Каталог</a>
+          <a href="cart.html" class="active">Корзина<span class="cart-count"></span></a>
           <a href="contacts.html">Контакты</a>
         </nav>
       </div>
     </header>
 
+    <main>
     <h1>Корзина</h1>
-    <p class="muted">Количество кратно 20 шт. Можно менять вручную или кнопками.</p>
+    <p class="muted">Количество кратно 20 шт. Цена за штуку зависит от общего количества в заказе.</p>
 
     <table id="cartTable">
       <thead>
@@ -268,6 +296,7 @@
           <th>Цена за шт.</th>
           <th>Количество</th>
           <th>Сумма</th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="cartBody"></tbody>
@@ -275,276 +304,247 @@
 
     <div class="totalBox">
       Итого: <span id="cartTotal">0 ₽</span>
+      <div class="hint" id="nextTier"></div>
     </div>
 
     <div class="form-block">
       <h2>Данные покупателя</h2>
       <div class="form-row">
-        <label>ФИО *</label>
-        <input id="clientName" placeholder="Иванов Иван Иванович">
+        <label for="clientName">Имя или название организации *</label>
+        <input id="clientName" autocomplete="name" placeholder="Иванов Иван или ИП Иванов">
       </div>
       <div class="form-row">
-        <label>Телефон *</label>
-        <input id="clientPhone" placeholder="+7 9.. .. ..">
-        <div class="form-note">Без этих данных заказ не отправится.</div>
+        <label for="clientPhone">Телефон *</label>
+        <input id="clientPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 914 000-00-00">
       </div>
+      <div class="form-row">
+        <label for="clientComment">Комментарий</label>
+        <textarea id="clientComment" placeholder="К какой дате нужен заказ, самовывоз или доставка, пожелания"></textarea>
+      </div>
+      <div class="form-note">Без имени и телефона заказ не отправится.</div>
     </div>
 
     <div style="margin-top:25px;">
-      <a href="catalog.html" class="btn btnSecondary">Вернуться в каталог</a>
-      <button class="btn" onclick="clearCart()">Очистить корзину</button>
+      <a href="catalog.html" class="btn btnSecondary">← Вернуться в каталог</a>
+      <button class="btn" type="button" onclick="clearCart()">Очистить корзину</button>
     </div>
 
-    <div style="margin-top:25px;">
-      <button class="btn btnGreen" onclick="sendWhatsApp()">Отправить в WhatsApp</button>
-      <button class="btn btnBlue"  onclick="sendTelegram()">Отправить в Telegram</button>
+    <div class="send-row" style="margin-top:10px;">
+      <button class="btn btnGreen" type="button" onclick="startSend('whatsapp')">Отправить в WhatsApp</button>
+      <button class="btn btnBlue"  type="button" onclick="startSend('telegram')">Отправить в Telegram</button>
     </div>
+    </main>
+
+    <footer>© 2025–<span class="year">2026</span> Тюльпан03.рф — тюльпаны оптом в Улан-Удэ 🌷</footer>
   </div>
 
-  <!-- Модальное окно с предупреждением -->
-  <div id="warningModal" class="modal-overlay">
+  <!-- Окно: предупреждение о минимальном заказе -->
+  <div id="warningModal" class="modal-overlay" role="dialog" aria-modal="true">
     <div class="modal-window">
-      <span class="modal-close" onclick="closeModal()">&times;</span>
-      <div class="modal-title">⚠️ Внимание!!!</div>
-      <div class="modal-text">
-        Минимальный предзаказ от <strong>100 шт</strong>, не все цвета могут быть в наличии.<br><br>
-        Если количество менее 100 шт, то продажа осуществляется <strong>по факту</strong>.
+      <span class="modal-close" onclick="closeModal()" aria-label="Закрыть">&times;</span>
+      <div id="modalStep1">
+        <div class="modal-title">⚠️ Обратите внимание</div>
+        <div class="modal-text">
+          Минимальный предзаказ — от <strong>100 шт</strong>, не все цвета могут быть в наличии.<br><br>
+          Если в заказе меньше 100 шт, продажа идёт <strong>по наличию</strong>.
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn secondary" type="button" onclick="closeModal()">Отмена</button>
+          <button class="modal-btn" type="button" onclick="confirmSend()">Понятно, отправить</button>
+        </div>
       </div>
-      <button class="modal-btn" onclick="closeModal()">Понятно</button>
+      <div id="modalStep2" style="display:none;">
+        <div class="modal-title">📋 Заказ скопирован</div>
+        <div class="modal-text">
+          Сейчас откроется чат с нами в Telegram.<br>
+          Нажмите в поле сообщения <strong>«Вставить»</strong> и отправьте — заказ уже там.
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn" type="button" onclick="openTelegram()">Открыть Telegram</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    /* === НОВАЯ ГРАДАЦИЯ ЦЕН (3 ТИПА ТЮЛЬПАНОВ) === */
+    const WHATSAPP_PHONE = '79148416115';
+    const TELEGRAM_USER  = 'tulpan03';
 
-    // 1) Все сорта, кроме махровых и микс — "smooth"
-    const tiersSmooth = [
-      {min: 20, max: 499,    price: 110},
-      {min: 500, max: 999,   price: 99},
-      {min: 1000, max: 1999, price: 91},
-      {min: 2000, max: 2999, price: 90},
-      {min: 3000, max: 4999, price: 89},
-      {min: 5000, max: 9999, price: 88},
-      {min: 10000, max: 49999,price: 87},
-      {min: 50000, max: 99999,price: 86}
-    ];
+    let cart = loadCart();
+    let pendingChannel = null;
+    let pendingText = '';
 
-    // 2) Махровые — "terry"
-    const tiersTerry = [
-      {min: 20, max: 499,    price: 120},
-      {min: 500, max: 999,   price: 109},
-      {min: 1000, max: 1999, price: 101},
-      {min: 2000, max: 2999, price: 100},
-      {min: 3000, max: 4999, price: 99},
-      {min: 5000, max: 9999, price: 98},
-      {min: 10000, max: 49999,price: 97},
-      {min: 50000, max: 99999,price: 96}
-    ];
-
-    // 3) Микс — "mix"
-    const tiersMix = [
-      {min: 20, max: 499,    price: 110},
-      {min: 500, max: 999,   price: 99},
-      {min: 1000, max: 1999, price: 91},
-      {min: 2000, max: 2999, price: 90},
-      {min: 3000, max: 4999, price: 89},
-      {min: 5000, max: 9999, price: 88},
-      {min: 10000, max: 49999,price: 87},
-      {min: 50000, max: 100000,price: 86}
-    ];
-
-    function getPriceFromTiers(tiers, totalQty){
-      for(const t of tiers){
-        if(totalQty >= t.min && totalQty <= t.max) return t.price;
-      }
-      return tiers[tiers.length - 1].price;
+    // Защита: название товара выводим как текст, а не как HTML
+    function esc(s){
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
     }
 
-    function getUnitPrices(){
-      const totalQty = cart.reduce((s,i)=>s + i.qty, 0);
-      if(totalQty === 0) return {smooth:0, terry:0, mix:0};
-      return {
-        smooth: getPriceFromTiers(tiersSmooth, totalQty),
-        terry:  getPriceFromTiers(tiersTerry,  totalQty),
-        mix:    getPriceFromTiers(tiersMix,    totalQty)
-      };
-    }
-
-    /* === КОРЗИНА === */
-    let cart = JSON.parse(localStorage.getItem("tulpan03_cart") || "[]");
-
-    function saveCart(){
-      localStorage.setItem("tulpan03_cart", JSON.stringify(cart));
-    }
-
-    function normalizeQty(v){
-      v = parseInt(v,10);
-      if(isNaN(v) || v < 20) v = 20;
-      return Math.round(v/20)*20;
+    function unitPrice(item, totalQty){
+      return priceFor(item.type, totalQty);
     }
 
     function updateCart(){
-      const body    = document.getElementById("cartBody");
-      const totalEl = document.getElementById("cartTotal");
+      const body    = document.getElementById('cartBody');
+      const totalEl = document.getElementById('cartTotal');
+      const nextEl  = document.getElementById('nextTier');
+      saveCart(cart);
 
-      if(cart.length === 0){
-        body.innerHTML = "<tr><td colspan='4'>Корзина пуста.</td></tr>";
-        totalEl.textContent = "0 ₽";
+      if (cart.length === 0){
+        body.innerHTML = "<tr><td colspan='5' class='empty'>Корзина пуста. <a href='catalog.html'>Перейти в каталог</a></td></tr>";
+        totalEl.textContent = '0 ₽';
+        nextEl.textContent = '';
         return;
       }
 
-      const prices = getUnitPrices();
+      const totalQty = cartTotalQty(cart);
       let total = 0;
 
-      body.innerHTML = cart.map((item, index)=>{
-        let unitPrice = 0;
-        if(item.type === "terry")      unitPrice = prices.terry;
-        else if(item.type === "mix")   unitPrice = prices.mix;
-        else                           unitPrice = prices.smooth; // всё остальное — обычные
-
-        const sum = unitPrice * item.qty;
+      body.innerHTML = cart.map((item, index) => {
+        const price = unitPrice(item, totalQty);
+        const sum = price * item.qty;
         total += sum;
-
         return `
           <tr>
-            <td>${item.name}</td>
-            <td>${unitPrice} ₽</td>
+            <td><b>${esc(item.name)}</b></td>
+            <td data-label="Цена">${price} ₽</td>
             <td>
               <div class="qtyBox">
-                <button onclick="changeQty(${index}, -20)">−</button>
-                <input value="${item.qty}" onchange="manualQtyChange(${index}, this.value)">
-                <button onclick="changeQty(${index}, 20)">+</button>
+                <button type="button" aria-label="Меньше" onclick="changeQty(${index}, -QTY_STEP)">−</button>
+                <input value="${item.qty}" inputmode="numeric" aria-label="Количество, шт" onchange="manualQtyChange(${index}, this.value)">
+                <button type="button" aria-label="Больше" onclick="changeQty(${index}, QTY_STEP)">+</button>
               </div>
             </td>
-            <td>${sum} ₽</td>
-          </tr>
-        `;
-      }).join("");
+            <td data-label="Сумма">${rub(sum)}</td>
+            <td><button class="removeBtn" type="button" title="Удалить" aria-label="Удалить ${esc(item.name)}" onclick="removeItem(${index})">✕</button></td>
+          </tr>`;
+      }).join('');
 
-      totalEl.textContent = total + " ₽";
+      totalEl.textContent = rub(total) + ' за ' + totalQty + ' шт';
+
+      // Подсказка: сколько добавить до следующей скидки
+      const tier = PRICE_TIERS.smooth.find(t => totalQty >= t.min && totalQty <= t.max);
+      const next = PRICE_TIERS.smooth[PRICE_TIERS.smooth.indexOf(tier) + 1];
+      nextEl.textContent = next
+        ? 'Добавьте ещё ' + (next.min - totalQty) + ' шт — и цена снизится до ' + next.price + ' ₽/шт (обычные сорта).'
+        : '';
     }
 
     function changeQty(i, delta){
-      cart[i].qty = normalizeQty(cart[i].qty + delta);
-      saveCart();
+      cart[i].qty = Math.max(QTY_STEP, normalizeQty(cart[i].qty + delta));
       updateCart();
     }
 
-    function manualQtyChange(i,v){
+    function manualQtyChange(i, v){
       cart[i].qty = normalizeQty(v);
-      saveCart();
       updateCart();
+    }
+
+    function removeItem(i){
+      const name = cart[i].name;
+      cart.splice(i, 1);
+      updateCart();
+      toast(name + ' — удалён из корзины');
     }
 
     function clearCart(){
-      localStorage.removeItem("tulpan03_cart");
+      if (cart.length && !confirm('Удалить все товары из корзины?')) return;
       cart = [];
       updateCart();
-      document.getElementById("clientName").value = "";
-      document.getElementById("clientPhone").value = "";
     }
 
-    /* === ПРОВЕРКА ДАННЫХ === */
+    /* === Проверка данных === */
     function validateClient(){
-      const name  = document.getElementById("clientName").value.trim();
-      const phone = document.getElementById("clientPhone").value.trim();
+      const name    = document.getElementById('clientName').value.trim();
+      const phone   = document.getElementById('clientPhone').value.trim();
+      const comment = document.getElementById('clientComment').value.trim();
 
-      if(cart.length === 0){
-        alert("Корзина пуста");
-        return false;
+      if (cart.length === 0){ toast('Корзина пуста'); return null; }
+      if (!name){ toast('Введите имя'); document.getElementById('clientName').focus(); return null; }
+      if (phone.replace(/\D/g, '').length < 10){
+        toast('Проверьте номер телефона');
+        document.getElementById('clientPhone').focus();
+        return null;
       }
-      if(!name){
-        alert("Введите ФИО");
-        return false;
-      }
-      if(!phone){
-        alert("Введите телефон");
-        return false;
-      }
-      return {name, phone};
+      return {name, phone, comment};
     }
 
-    /* === ФОРМИРОВАНИЕ ТЕКСТА === */
-    function buildMessage(){
-      const client = validateClient();
-      if(!client) return null;
-
-      const prices = getUnitPrices();
+    /* === Текст заказа (обычный текст, кодируем при отправке) === */
+    function buildMessage(client){
+      const totalQty = cartTotalQty(cart);
       let total = 0;
-
-      let msg = "Заказ%0A-----------------%0A";
-      msg += "ФИО: " + encodeURIComponent(client.name) + "%0A";
-      msg += "Телефон: " + encodeURIComponent(client.phone) + "%0A";
-      msg += "-----------------%0A";
-
-      cart.forEach(i=>{
-        let price = 0;
-        if(i.type === "terry")      price = prices.terry;
-        else if(i.type === "mix")   price = prices.mix;
-        else                        price = prices.smooth;
-
+      const lines = ['Заказ с сайта Тюльпан03', '-----------------',
+                     'Имя: ' + client.name, 'Телефон: ' + client.phone, '-----------------'];
+      cart.forEach(i => {
+        const price = unitPrice(i, totalQty);
         const sum = price * i.qty;
         total += sum;
-
-        msg += `${encodeURIComponent(i.name)}%3A%20${i.qty}%20шт%20×%20${price}%20=%20${sum}%0A`;
+        lines.push(i.name + ': ' + i.qty + ' шт × ' + price + ' ₽ = ' + rub(sum));
       });
-
-      msg += "-----------------%0AИтого: " + total + " ₽";
-      return msg;
+      lines.push('-----------------');
+      lines.push('Всего: ' + totalQty + ' шт, ' + rub(total));
+      if (client.comment) lines.push('Комментарий: ' + client.comment);
+      return lines.join('\n');
     }
 
-    /* === МОДАЛЬНОЕ ОКНО === */
-    function showModal() {
+    /* === Отправка === */
+    function startSend(channel){
+      const client = validateClient();
+      if (!client) return;
+      pendingChannel = channel;
+      pendingText = buildMessage(client);
+      document.getElementById('modalStep1').style.display = '';
+      document.getElementById('modalStep2').style.display = 'none';
       document.getElementById('warningModal').classList.add('show');
     }
 
-    function closeModal() {
-      document.getElementById('warningModal').classList.remove('show');
-      // Если есть ожидающая отправка — выполняем
-      if (window.pendingSend) {
-        window.pendingSend();
-        window.pendingSend = null;
-      }
-    }
-
-    // Закрытие по клику на фон
-    document.getElementById('warningModal').addEventListener('click', function(e) {
-      if (e.target === this) {
+    function confirmSend(){
+      if (pendingChannel === 'whatsapp'){
+        goal('order_whatsapp');
         closeModal();
+        location.href = 'https://wa.me/' + WHATSAPP_PHONE + '?text=' + encodeURIComponent(pendingText);
+        return;
       }
+      // Telegram: не все приложения подставляют текст из ссылки,
+      // поэтому копируем заказ в буфер обмена
+      goal('order_telegram');
+      copyText(pendingText);
+      document.getElementById('modalStep1').style.display = 'none';
+      document.getElementById('modalStep2').style.display = '';
+    }
+
+    function openTelegram(){
+      closeModal();
+      location.href = 'https://t.me/' + TELEGRAM_USER + '?text=' + encodeURIComponent(pendingText);
+    }
+
+    function copyText(text){
+      if (navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    }
+    function fallbackCopy(text){
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch(e){}
+      ta.remove();
+    }
+
+    // Крестик, «Отмена» и клик по фону — просто закрывают окно, ничего не отправляя
+    function closeModal(){
+      document.getElementById('warningModal').classList.remove('show');
+    }
+    document.getElementById('warningModal').addEventListener('click', function(e){
+      if (e.target === this) closeModal();
     });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    /* === WhatsApp с модальным окном === */
-    function sendWhatsApp() {
-      const clientData = validateClient();
-      if (!clientData) return;
-      
-      showModal();
-      
-      window.pendingSend = function() {
-        const msg = buildMessage();
-        if (msg) {
-          window.location.href = "https://wa.me/79148416115?text=" + msg;
-        }
-      };
-    }
-
-    /* === Telegram с модальным окном === */
-    function sendTelegram() {
-      const clientData = validateClient();
-      if (!clientData) return;
-      
-      showModal();
-      
-      window.pendingSend = function() {
-        const msg = buildMessage();
-        if (msg) {
-          window.location.href = "https://t.me/tulpan03?text=" + msg;
-        }
-      };
-    }
-
-    // Инициализация корзины при загрузке
+    goal('open_cart');
     updateCart();
   </script>
 </body>
