@@ -57,7 +57,8 @@ function cartTotalQty(cart){
 function updateCartBadge(){
   const qty = cartTotalQty();
   document.querySelectorAll('.cart-count').forEach(el => {
-    el.textContent = qty > 0 ? qty + ' шт' : '';
+    el.textContent = qty > 0 ? qty.toLocaleString('ru-RU') : '';
+    el.title = qty > 0 ? 'В корзине ' + qty + ' шт' : '';
     el.classList.toggle('has', qty > 0);
   });
 }
