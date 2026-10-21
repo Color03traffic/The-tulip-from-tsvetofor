@@ -7,6 +7,7 @@ PHONE_HREF = 'tel:+79148416115'
 PHONE = '+7-914-841-61-15'
 WA = 'https://wa.me/79148416115'
 TG = 'https://t.me/tulpan03'
+MAXU = 'https://max.ru/u/f9LHodD0cOJhlWPM-F5Y0uNLTh9gBpeIXjgkH4iijE8xP8P8b7anbxYKv4s'
 ADDR = 'Улан-Удэ, ул. Тобольская, 167А'
 MAP = 'https://yandex.ru/maps/?text=' + urllib.parse.quote(ADDR)
 
@@ -86,6 +87,7 @@ def contact_list():
           <a href="{PHONE_HREF}">{ICON['phone']}{PHONE}</a>
           <a href="{TG}" target="_blank" rel="noopener">{ICON['tg']}Telegram @tulpan03</a>
           <a href="{WA}" target="_blank" rel="noopener">{ICON['wa']}WhatsApp +79148416115</a>
+          <a href="{MAXU}" target="_blank" rel="noopener">{ICON['max']}MAX</a>
         </div>'''
 
 # ======================= ГЛАВНАЯ =======================
@@ -456,7 +458,7 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
   const TELEGRAM_USER  = 'tulpan03';
   // Ссылка на личный профиль в MAX (Настройки → Пригласить друзей → Скопировать ссылку).
   // Пока пусто — кнопка «Отправить в MAX» скрыта.
-  const MAX_PROFILE_URL = '';
+  const MAX_PROFILE_URL = '{MAXU}';
   if (MAX_PROFILE_URL) document.getElementById('maxBtn').hidden = false;
   const PHOTOS = {photos_js};
 
@@ -711,6 +713,7 @@ contacts = head('Контакты — Тюльпан03, тюльпаны опт�
           <div class="label">Мессенджеры</div>
           <div class="value"><a href="{TG}" target="_blank" rel="noopener">Telegram @tulpan03</a></div>
           <div class="value"><a href="{WA}" target="_blank" rel="noopener">WhatsApp +79148416115</a></div>
+          <div class="value"><a href="{MAXU}" target="_blank" rel="noopener">MAX</a></div>
         </div>
       </div>
       <p class="note" style="margin:18px 0 0">
@@ -720,6 +723,7 @@ contacts = head('Контакты — Тюльпан03, тюльпаны опт�
       <div class="contact-actions">
         <a class="btn btn-wa" href="{WA}" target="_blank" rel="noopener">{ICON['wa']}WhatsApp</a>
         <a class="btn btn-tg" href="{TG}" target="_blank" rel="noopener">{ICON['tg']}Telegram</a>
+        <a class="btn btn-max" href="{MAXU}" target="_blank" rel="noopener">{ICON['max']}MAX</a>
         <a class="btn btn-ghost" href="{MAP}" target="_blank" rel="noopener">{ICON['pin']}Открыть на карте</a>
       </div>
     </div>
