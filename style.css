@@ -78,6 +78,8 @@ h3{ font-size:18px; font-weight:600; }
 .btn-wa:hover{ background:#178a3f; }
 .btn-tg{ background:var(--sky); }
 .btn-tg:hover{ background:#1f88bb; }
+.btn-max{ background:#7B4DFF; }
+.btn-max:hover{ background:#6638e6; }
 .btn-small{ min-height:44px; padding:0 18px; font-size:15px; }
 .btn svg{ width:20px; height:20px; flex:none; }
 

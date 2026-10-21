@@ -32,7 +32,7 @@ gtag('js', new Date());
 gtag('config', GA_ID);
 
 // Цель: отмечаем важное действие в обеих системах.
-// Названия целей: add_to_cart, open_cart, order_whatsapp, order_telegram
+// Названия целей: add_to_cart, open_cart, order_whatsapp, order_telegram, order_max
 function goal(name){
   try { ym(YM_ID, 'reachGoal', name); } catch(e){}
   try { gtag('event', name); } catch(e){}

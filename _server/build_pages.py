@@ -14,6 +14,7 @@ ICON = {
  'logo': '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29V17" stroke="#1E9E4A" stroke-width="2.4" stroke-linecap="round"/><path d="M16 23c-3.5-.4-6-2.4-7-5.6 3.4-.3 5.9 1.4 7 5.6z" fill="#1E9E4A"/><path d="M16 18.5c-4.6 0-8-3.3-8-8.2V4.6l4 3 4-4.6 4 4.6 4-3v5.7c0 4.9-3.4 8.2-8 8.2z" fill="#E54270"/><path d="M16 3v15.5" stroke="#C92C5A" stroke-width="1.4" opacity=".55"/></svg>',
  'bag': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>',
  'user': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+ 'max': '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5a9.5 9.5 0 0 0-8.3 14.1L2.5 21.5l5-1.2A9.5 9.5 0 1 0 12 2.5zm-4 13V8.6h1.7l2.3 3.3 2.3-3.3H16v6.9h-1.7v-4.2L12 14.4l-2.3-3.1v4.2z"/></svg>',
  'pin': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
  'phone': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>',
  'tg': '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.2 2.9 11.3c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.8-1.4-1.4zM9 14.3l9.4-5.9c.4-.3.8-.1.5.2l-7.8 7-.3 3.3z"/></svg>',
@@ -415,6 +416,7 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
       <div class="send">
         <button class="btn btn-wa" type="button" onclick="startSend('whatsapp')">{ICON['wa']}Отправить в WhatsApp</button>
         <button class="btn btn-tg" type="button" onclick="startSend('telegram')">{ICON['tg']}Отправить в Telegram</button>
+        <button class="btn btn-max" type="button" id="maxBtn" onclick="startSend('max')" hidden>{ICON['max']}Отправить в MAX</button>
       </div>
       <p class="form-note" id="formNote">Без имени и телефона заказ не отправится.</p>
     </aside>
@@ -439,11 +441,11 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
     <div id="modalStep2" hidden>
       <div class="modal-title" id="step2Title">Заказ готов к отправке</div>
       <p class="modal-text">
-        Нажмите кнопку ниже — откроется чат с нами в Telegram, а текст заказа скопируется.<br>
+        Нажмите кнопку ниже — откроется чат с нами в <span id="step2App">Telegram</span>, а текст заказа скопируется.<br>
         Если поле сообщения пустое, нажмите в нём <strong>«Вставить»</strong> и отправьте.
       </p>
       <div class="modal-actions">
-        <button class="btn btn-tg btn-small" type="button" onclick="openTelegram()">Открыть Telegram</button>
+        <button class="btn btn-tg btn-small" type="button" id="openChatBtn" onclick="openChat()">Открыть Telegram</button>
       </div>
     </div>
   </div>
@@ -452,6 +454,10 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
 <script>
   const WHATSAPP_PHONE = '79148416115';
   const TELEGRAM_USER  = 'tulpan03';
+  // Ссылка на личный профиль в MAX (Настройки → Пригласить друзей → Скопировать ссылку).
+  // Пока пусто — кнопка «Отправить в MAX» скрыта.
+  const MAX_PROFILE_URL = '';
+  if (MAX_PROFILE_URL) document.getElementById('maxBtn').hidden = false;
   const PHOTOS = {photos_js};
 
   let cart = loadCart();
@@ -630,10 +636,25 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
       location.href = 'https://wa.me/' + WHATSAPP_PHONE + '?text=' + encodeURIComponent(pendingText);
       return;
     }}
-    goal('order_telegram');
+    goal(pendingChannel === 'max' ? 'order_max' : 'order_telegram');
+    const app = pendingChannel === 'max' ? 'MAX' : 'Telegram';
+    document.getElementById('step2App').textContent = app;
+    const ob = document.getElementById('openChatBtn');
+    ob.textContent = 'Открыть ' + app;
+    ob.className = 'btn btn-small ' + (pendingChannel === 'max' ? 'btn-max' : 'btn-tg');
     if (number) document.getElementById('step2Title').textContent = 'Заказ №' + number + ' принят';
     document.getElementById('modalStep1').hidden = true;
     document.getElementById('modalStep2').hidden = false;
+  }}
+  function openChat(){{
+    if (pendingChannel === 'max'){{
+      // MAX не умеет подставлять текст в личный чат — заказ уже скопирован, покупатель вставит его сам
+      copyText(pendingText);
+      closeModal();
+      location.href = MAX_PROFILE_URL;
+      return;
+    }}
+    openTelegram();
   }}
   function openTelegram(){{
     // Telegram не всегда подставляет текст из ссылки — копируем заказ в буфер (по нажатию, иначе браузер не даст)
