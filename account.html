@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Личный кабинет — Тюльпан03</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#3E4158">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <script src="prices.js"></script>
+  <script src="common.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html" aria-label="Тюльпан03 — на главную"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29V17" stroke="#1E9E4A" stroke-width="2.4" stroke-linecap="round"/><path d="M16 23c-3.5-.4-6-2.4-7-5.6 3.4-.3 5.9 1.4 7 5.6z" fill="#1E9E4A"/><path d="M16 18.5c-4.6 0-8-3.3-8-8.2V4.6l4 3 4-4.6 4 4.6 4-3v5.7c0 4.9-3.4 8.2-8 8.2z" fill="#E54270"/><path d="M16 3v15.5" stroke="#C92C5A" stroke-width="1.4" opacity=".55"/></svg>Тюльпан03</a>
+    <nav class="nav" aria-label="Разделы сайта"><a href="index.html">Главная</a><a href="catalog.html">Каталог</a><a href="contacts.html">Контакты</a></nav>
+    <a class="account-link" href="account.html" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="account-word">Войти</span></a>
+    <a class="cart-link" href="cart.html" aria-label="Корзина"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span class="cart-word">Корзина</span><span class="cart-count"></span></a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="page-head">
+    <h1 id="accTitle">Личный кабинет</h1>
+  </section>
+
+  <div class="acc-off panel" id="accOff" hidden>
+    <p>Личный кабинет скоро заработает. А пока заказ можно оформить в <a href="cart.html">корзине</a> — он придёт нам в WhatsApp или Telegram.</p>
+  </div>
+
+  <!-- Вход и регистрация -->
+  <div class="auth" id="authBox" hidden>
+    <div class="panel auth-panel">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" id="tabLogin" aria-selected="true" aria-controls="loginForm" type="button">Вход</button>
+        <button class="tab" role="tab" id="tabReg" aria-selected="false" aria-controls="regForm" type="button">Регистрация</button>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="loginPhone">Телефон</label>
+          <input id="loginPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 914 000-00-00" required>
+        </div>
+        <div class="field">
+          <label for="loginPass">Пароль</label>
+          <input id="loginPass" type="password" autocomplete="current-password" required>
+        </div>
+        <p class="form-error" id="loginError" role="alert"></p>
+        <button class="btn" type="submit" style="width:100%">Войти</button>
+        <p class="form-note">Забыли пароль? Напишите нам в <a href="https://wa.me/79148416115" target="_blank" rel="noopener">WhatsApp</a> — поможем восстановить доступ.</p>
+      </form>
+
+      <form id="regForm" novalidate hidden>
+        <div class="field">
+          <label for="regName">ФИО или название организации</label>
+          <input id="regName" autocomplete="name" placeholder="Иванов Иван Иванович" required>
+        </div>
+        <div class="field">
+          <label for="regPhone">Телефон</label>
+          <input id="regPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 914 000-00-00" required>
+        </div>
+        <div class="field">
+          <label for="regPass">Пароль</label>
+          <input id="regPass" type="password" autocomplete="new-password" minlength="6" placeholder="Не короче 6 символов" required>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="regConsent">
+          <span>Согласен на обработку персональных данных по <a href="privacy.html" target="_blank">политике конфиденциальности</a></span>
+        </label>
+        <p class="form-error" id="regError" role="alert"></p>
+        <button class="btn" type="submit" style="width:100%">Зарегистрироваться</button>
+      </form>
+    </div>
+    <div class="auth-side">
+      <h2>Зачем кабинет</h2>
+      <ul class="terms">
+        <li>Не нужно вводить имя и телефон при каждом заказе.</li>
+        <li>Вся история заказов в одном месте.</li>
+        <li>Прошлый заказ можно повторить в одно нажатие.</li>
+        <li>Сайт запоминает вас на этом устройстве — пароль нужен только при первом входе.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Кабинет -->
+  <div id="cabinet" hidden>
+    <div class="panel acc-head">
+      <div>
+        <div class="acc-name" id="accName"></div>
+        <div class="muted" id="accPhone"></div>
+      </div>
+      <div class="acc-actions">
+        <a class="btn btn-small" href="catalog.html">Новый заказ</a>
+        <button class="btn btn-ghost btn-small" type="button" id="logoutBtn">Выйти</button>
+      </div>
+    </div>
+    <h2 class="acc-h2">Мои заказы</h2>
+    <div id="orders" aria-live="polite"><p class="muted">Загружаем…</p></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <a class="logo" href="index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29V17" stroke="#1E9E4A" stroke-width="2.4" stroke-linecap="round"/><path d="M16 23c-3.5-.4-6-2.4-7-5.6 3.4-.3 5.9 1.4 7 5.6z" fill="#1E9E4A"/><path d="M16 18.5c-4.6 0-8-3.3-8-8.2V4.6l4 3 4-4.6 4 4.6 4-3v5.7c0 4.9-3.4 8.2-8 8.2z" fill="#E54270"/><path d="M16 3v15.5" stroke="#C92C5A" stroke-width="1.4" opacity=".55"/></svg>Тюльпан03</a>
+    <div>© 2025–<span class="year">2026</span> Тюльпан03.рф — тюльпаны оптом в Улан-Удэ</div>
+    <div class="footer-links"><a href="privacy.html">Политика конфиденциальности</a><a href="tel:+79148416115">+7-914-841-61-15</a></div>
+  </div>
+</footer>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+
+  function show(view){
+    $('accOff').hidden = view !== 'off';
+    $('authBox').hidden = view !== 'auth';
+    $('cabinet').hidden = view !== 'cabinet';
+  }
+
+  function switchTab(reg){
+    $('tabLogin').setAttribute('aria-selected', !reg);
+    $('tabReg').setAttribute('aria-selected', reg);
+    $('loginForm').hidden = reg;
+    $('regForm').hidden = !reg;
+    $('accTitle').textContent = reg ? 'Регистрация' : 'Вход в личный кабинет';
+  }
+  $('tabLogin').onclick = () => switchTab(false);
+  $('tabReg').onclick = () => switchTab(true);
+
+  function afterLogin(res){
+    setSession({ token: res.token, name: res.user.name, phone: res.user.phone });
+    if (params.get('next') === 'cart') { location.href = 'cart.html'; return; }
+    openCabinet();
+  }
+
+  async function submit(form, errEl, action, data, check){
+    errEl.textContent = '';
+    const problem = check();
+    if (problem){ errEl.textContent = problem; return; }
+    const btn = form.querySelector('button[type=submit]');
+    const label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Подождите…';
+    const res = await api(action, data());
+    btn.disabled = false; btn.textContent = label;
+    if (!res.ok){ errEl.textContent = res.error; return; }
+    afterLogin(res);
+  }
+
+  $('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    submit($('loginForm'), $('loginError'), 'login',
+      () => ({ phone: $('loginPhone').value, password: $('loginPass').value }),
+      () => $('loginPhone').value.replace(/\D/g,'').length < 10 ? 'Проверьте номер телефона'
+          : !$('loginPass').value ? 'Введите пароль' : '');
+  });
+  $('regForm').addEventListener('submit', e => {
+    e.preventDefault();
+    submit($('regForm'), $('regError'), 'register',
+      () => ({ name: $('regName').value, phone: $('regPhone').value, password: $('regPass').value, consent: $('regConsent').checked }),
+      () => $('regName').value.trim().length < 2 ? 'Введите ФИО'
+          : $('regPhone').value.replace(/\D/g,'').length < 10 ? 'Проверьте номер телефона'
+          : $('regPass').value.length < 6 ? 'Пароль — не короче 6 символов'
+          : !$('regConsent').checked ? 'Отметьте согласие на обработку данных' : '');
+  });
+
+  $('logoutBtn').onclick = async () => {
+    const s = getSession();
+    setSession(null);
+    if (s) api('logout', { token: s.token });
+    show('auth'); switchTab(false);
+  };
+
+  const STATUS_CLASS = { 'Новый': 'st-new', 'Подтверждён': 'st-ok', 'Выполнен': 'st-done', 'Отменён': 'st-cancel' };
+
+  function renderOrders(orders){
+    if (!orders.length){
+      $('orders').innerHTML = '<div class="panel empty"><h3>Заказов пока нет</h3><p class="muted">Оформите первый заказ — он появится здесь.</p><a class="btn" href="catalog.html">Перейти в каталог</a></div>';
+      return;
+    }
+    $('orders').innerHTML = orders.map((o, idx) => {
+      const d = new Date(o.date);
+      const date = isNaN(d) ? '' : d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+      const items = o.items.map(i => '<li><span>' + esc(i.name) + '</span><span>' + i.qty + ' шт × ' + i.price + ' ₽</span></li>').join('');
+      return '<article class="panel order">'
+        + '<div class="order-top"><div><b>Заказ №' + o.number + '</b><span class="muted">' + date + '</span></div>'
+        + '<span class="status ' + (STATUS_CLASS[o.status] || 'st-new') + '">' + esc(o.status) + '</span></div>'
+        + '<ul class="order-items">' + items + '</ul>'
+        + (o.comment ? '<p class="muted order-comment">' + esc(o.comment.replace(/^\'/, '')) + '</p>' : '')
+        + '<div class="order-bottom"><span class="num">' + rub(o.total) + '</span><span class="muted">' + o.qty + ' шт</span>'
+        + '<button class="btn btn-ghost btn-small" type="button" data-repeat="' + idx + '">Повторить заказ</button></div>'
+        + '</article>';
+    }).join('');
+    document.querySelectorAll('[data-repeat]').forEach(b => b.onclick = () => {
+      const o = orders[Number(b.dataset.repeat)];
+      const cart = loadCart();
+      o.items.forEach(i => {
+        const ex = cart.find(c => c.name === i.name && c.type === i.type);
+        if (ex) ex.qty += i.qty; else cart.push({ name: i.name, type: i.type, qty: i.qty });
+      });
+      saveCart(cart);
+      location.href = 'cart.html';
+    });
+  }
+
+  async function openCabinet(){
+    const s = getSession();
+    show('cabinet');
+    $('accTitle').textContent = 'Личный кабинет';
+    $('accName').textContent = s.name;
+    $('accPhone').textContent = s.phone;
+    const res = await api('orders', { token: s.token });
+    if (!res.ok){
+      if (res.code === 'auth'){ setSession(null); show('auth'); switchTab(false); $('loginError').textContent = 'Войдите снова, пожалуйста.'; return; }
+      $('orders').innerHTML = '<p class="form-error">' + esc(res.error) + '</p>';
+      return;
+    }
+    renderOrders(res.orders);
+  }
+
+  if (!apiEnabled()) show('off');
+  else if (getSession()) openCabinet();
+  else { show('auth'); switchTab(params.get('tab') === 'reg'); }
+</script>
+</body>
+</html>
