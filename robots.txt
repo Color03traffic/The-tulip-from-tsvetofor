@@ -4,6 +4,7 @@ Allow: /
 
 # Корзина — служебная страница, в поиске не нужна
 Disallow: /cart.html
+Disallow: /account.html
 
 # Метки рекламы (utm) не создают «новые» страницы для Яндекса
 Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content /

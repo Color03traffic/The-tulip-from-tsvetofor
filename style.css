@@ -28,6 +28,7 @@
 }
 
 *{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
 html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
@@ -114,7 +115,7 @@ h3{ font-size:18px; font-weight:600; }
 .cart-count{ display:none; padding:1px 8px; border-radius:999px; background:var(--pink); font-size:13px; }
 .cart-count.has{ display:inline-block; }
 
-@media (max-width:760px){
+@media (max-width:900px){
   .site-header .wrap{ flex-wrap:wrap; gap:0 12px; padding-top:10px; }
   .logo{ font-size:16px; gap:8px; }
   .logo svg{ width:26px; height:26px; }
@@ -124,8 +125,9 @@ h3{ font-size:18px; font-weight:600; }
   .nav a{ padding:7px 12px; font-size:15px; }
 }
 
-@media (max-width:380px){
+@media (max-width:480px){
   .cart-word{ display:none; }
+  .cart-link{ padding:8px 12px; }
 }
 
 /* ---------- Подвал ---------- */
@@ -490,4 +492,94 @@ body.has-cart-bar{ padding-bottom:96px; }
   .cart-item .sum{ grid-column:3; grid-row:2; min-width:0; }
   .cart-item .remove{ grid-column:3; grid-row:1; justify-self:end; }
   .bud span{ display:none; }
+}
+
+/* =========================================================
+   ЛИЧНЫЙ КАБИНЕТ
+   ========================================================= */
+.account-link{
+  display:inline-flex; align-items:center; gap:7px;
+  padding:9px 14px; border-radius:999px;
+  color:var(--ink); text-decoration:none; font-weight:600; white-space:nowrap;
+  box-shadow:inset 0 0 0 1.5px var(--line);
+}
+.account-link[hidden]{ display:none; }
+.account-link:hover{ box-shadow:inset 0 0 0 1.5px var(--ink); }
+.account-link svg{ width:18px; height:18px; }
+.account-word{ max-width:9em; overflow:hidden; text-overflow:ellipsis; }
+
+.footer-links{ display:flex; flex-wrap:wrap; gap:8px 24px; }
+
+/* Покупатель в корзине */
+.who{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  padding:14px 16px; border-radius:var(--r-ui); background:var(--mist); margin-bottom:14px;
+}
+.who b{ display:block; }
+.who span{ font-size:14px; color:var(--ink-soft); }
+.who a{ font-weight:600; color:var(--pink-deep); }
+.login-hint{ font-size:14px; margin:0 0 14px; color:var(--ink-soft); }
+.login-hint a{ color:var(--pink-deep); font-weight:600; }
+
+.check{ display:flex; gap:10px; align-items:flex-start; font-size:14px; line-height:1.45; margin:4px 0 14px; cursor:pointer; }
+.check input{ width:20px; height:20px; margin:0; flex:none; accent-color:var(--pink); }
+.check a{ color:var(--pink-deep); }
+.form-error{ color:var(--pink-deep); font-weight:600; font-size:14px; margin:0 0 12px; min-height:0; }
+.form-error:empty{ display:none; }
+.btn[disabled]{ opacity:.6; cursor:progress; }
+
+/* Вход и регистрация */
+.auth{
+  display:grid; grid-template-columns:minmax(0, 460px) minmax(0, 1fr);
+  gap:clamp(18px, 4vw, 48px); align-items:start; margin-top:26px;
+}
+.auth-side{ padding-top:10px; }
+.auth-side h2{ font-size:22px; }
+.auth-side .terms{ grid-template-columns:1fr; margin-top:18px; }
+.tabs{ display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; border-radius:999px; background:var(--mist); margin-bottom:22px; }
+.tab{ border:0; background:none; padding:10px; border-radius:999px; font-weight:600; color:var(--ink-soft); cursor:pointer; }
+.tab[aria-selected="true"]{ background:var(--white); color:var(--ink); box-shadow:0 1px 3px rgba(62,65,88,.15); }
+.auth .form-note a{ color:var(--pink-deep); }
+
+/* Кабинет */
+.acc-head{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:16px; margin-top:26px; }
+.acc-name{ font-family:var(--display); font-weight:600; font-size:clamp(20px, 2.4vw, 26px); }
+.acc-actions{ display:flex; flex-wrap:wrap; gap:10px; }
+.acc-h2{ font-size:22px; margin:34px 0 14px; }
+.acc-off{ margin-top:26px; }
+.acc-off a{ color:var(--pink-deep); font-weight:600; }
+#orders{ display:grid; gap:14px; }
+.order-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.order-top b{ display:block; font-family:var(--display); font-weight:600; font-size:18px; }
+.order-top .muted{ font-size:14px; }
+.status{ padding:5px 12px; border-radius:999px; font-size:13px; font-weight:700; white-space:nowrap; }
+.st-new{ background:var(--blush); color:var(--pink-deep); }
+.st-ok{ background:#FFF3CC; color:#7A5A00; }
+.st-done{ background:#DDF3E3; color:#17733A; }
+.st-cancel{ background:#EEE; color:#777; text-decoration:line-through; }
+.order-items{ list-style:none; margin:14px 0 0; padding:0; border-top:1px solid var(--line); }
+.order-items li{ display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid var(--line); font-size:15px; }
+.order-items li span:last-child{ color:var(--ink-soft); white-space:nowrap; font-variant-numeric:tabular-nums; }
+.order-comment{ font-size:14px; margin:10px 0 0; }
+.order-bottom{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-top:14px; }
+.order-bottom .num{ font-size:20px; }
+.order-bottom .btn{ margin-left:auto; }
+
+/* Текстовые страницы */
+.prose{ max-width:820px; margin-top:clamp(24px, 4vw, 44px); }
+.prose h1{ font-size:clamp(26px, 3.6vw, 38px); }
+.prose h2{ font-size:19px; margin:28px 0 8px; }
+.prose p, .prose li{ max-width:68ch; }
+.prose a{ color:var(--pink-deep); }
+
+@media (max-width:960px){
+  .auth{ grid-template-columns:1fr; }
+}
+@media (max-width:900px){
+  .account-link{ margin-left:auto; padding:8px 10px; }
+  .account-link:not([hidden]) + .cart-link{ margin-left:8px; }
+  .account-word{ display:none; }
+}
+@media (max-width:350px){
+  .site-header .logo svg{ display:none; }
 }

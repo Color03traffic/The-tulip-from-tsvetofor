@@ -88,9 +88,61 @@ function fillPrices(){
   document.querySelectorAll('.base-price').forEach(el => el.textContent = basePrice(el.dataset.type));
 }
 
+/* =========================================================
+   ЛИЧНЫЙ КАБИНЕТ И ПРИЁМ ЗАКАЗОВ
+   Адрес сервера (Google Apps Script). Пока он пустой,
+   личный кабинет на сайте скрыт, а заказы идут только в мессенджеры.
+   ========================================================= */
+const API_URL = '';
+
+const SESSION_KEY = 'tulpan03_session';
+
+function apiEnabled(){ return !!API_URL; }
+
+// Запрос к серверу. text/plain — чтобы браузер не делал лишний предварительный запрос
+async function api(action, data, timeoutMs){
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs || 15000);
+  try {
+    const r = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action }, data || {})),
+      signal: ctrl.signal
+    });
+    return await r.json();
+  } catch(e){
+    return { ok: false, error: 'Нет связи с сервером. Проверьте интернет и попробуйте ещё раз.', code: 'network' };
+  } finally { clearTimeout(t); }
+}
+
+// Сессия хранится в браузере: при следующем визите пароль не нужен
+function getSession(){
+  try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch(e){ return null; }
+}
+function setSession(s){
+  try {
+    if (s) localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+    else localStorage.removeItem(SESSION_KEY);
+  } catch(e){}
+  updateAccountLink();
+}
+
+// Ссылка «Войти» / имя покупателя в шапке
+function updateAccountLink(){
+  const link = document.querySelector('.account-link');
+  if (!link) return;
+  link.hidden = !apiEnabled();
+  const s = getSession();
+  const label = link.querySelector('.account-word');
+  if (label) label.textContent = s && s.name ? s.name.split(' ').filter(Boolean)[1] || s.name.split(' ')[0] : 'Войти';
+  link.title = s ? 'Личный кабинет' : 'Войти или зарегистрироваться';
+}
+
 /* ---------- При загрузке страницы ---------- */
 document.addEventListener('DOMContentLoaded', () => {
   fillPrices();
   updateCartBadge();
+  updateAccountLink();
   document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
 });
