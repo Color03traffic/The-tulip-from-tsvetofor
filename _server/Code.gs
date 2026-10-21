@@ -78,7 +78,7 @@ function apiRegister(b) {
     if (findUserRow(phone)) return fail('Этот номер уже зарегистрирован. Войдите по паролю.');
     var salt = randomHex(16);
     var now = new Date();
-    sheet(SH_USERS).appendRow([phone, name, now, now, 0, 0, hashPassword(password, salt), salt]);
+    sheet(SH_USERS).appendRow([asText(phone), name, now, now, 0, 0, hashPassword(password, salt), salt]);
     return { ok: true, token: createSession(phone), user: { name: name, phone: phone } };
   });
 }
@@ -120,6 +120,7 @@ function apiOrders(b) {
   var user = userByToken(b.token);
   if (!user) return fail('Войдите снова', 'auth');
 
+  if (!/^\+7 \d{3} \d{3}-\d{2}-\d{2}$/.test(user.phone)) return fail('Войдите снова', 'auth');
   var orders = rows(SH_ORDERS).filter(function (r) { return r[3] === user.phone; });
   var items = rows(SH_ITEMS);
   var list = orders.map(function (r) {
@@ -177,7 +178,7 @@ function apiOrder(b) {
     // Номер — следующий после самого большого (даже если строки отсортировали)
     var num = rows(SH_ORDERS).reduce(function (m, r) { return Math.max(m, Number(r[0]) || 0); }, 1000) + 1;
     var summary = lines.map(function (l) { return l.name + ' — ' + l.qty + ' шт'; }).join('\n');
-    sh.appendRow([num, now, name, phone, summary, totalQty, total, comment, channel,
+    sh.appendRow([num, now, name, asText(phone), summary, totalQty, total, comment, channel,
                   user ? 'да' : 'нет', 'Новый', '']);
     var itemRows = lines.map(function (l) { return [num, now, l.name, TYPE_NAMES[l.type], l.qty, l.price, l.sum]; });
     var shI = sheet(SH_ITEMS);
@@ -302,7 +303,7 @@ function updateUserStats(phone) {
 function createSession(phone) {
   var token = randomHex(32);
   var now = new Date();
-  sheet(SH_SESSIONS).appendRow([sha256(token), phone, now, now]);
+  sheet(SH_SESSIONS).appendRow([sha256(token), asText(phone), now, now]);
   return token;
 }
 
@@ -388,6 +389,11 @@ function withLock(fn) {
 function clean(v, max) {
   var s = String(v == null ? '' : v).replace(/[\u0000-\u0009\u000B-\u001F]/g, '').trim().slice(0, max || 200);
   return /^[=+\-@]/.test(s) ? "'" + s : s;
+}
+
+// Телефон «+7 …» таблица иначе примет за формулу — апостроф делает его текстом (сам апостроф не виден)
+function asText(v) {
+  return "'" + String(v);
 }
 
 function esc(s) {
