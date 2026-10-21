@@ -93,7 +93,7 @@ function fillPrices(){
    Адрес сервера (Google Apps Script). Пока он пустой,
    личный кабинет на сайте скрыт, а заказы идут только в мессенджеры.
    ========================================================= */
-const API_URL = '';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzmq9ahYDWDQ5kQTLZm58A2Q0V50S-w5n5Yvcyzhqps5oaDtNBQt5zZ-LiTCDNEIxJWFw/exec';
 
 const SESSION_KEY = 'tulpan03_session';
 
