@@ -408,7 +408,7 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
       </div>
       <div class="field">
         <label for="clientComment">Комментарий</label>
-        <textarea id="clientComment" placeholder="К какой дате нужен заказ, самовывоз или доставка, пожелания"></textarea>
+        <textarea id="clientComment" placeholder="К какой дате нужен заказ (не позднее 5 марта), пожелания"></textarea>
       </div>
       <label class="check" id="consentBox" hidden>
         <input type="checkbox" id="consent">
