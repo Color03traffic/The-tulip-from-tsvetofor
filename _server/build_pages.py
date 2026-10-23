@@ -130,9 +130,9 @@ index = head('Тюльпаны оптом в Улан-Удэ от 81 ₽ — п�
         </div>
       </div>
       <div class="buds" aria-label="Наши сорта">
-        <figure class="bud" style="margin:0"><img src="hero-red.jpg" alt="Красные тюльпаны" width="600" height="800"><span>Красный</span></figure>
-        <figure class="bud" style="margin:0"><img src="hero-redyellow.jpg" alt="Красно-жёлтые тюльпаны" width="600" height="800"><span>Красно-жёлтый</span></figure>
+        <figure class="bud" style="margin:0"><img src="hero-redwhite.jpg" alt="Красно-белые тюльпаны" width="600" height="800"><span>Красно-белый</span></figure>
         <figure class="bud" style="margin:0"><img src="hero-violet.jpg" alt="Фиолетовые тюльпаны" width="600" height="800"><span>Фиолетовый</span></figure>
+        <figure class="bud" style="margin:0"><img src="hero-redyellow.jpg" alt="Красно-жёлтые тюльпаны" width="600" height="800"><span>Красно-жёлтый</span></figure>
         <figure class="bud" style="margin:0"><img src="hero-terry.jpg" alt="Нежно-розовые махровые тюльпаны" width="600" height="800"><span>Махровый</span></figure>
       </div>
     </div>
