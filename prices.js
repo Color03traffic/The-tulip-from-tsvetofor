@@ -12,36 +12,36 @@ const PREORDER_MIN = 100;   // минимальный предзаказ, шт.
 const PRICE_TIERS = {
   // Все сорта, кроме махровых и микса
   smooth: [
-    {min: 20,    max: 499,      price: 110},
-    {min: 500,   max: 999,      price: 99},
-    {min: 1000,  max: 1999,     price: 91},
-    {min: 2000,  max: 2999,     price: 90},
-    {min: 3000,  max: 4999,     price: 89},
-    {min: 5000,  max: 9999,     price: 88},
-    {min: 10000, max: 49999,    price: 87},
-    {min: 50000, max: Infinity, price: 86}
+    {min: 20,    max: 499,      price: 106},
+    {min: 500,   max: 999,      price: 95},
+    {min: 1000,  max: 1999,     price: 87},
+    {min: 2000,  max: 2999,     price: 86},
+    {min: 3000,  max: 4999,     price: 85},
+    {min: 5000,  max: 9999,     price: 84},
+    {min: 10000, max: 49999,    price: 83},
+    {min: 50000, max: Infinity, price: 82}
   ],
   // Махровые
   terry: [
-    {min: 20,    max: 499,      price: 120},
-    {min: 500,   max: 999,      price: 109},
-    {min: 1000,  max: 1999,     price: 101},
-    {min: 2000,  max: 2999,     price: 100},
-    {min: 3000,  max: 4999,     price: 99},
-    {min: 5000,  max: 9999,     price: 98},
-    {min: 10000, max: 49999,    price: 97},
-    {min: 50000, max: Infinity, price: 96}
+    {min: 20,    max: 499,      price: 116},
+    {min: 500,   max: 999,      price: 105},
+    {min: 1000,  max: 1999,     price: 97},
+    {min: 2000,  max: 2999,     price: 96},
+    {min: 3000,  max: 4999,     price: 95},
+    {min: 5000,  max: 9999,     price: 94},
+    {min: 10000, max: 49999,    price: 93},
+    {min: 50000, max: Infinity, price: 92}
   ],
   // Микс
   mix: [
-    {min: 20,    max: 499,      price: 110},
-    {min: 500,   max: 999,      price: 99},
-    {min: 1000,  max: 1999,     price: 91},
-    {min: 2000,  max: 2999,     price: 90},
-    {min: 3000,  max: 4999,     price: 89},
-    {min: 5000,  max: 9999,     price: 88},
-    {min: 10000, max: 49999,    price: 87},
-    {min: 50000, max: Infinity, price: 86}
+    {min: 20,    max: 499,      price: 105},
+    {min: 500,   max: 999,      price: 94},
+    {min: 1000,  max: 1999,     price: 86},
+    {min: 2000,  max: 2999,     price: 85},
+    {min: 3000,  max: 4999,     price: 84},
+    {min: 5000,  max: 9999,     price: 83},
+    {min: 10000, max: 49999,    price: 82},
+    {min: 50000, max: Infinity, price: 81}
   ]
 };
 
