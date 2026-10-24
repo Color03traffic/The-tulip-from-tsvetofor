@@ -585,3 +585,16 @@ body.has-cart-bar{ padding-bottom:96px; }
 @media (max-width:350px){
   .site-header .logo svg{ display:none; }
 }
+
+/* ---------- Получение и оплата (главная) ---------- */
+.pickup{ padding:clamp(40px, 6vw, 72px) 0 0; }
+.pickup h2{ margin:0 0 20px; }
+.pickup-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+.pickup-card{ background:var(--white); border-radius:var(--r-photo); padding:clamp(18px, 2.5vw, 26px); }
+.pickup-card h3{ margin:0 0 10px; font-family:var(--display); font-weight:600; font-size:18px; }
+.pickup-card p{ margin:0 0 8px; }
+.pickup-card .muted{ font-size:15px; }
+.pickup-card-soft{ background:var(--blush); }
+.pickup-link{ display:inline-block; margin-top:6px; color:var(--pink); font-weight:600; text-decoration:none; }
+.pickup-link:hover{ color:var(--pink-deep); text-decoration:underline; }
+@media (max-width:900px){ .pickup-grid{ grid-template-columns:1fr; } }
