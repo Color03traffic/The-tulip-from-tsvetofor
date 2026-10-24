@@ -148,7 +148,7 @@ index = head('Тюльпаны оптом в Улан-Удэ от 81 ₽ — п�
       </div>
       <ul class="terms">
         <li>Проверенные сорта.</li>
-        <li>Договоры, любые способы оплаты.</li>
+        <li>Договоры, любые способы оплаты. Предоплата 50%.</li>
         <li>При предоплате фиксируем цену.</li>
         <li>Предзаказ — от 100 шт. Меньше 100 шт — по наличию.</li>
         <li>Чем больше заказ, тем ниже цена: от <span class="base-price" data-type="smooth">106</span> ₽ до <span class="min-price" data-type="smooth">82</span> ₽ за штуку.</li>
@@ -167,6 +167,31 @@ index = head('Тюльпаны оптом в Улан-Удэ от 81 ₽ — п�
       </div>
       <div class="ladder" id="ladder"></div>
       <p class="ladder-note muted"><span id="terryNote"></span>Все цены — в <a href="catalog.html#tiers">таблице в каталоге</a>.</p>
+    </div>
+  </section>
+
+  <section class="pickup" id="pickup" aria-labelledby="pickup-h">
+    <div class="wrap">
+      <h2 id="pickup-h">Получение и оплата</h2>
+      <div class="pickup-grid">
+        <div class="pickup-card">
+          <h3>Самовывоз со склада</h3>
+          <p>{ADDR}</p>
+          <p class="muted">Мы работаем как оптовый склад, поэтому доставки нет — заказ забираете сами. Дату и время согласуем в мессенджере.</p>
+          <a class="pickup-link" href="https://yandex.ru/maps/?text=%D0%A3%D0%BB%D0%B0%D0%BD-%D0%A3%D0%B4%D1%8D%2C%20%D1%83%D0%BB.%20%D0%A2%D0%BE%D0%B1%D0%BE%D0%BB%D1%8C%D1%81%D0%BA%D0%B0%D1%8F%2C%20167%D0%90" target="_blank" rel="noopener">Открыть на карте →</a>
+        </div>
+        <div class="pickup-card">
+          <h3>Оплата</h3>
+          <p><b>50%</b> — предоплата при оформлении, цена фиксируется.</p>
+          <p><b>50%</b> — при получении.</p>
+          <p class="muted">Работаем по договору, любые способы оплаты.</p>
+        </div>
+        <div class="pickup-card pickup-card-soft">
+          <h3>Нужно в розницу?</h3>
+          <p>Небольшие букеты и поштучно — в розничных магазинах «Цветофор»: Улан-Удэ, Кяхта, Иркутск, Ангарск.</p>
+          <a class="pickup-link" href="https://yandex.ru/maps/?text=%D0%A6%D0%B2%D0%B5%D1%82%D0%BE%D1%84%D0%BE%D1%80%20%D1%86%D0%B2%D0%B5%D1%82%D1%8B" target="_blank" rel="noopener">Магазины на карте →</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -206,18 +231,18 @@ index = head('Тюльпаны оптом в Улан-Удэ от 81 ₽ — п�
 
 # ======================= КАТАЛОГ =======================
 cards = [
-  ('smooth','one','Жёлтый','yellow','yellow.jpg','Жёлтый тюльпан', 354, 472),
+  ('smooth','one','Жёлтый','yellow','yellow.jpg','Жёлтый тюльпан', 640, 800),
   ('smooth','one','Белый','white','white.jpg','Белый тюльпан', 354, 472),
   ('smooth','one','Кремовый','cream','cream.jpg','Кремовый тюльпан', 800, 800),
-  ('smooth','one','Розовый','pink','pink.jpg','Розовый тюльпан', 600, 800),
-  ('smooth','one','Красный','red','red.jpg','Красный тюльпан', 354, 472),
-  ('smooth','two','Красно-жёлтый','redyellow','redyellow.jpg','Красно-жёлтый тюльпан', 600, 800),
-  ('smooth','two','Красно-белый','redwhite','redwhite.jpg','Красно-белый тюльпан', 600, 800),
+  ('smooth','one','Розовый','pink','pink.jpg','Розовый тюльпан', 640, 800),
+  ('smooth','one','Красный','red','red.jpg','Красный тюльпан', 640, 800),
+  ('smooth','two','Красно-жёлтый','redyellow','redyellow.jpg','Красно-жёлтый тюльпан', 640, 800),
+  ('smooth','two','Красно-белый','redwhite','redwhite.jpg','Красно-белый тюльпан', 640, 800),
   ('smooth','two','Бело-сиреневый','whiteviolet','whiteviolet.jpg','Бело-сиреневый тюльпан', 600, 800),
-  ('smooth','two','Бело-розовый','whitepink','whitepink.jpg','Бело-розовый тюльпан', 800, 600),
-  ('smooth','one','Фиолетовый','violet','violet.jpg','Фиолетовый тюльпан', 800, 600),
+  ('smooth','two','Бело-розовый','whitepink','whitepink.jpg','Бело-розовый тюльпан', 640, 800),
+  ('smooth','one','Фиолетовый','violet','violet.jpg','Фиолетовый тюльпан', 640, 800),
   ('terry','terry','Махровый жёлтый','mah-yellow','mahrovy-yellow.jpg','Махровый жёлтый тюльпан', 427, 320),
-  ('terry','terry','Махровый розовый','mah-pink','mahrovy-rozovyj.jpg','Махровый розовый тюльпан', 600, 800),
+  ('terry','terry','Махровый розовый','mah-pink','mahrovy-rozovyj.jpg','Махровый розовый тюльпан', 640, 800),
   ('mix','mix','Микс','mix', None, 'Микс тюльпанов разных цветов', 0, 0),
 ]
 static = {'smooth':(106,82),'terry':(116,92),'mix':(105,81)}
@@ -944,10 +969,10 @@ privacy = head('Политика конфиденциальности — Тюл
 <main class="wrap">
   <article class="panel prose">
     <h1>Политика обработки персональных данных</h1>
-    <p class="muted">Редакция от 22 октября 2026 года</p>
+    <p class="muted">Редакция от 24 октября 2026 года</p>
 
     <h2>1. Кто обрабатывает данные</h2>
-    <p>Оператор персональных данных — владелец сайта тюльпан03.рф (далее — «мы»). Адрес: {ADDR}. Телефон: <a href="{PHONE_HREF}">{PHONE}</a>.</p>
+    <p>Оператор персональных данных — индивидуальный предприниматель Берков Максим Васильевич, владелец сайта тюльпан03.рф (далее — «мы»). Адрес: {ADDR}. Телефон: <a href="{PHONE_HREF}">{PHONE}</a>.</p>
 
     <h2>2. Какие данные мы получаем</h2>
     <ul>
