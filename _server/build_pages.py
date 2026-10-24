@@ -170,6 +170,29 @@ index = head('Тюльпаны оптом в Улан-Удэ от 81 ₽ — п�
     </div>
   </section>
 
+  <section class="pickup-section" id="pickup" aria-labelledby="pickup-h">
+    <div class="wrap">
+      <h2 id="pickup-h">Получение и оплата</h2>
+      <div class="pickup-grid">
+        <div class="pickup-card">
+          <h3>Самовывоз со склада</h3>
+          <p><b>Улан-Удэ, ул. Тобольская, 167А</b></p>
+          <p class="muted">Дату и время получения согласуем после подтверждения заказа.</p>
+        </div>
+        <div class="pickup-card">
+          <h3>Доставка</h3>
+          <p>Со склада не доставляем — работаем оптом, заказ забираете сами.</p>
+        </div>
+        <div class="pickup-card">
+          <h3>Оплата</h3>
+          <p>Любые способы оплаты, договор для ИП и организаций.</p>
+          <p class="muted">При предоплате фиксируем цену.</p>
+        </div>
+      </div>
+      <p class="retail-note">Нужно немного цветов в розницу? Приходите в магазины «Цветофор» — они есть в Улан-Удэ, Кяхте, Иркутске и Ангарске.</p>
+    </div>
+  </section>
+
   <section class="contact-band">
     <div class="wrap">
       <div class="contact-card">
