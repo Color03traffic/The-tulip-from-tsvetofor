@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=41caed74">
+  <link rel="stylesheet" href="style.css?v=664d11c4">
   <script src="prices.js?v=e1de8321"></script>
   <script src="common.js?v=33b75004"></script>
 </head>
@@ -56,8 +56,14 @@
         <div><b id="whoName"></b><span id="whoPhone"></span></div>
         <a href="account.html">Кабинет</a>
       </div>
+      <div class="login-required" id="loginRequired" hidden>
+        <p><b>Для отправки заказа нужно обязательно зарегистрироваться.</b><br>Это займёт минуту — товары в корзине сохранятся, а заказ появится в истории в личном кабинете.</p>
+        <div class="login-required-actions">
+          <a class="btn btn-small" href="account.html?tab=reg&amp;next=cart">Зарегистрироваться</a>
+          <a class="btn btn-ghost btn-small" href="account.html?next=cart">Войти</a>
+        </div>
+      </div>
       <div id="guestFields">
-      <p class="login-hint" id="loginHint" hidden>Уже заказывали? <a href="account.html?next=cart">Войдите</a> — данные подставятся, а заказ сохранится в истории.</p>
       <div class="field">
         <label for="clientName">Имя или название организации *</label>
         <input id="clientName" autocomplete="name" placeholder="Иванов Иван или ИП Иванов">
@@ -146,8 +152,10 @@
       document.getElementById('whoPhone').textContent = session.phone;
       document.getElementById('formNote').textContent = 'Заказ сохранится в истории в личном кабинете.';
     } else if (apiEnabled()){
-      document.getElementById('loginHint').hidden = false;
-      document.getElementById('consentBox').hidden = false;
+      // Заказ — только для зарегистрированных покупателей
+      document.getElementById('loginRequired').hidden = false;
+      document.getElementById('guestFields').hidden = true;
+      document.getElementById('formNote').textContent = 'Чтобы отправить заказ, войдите или зарегистрируйтесь.';
     }
   })();
 
@@ -225,6 +233,13 @@
     const comment = document.getElementById('clientComment').value.trim();
     if (cart.length === 0){ toast('Корзина пуста'); return null; }
     if (session) return {name: session.name, phone: session.phone, comment};
+    if (apiEnabled()){
+      toast('Для отправки заказа нужно зарегистрироваться');
+      const box = document.getElementById('loginRequired');
+      box.scrollIntoView({behavior: 'smooth', block: 'center'});
+      box.classList.remove('pulse'); void box.offsetWidth; box.classList.add('pulse');
+      return null;
+    }
     const name    = document.getElementById('clientName').value.trim();
     const phone   = document.getElementById('clientPhone').value.trim();
     if (!name){ toast('Введите имя'); document.getElementById('clientName').focus(); return null; }
