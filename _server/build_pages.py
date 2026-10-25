@@ -126,7 +126,6 @@ index = head('Тюльпаны оптом в Улан-Удэ от 81 ₽ — п�
         <p class="lead">Краснодарские тюльпаны — прямые поставки из теплиц Краснодарского края в Бурятию</p>
         <div class="hero-actions">
           <a href="catalog.html" class="btn">Выбрать тюльпаны и рассчитать цену</a>
-          <a href="{WA}" class="btn btn-ghost" target="_blank" rel="noopener">{ICON['wa']}Написать в WhatsApp</a>
         </div>
       </div>
       <div class="buds" aria-label="Наши сорта">
