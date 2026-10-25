@@ -598,3 +598,14 @@ body.has-cart-bar{ padding-bottom:96px; }
 .pickup-link{ display:inline-block; margin-top:6px; color:var(--pink); font-weight:600; text-decoration:none; }
 .pickup-link:hover{ color:var(--pink-deep); text-decoration:underline; }
 @media (max-width:900px){ .pickup-grid{ grid-template-columns:1fr; } }
+
+/* Корзина: заказ только после регистрации */
+.login-required{
+  padding:16px 18px; border-radius:var(--r-ui);
+  background:var(--blush); border:1.5px solid #F6C6D6; margin-bottom:14px;
+}
+.login-required p{ margin:0 0 12px; font-size:15px; line-height:1.5; }
+.login-required b{ color:var(--pink-deep); }
+.login-required-actions{ display:flex; flex-wrap:wrap; gap:10px; }
+.login-required.pulse{ animation:pulse-ring .9s ease-out 1; }
+@keyframes pulse-ring{ 0%{ box-shadow:0 0 0 0 rgba(229,66,112,.45); } 100%{ box-shadow:0 0 0 14px rgba(229,66,112,0); } }
