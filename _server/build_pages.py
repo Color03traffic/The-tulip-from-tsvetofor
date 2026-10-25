@@ -792,7 +792,7 @@ account = head('Личный кабинет — Тюльпан03', None, 'accoun
         </div>
         <p class="form-error" id="loginError" role="alert"></p>
         <button class="btn" type="submit" style="width:100%">Войти</button>
-        <p class="form-note">Забыли пароль? Напишите нам в <a href="{WA}" target="_blank" rel="noopener">WhatsApp</a> — поможем восстановить доступ.</p>
+        <p class="form-note">Забыли пароль? Напишите нам в <a href="{TG}" target="_blank" rel="noopener">Telegram</a> — поможем восстановить доступ.</p>
       </form>
 
       <form id="regForm" novalidate hidden>

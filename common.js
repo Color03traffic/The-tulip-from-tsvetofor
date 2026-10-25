@@ -139,8 +139,39 @@ function updateAccountLink(){
   link.title = s ? 'Личный кабинет' : 'Войти или зарегистрироваться';
 }
 
+/* ---------- Номер телефона: +7 914 000-00-00 ----------
+   Покупатель набирает 8 или 7 — сразу появляется +7.
+   Набирает 9 — +7 подставляется перед ним. */
+function formatPhone(digits){
+  let d = digits.replace(/\D/g, '');
+  if (!d) return '';
+  if (d[0] === '8') d = '7' + d.slice(1);
+  else if (d[0] !== '7') d = '7' + d;
+  d = d.slice(0, 11);
+  let out = '+7';
+  if (d.length > 1) out += ' ' + d.slice(1, 4);
+  if (d.length > 4) out += ' ' + d.slice(4, 7);
+  if (d.length > 7) out += '-' + d.slice(7, 9);
+  if (d.length > 9) out += '-' + d.slice(9, 11);
+  return out;
+}
+function attachPhoneMask(input){
+  let prevDigits = input.value.replace(/\D/g, '');
+  input.addEventListener('input', e => {
+    let d = input.value.replace(/\D/g, '');
+    // Стёрли пробел или дефис — стираем и цифру перед ним, иначе курсор «застрянет»
+    if (e.inputType && e.inputType.startsWith('delete') && d === prevDigits && d.length) d = d.slice(0, -1);
+    // Стёрли всё до «+7» — очищаем поле полностью
+    if (e.inputType && e.inputType.startsWith('delete') && d === '7') d = '';
+    input.value = formatPhone(d);
+    prevDigits = input.value.replace(/\D/g, '');
+  });
+  if (input.value) { input.value = formatPhone(input.value); prevDigits = input.value.replace(/\D/g, ''); }
+}
+
 /* ---------- При загрузке страницы ---------- */
 document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('input[type="tel"]').forEach(attachPhoneMask);
   fillPrices();
   updateCartBadge();
   updateAccountLink();
