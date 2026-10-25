@@ -1009,3 +1009,7 @@ privacy = head('Политика конфиденциальности — Тюл
 for name, html in [('index.html', index), ('catalog.html', catalog), ('cart.html', cart), ('contacts.html', contacts), ('account.html', account), ('privacy.html', privacy)]:
     open(os.path.join(OUT, name), 'w', encoding='utf-8').write(html)
 print('ok')
+
+# Метки версий для CSS/JS, чтобы браузеры не показывали старые файлы из кэша
+import subprocess
+subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bust_cache.py')], check=False)
