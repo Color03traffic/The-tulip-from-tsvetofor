@@ -49,7 +49,7 @@ function onEdit(e) {
   var r = e && e.range;
   if (!r) return;
   var sh = r.getSheet();
-  if (sh.getName() === ORDER_SHEET) { stampIssued(e); guardOrderSheet(e); return; }
+  if (sh.getName() === ORDER_SHEET) { stampIssued(e); stampOrderDate(e); guardOrderSheet(e); return; }
   if (sh.getName() !== SITE_SHEET) return;
   if (r.getColumn() > STATUS_COL || r.getLastColumn() < STATUS_COL || r.getLastRow() < 2) return;
   var lock = LockService.getDocumentLock();
@@ -82,6 +82,26 @@ function stampIssued(e) {
     return '';
   });
   sh.getRange(ISSUED_DATE_ROW, c0, 1, n).setValues([out]);
+}
+
+// Вписали покупателя или количества, а дата заказа (строка 3) пустая — ставим сегодняшнюю.
+// От даты заказа зависит цена (лист «Градация цен»).
+function stampOrderDate(e) {
+  var r = e.range;
+  if (r.getLastRow() < NAME_ROW || r.getRow() > LAST_ROW || r.getLastColumn() < FIRST_COL) return;
+  var sh = r.getSheet();
+  var c0 = Math.max(r.getColumn(), FIRST_COL), n = r.getLastColumn() - c0 + 1;
+  var head = sh.getRange(NAME_ROW, c0, 2, n).getValues(); // [имена], [даты]
+  var today = null, changed = false;
+  var dates = head[1].map(function (d, i) {
+    if (String(head[0][i]).trim() !== '' && (d === '' || d === null)) {
+      today = today || dayOf(new Date(), sh.getParent());
+      changed = true;
+      return today;
+    }
+    return d;
+  });
+  if (changed) sh.getRange(DATE_ROW, c0, 1, n).setValues([dates]);
 }
 
 // Защита служебной заметки «Сайт №…» (строка 59 листа «Заказ»)
