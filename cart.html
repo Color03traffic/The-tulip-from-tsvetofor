@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=664d11c4">
+  <link rel="stylesheet" href="style.css?v=c76c00bc">
   <script src="prices.js?v=e1de8321"></script>
   <script src="common.js?v=33b75004"></script>
 </head>
@@ -135,9 +135,10 @@
   // Пока пусто — кнопка «Отправить в MAX» скрыта.
   const MAX_PROFILE_URL = 'https://max.ru/u/f9LHodD0cOJhlWPM-F5Y0uNLTh9gBpeIXjgkH4iijE8xP8P8b7anbxYKv4s';
   if (MAX_PROFILE_URL) document.getElementById('maxBtn').hidden = false;
-  const PHOTOS = {'Жёлтый': 'yellow.jpg', 'Белый': 'white.jpg', 'Кремовый': 'cream.jpg', 'Розовый': 'pink.jpg', 'Красный': 'red.jpg', 'Красно-жёлтый': 'redyellow.jpg', 'Красно-белый': 'redwhite.jpg', 'Бело-сиреневый': 'whiteviolet.jpg', 'Бело-розовый': 'whitepink.jpg', 'Фиолетовый': 'violet.jpg', 'Махровый жёлтый': 'mahrovy-yellow.jpg', 'Махровый розовый': 'mahrovy-rozovyj.jpg', 'Микс': 'mix-thumb'};
+  const PHOTOS = {'Жёлтый': 'yellow.jpg', 'Белый': 'white.jpg', 'Кремовый': 'cream.jpg', 'Розовый': 'pink.jpg', 'Нежно-розовый': 'tulips-new.jpg', 'Красный': 'red.jpg', 'Оранжевый': 'tulips-new.jpg', 'Красно-жёлтый': 'redyellow.jpg', 'Красно-белый': 'redwhite.jpg', 'Бело-сиреневый': 'whiteviolet.jpg', 'Бело-розовый': 'whitepink.jpg', 'Фиолетовый': 'violet.jpg', 'Махровый розовый': 'mahrovy-rozovyj.jpg', 'Махровый фиолетовый': 'tulips-new.jpg', 'Микс': 'mix-thumb'};
 
-  let cart = loadCart();
+  // Убираем из корзины сорта, которых больше нет в каталоге
+  let cart = loadCart().filter(i => PHOTOS[i.name]);
   let pendingChannel = null;
   let pendingText = '';
   let pendingClient = null;

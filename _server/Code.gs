@@ -25,9 +25,9 @@ var PRICES_URL = 'https://raw.githubusercontent.com/Color03traffic/The-tulip-fro
 // Сорта, которые можно заказать (название → тип цены)
 var PRODUCTS = {
   'Жёлтый': 'smooth', 'Белый': 'smooth', 'Кремовый': 'smooth', 'Розовый': 'smooth',
-  'Красный': 'smooth', 'Красно-жёлтый': 'smooth', 'Красно-белый': 'smooth',
+  'Нежно-розовый': 'smooth', 'Красный': 'smooth', 'Оранжевый': 'smooth', 'Красно-жёлтый': 'smooth', 'Красно-белый': 'smooth',
   'Бело-сиреневый': 'smooth', 'Бело-розовый': 'smooth', 'Фиолетовый': 'smooth',
-  'Махровый жёлтый': 'terry', 'Махровый розовый': 'terry', 'Микс': 'mix'
+  'Махровый розовый': 'terry', 'Махровый фиолетовый': 'terry', 'Микс': 'mix'
 };
 var TYPE_NAMES = { smooth: 'Обычный', terry: 'Махровый', mix: 'Микс' };
 
