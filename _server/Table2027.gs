@@ -16,7 +16,8 @@ var ITEMS_SHEET = 'С сайта — позиции';
 var ORDER_SHEET = 'Заказ';
 var FIRST_COL = 7;     // G — первый покупатель
 var LAST_COL = 391;    // OA
-var ISSUED_ROW = 1, ISSUED_DATE_ROW = 66; // галочка «Выдан» и дата выдачи
+var ISSUED_ROW = 1, ISSUED_DATE_ROW = 66;
+var PAY_FIRST_ROW = 53, PAY_LAST_ROW = 55, PAY_DATE_SHIFT = 10; // оплаты 53–55 → их даты 63–65 // галочка «Выдан» и дата выдачи
 var NAME_ROW = 2, DATE_ROW = 3, FIRST_ROW = 4, LAST_ROW = 41, NOTE_ROW = 59;
 var STATUS_COL = 11, NOTE_COL = 12; // K, L на листе «Заказы с сайта»
 
@@ -49,7 +50,7 @@ function onEdit(e) {
   var r = e && e.range;
   if (!r) return;
   var sh = r.getSheet();
-  if (sh.getName() === ORDER_SHEET) { stampIssued(e); stampOrderDate(e); guardOrderSheet(e); return; }
+  if (sh.getName() === ORDER_SHEET) { stampIssued(e); stampOrderDate(e); stampPayments(e); guardOrderSheet(e); return; }
   if (sh.getName() !== SITE_SHEET) return;
   if (r.getColumn() > STATUS_COL || r.getLastColumn() < STATUS_COL || r.getLastRow() < 2) return;
   var lock = LockService.getDocumentLock();
@@ -102,6 +103,29 @@ function stampOrderDate(e) {
     return d;
   });
   if (changed) sh.getRange(DATE_ROW, c0, 1, n).setValues([dates]);
+}
+
+// Внесли сумму оплаты (строки 53–55) — в строке даты (63–65) ставится дата и время, если она пустая.
+// Сумму стёрли — дата тоже стирается.
+function stampPayments(e) {
+  var r = e.range;
+  if (r.getLastRow() < PAY_FIRST_ROW || r.getRow() > PAY_LAST_ROW || r.getLastColumn() < FIRST_COL) return;
+  var sh = r.getSheet();
+  var c0 = Math.max(r.getColumn(), FIRST_COL), n = r.getLastColumn() - c0 + 1;
+  var r0 = Math.max(r.getRow(), PAY_FIRST_ROW), r1 = Math.min(r.getLastRow(), PAY_LAST_ROW), nr = r1 - r0 + 1;
+  var sums = sh.getRange(r0, c0, nr, n).getValues();
+  var dRange = sh.getRange(r0 + PAY_DATE_SHIFT, c0, nr, n);
+  var dates = dRange.getValues();
+  var now = null, changed = false;
+  for (var i = 0; i < nr; i++) for (var j = 0; j < n; j++) {
+    var paid = sums[i][j] !== '' && Number(sums[i][j]) !== 0;
+    if (paid && (dates[i][j] === '' || dates[i][j] === null)) {
+      now = now || dayOf(new Date(), sh.getParent()); dates[i][j] = now; changed = true;
+    } else if (!paid && dates[i][j] !== '') {
+      dates[i][j] = ''; changed = true;
+    }
+  }
+  if (changed) dRange.setValues(dates);
 }
 
 // Защита служебной заметки «Сайт №…» (строка 59 листа «Заказ»)
@@ -237,9 +261,9 @@ function setMark(sh, row, v, text) {
   sh.getRange(row, NOTE_COL).setValue(mine ? mine + ' ' + text : text);
 }
 
-// Дата без времени по часовому поясу таблицы (Иркутск), строкой — таблица сама поймёт её как дату
+// Дата и время по часовому поясу таблицы (Иркутск), строкой — таблица сама поймёт её как дату
 function dayOf(d, ss) {
-  return Utilities.formatDate(d, ss.getSpreadsheetTimeZone(), 'dd.MM.yyyy');
+  return Utilities.formatDate(d, ss.getSpreadsheetTimeZone(), 'dd.MM.yyyy HH:mm');
 }
 
 function colLetter(c) {
