@@ -19,6 +19,7 @@ var LAST_COL = 391;    // OA
 var ISSUED_ROW = 1, ISSUED_DATE_ROW = 66;
 var PAY_FIRST_ROW = 53, PAY_LAST_ROW = 55, PAY_DATE_SHIFT = 10; // оплаты 53–55 → их даты 63–65 // галочка «Выдан» и дата выдачи
 var NAME_ROW = 2, DATE_ROW = 3, FIRST_ROW = 4, LAST_ROW = 41, NOTE_ROW = 59;
+var PHONE_ROW = 67, CODE_ROW = 68; // телефон (+7 914 000-00-00) и код личного кабинета (6 цифр)
 var STATUS_COL = 11, NOTE_COL = 12; // K, L на листе «Заказы с сайта»
 
 // Цвет с сайта → строки сортов на листе «Заказ» (как в сводке «Остатка от закупа»)
@@ -43,6 +44,7 @@ var COLOR_ROWS = {
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Тюльпан03')
     .addItem('Перенести подтверждённые заказы', 'syncAll')
+    .addItem('Проставить телефоны и коды кабинета', 'fillAllCodes')
     .addToUi();
 }
 
@@ -50,7 +52,7 @@ function onEdit(e) {
   var r = e && e.range;
   if (!r) return;
   var sh = r.getSheet();
-  if (sh.getName() === ORDER_SHEET) { stampIssued(e); stampOrderDate(e); stampPayments(e); guardOrderSheet(e); return; }
+  if (sh.getName() === ORDER_SHEET) { stampIssued(e); stampOrderDate(e); stampPayments(e); stampPhoneCode(e); guardOrderSheet(e); return; }
   if (sh.getName() !== SITE_SHEET) return;
   if (r.getColumn() > STATUS_COL || r.getLastColumn() < STATUS_COL || r.getLastRow() < 2) return;
   var lock = LockService.getDocumentLock();
@@ -126,6 +128,90 @@ function stampPayments(e) {
     }
   }
   if (changed) dRange.setValues(dates);
+}
+
+// Имя (строка 2) или телефон (строка 67) изменили → телефон приводим к виду +7 914 000-00-00,
+// в строке 68 появляется код личного кабинета (печатается в накладной).
+function stampPhoneCode(e) {
+  var r = e.range;
+  var touchesName = r.getRow() <= NAME_ROW && r.getLastRow() >= NAME_ROW;
+  var touchesPhone = r.getRow() <= PHONE_ROW && r.getLastRow() >= PHONE_ROW;
+  if (!(touchesName || touchesPhone) || r.getLastColumn() < FIRST_COL) return;
+  var sh = r.getSheet();
+  var c0 = Math.max(r.getColumn(), FIRST_COL);
+  var noPhone = [];
+  for (var c = c0; c <= r.getLastColumn(); c++) {
+    var res = ensurePhoneCode(sh, c, touchesName);
+    if (res === 'nophone') noPhone.push(colLetter(c));
+  }
+  if (noPhone.length) {
+    sh.getParent().toast('В имени нет телефона (столбец ' + noPhone.join(', ') + '). Впишите телефон в строку 67 — без него у покупателя не будет личного кабинета.', 'Тюльпан03', 15);
+  }
+}
+
+// Телефон и код для столбца покупателя. fromName — взять телефон из строки 2, если он там есть.
+// Возвращает 'nophone', если имя есть, а телефона нет.
+function ensurePhoneCode(sh, col, fromName) {
+  var name = String(sh.getRange(NAME_ROW, col).getValue() || '').trim();
+  var pc = sh.getRange(PHONE_ROW, col, 2, 1).getValues();
+  var phone = normPhone(pc[0][0]);
+  if (fromName || !phone) phone = phoneFromText(name) || phone;
+  if (!name && !phone) return '';
+  if (!phone) {
+    if (String(pc[0][0]).trim() === '') return 'nophone';
+    return ''; // вписано что-то не похожее на номер — оставляем как есть
+  }
+  var code = String(pc[1][0] || '').replace(/\D/g, '');
+  if (code.length !== 6) code = codeForPhone(sh, phone, col) || newCode();
+  if (pc[0][0] !== phone || String(pc[1][0]) !== code) {
+    sh.getRange(PHONE_ROW, col, 2, 1).setNumberFormat('@').setValues([[phone], [code]]);
+  }
+  return 'ok';
+}
+
+// Тот же покупатель в другом столбце — тот же код
+function codeForPhone(sh, phone, exceptCol) {
+  var width = LAST_COL - FIRST_COL + 1;
+  var v = sh.getRange(PHONE_ROW, FIRST_COL, 2, width).getValues();
+  for (var j = 0; j < width; j++) {
+    if (FIRST_COL + j === exceptCol) continue;
+    var code = String(v[1][j] || '').replace(/\D/g, '');
+    if (code.length === 6 && normPhone(v[0][j]) === phone) return code;
+  }
+  return '';
+}
+
+function newCode() {
+  return String(100000 + Math.floor(Math.random() * 900000));
+}
+
+// Меню: телефоны и коды для всех уже вписанных покупателей
+function fillAllCodes() {
+  var sh = SpreadsheetApp.getActive().getSheetByName(ORDER_SHEET);
+  var names = sh.getRange(NAME_ROW, FIRST_COL, 1, LAST_COL - FIRST_COL + 1).getValues()[0];
+  var ok = 0, noPhone = [];
+  names.forEach(function (n, j) {
+    if (String(n).trim() === '') return;
+    var res = ensurePhoneCode(sh, FIRST_COL + j, false);
+    if (res === 'ok') ok++;
+    if (res === 'nophone') noPhone.push(String(n).trim());
+  });
+  warn('Телефоны и коды', 'Готово: ' + ok + ' покупателей с телефоном и кодом.' +
+    (noPhone.length ? '\n\nБез телефона (впишите в строку 67): ' + noPhone.join(', ') : ''));
+}
+
+// +7 914 000-00-00 — как на сайте
+function normPhone(v) {
+  var d = String(v || '').replace(/\D/g, '');
+  if (d.length === 11 && d[0] === '8') d = '7' + d.slice(1);
+  if (d.length === 10 && d[0] === '9') d = '7' + d;
+  if (!/^7\d{10}$/.test(d)) return '';
+  return '+7 ' + d.slice(1, 4) + ' ' + d.slice(4, 7) + '-' + d.slice(7, 9) + '-' + d.slice(9, 11);
+}
+
+function phoneFromText(s) {
+  var m = String(s).match(/(\+?\d[\d\s\-()]{8,}\d)/);
+  return m ? normPhone(m[1]) : '';
 }
 
 // Защита служебной заметки «Сайт №…» (строка 59 листа «Заказ»)
@@ -237,6 +323,7 @@ function syncRow(sh, row) {
     ord.getRange(DATE_ROW, col).setValue(dayOf(d, ss));
     ord.getRange(FIRST_ROW, col, nRows, 1).setValues(out);
     ord.getRange(NOTE_ROW, col).setValue(note);
+    ensurePhoneCode(ord, col, true);
     setMark(sh, row, v, '→ «Заказ», столбец ' + colLetter(col) + (unknown.length ? ' (есть неразнесённые цвета!)' : ''));
     return true;
   }

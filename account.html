@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=c76c00bc">
+  <link rel="stylesheet" href="style.css?v=ee5c1708">
   <script src="prices.js?v=3326b2bc"></script>
   <script src="common.js?v=33b75004"></script>
 </head>
@@ -57,6 +57,30 @@
         <p class="form-error" id="loginError" role="alert"></p>
         <button class="btn" type="submit" style="width:100%">Войти</button>
         <p class="form-note">Забыли пароль? Напишите нам в <a href="https://t.me/tulpan03" target="_blank" rel="noopener">Telegram</a> — поможем восстановить доступ.</p>
+        <p class="form-note">Покупали у нас на складе? <a href="#" id="toCode">Войти по коду из накладной</a></p>
+      </form>
+
+      <form id="codeForm" novalidate hidden>
+        <p class="form-note" style="margin-top:0">Код из 6 цифр напечатан в накладной. По нему откроется кабинет с вашими заказами и оплатами.</p>
+        <div class="field">
+          <label for="codePhone">Телефон, который вы называли на складе</label>
+          <input id="codePhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 914 000-00-00" required>
+        </div>
+        <div class="field">
+          <label for="codeCode">Код из накладной</label>
+          <input id="codeCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" required>
+        </div>
+        <div class="field">
+          <label for="codePass">Придумайте пароль</label>
+          <input id="codePass" type="password" autocomplete="new-password" minlength="6" placeholder="Не короче 6 символов" required>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="codeConsent">
+          <span>Согласен на обработку персональных данных по <a href="privacy.html" target="_blank">политике конфиденциальности</a></span>
+        </label>
+        <p class="form-error" id="codeError" role="alert"></p>
+        <button class="btn" type="submit" style="width:100%">Открыть кабинет</button>
+        <p class="form-note">Если кабинет на этот номер уже есть, пароль заменится на новый. <a href="#" id="backLogin">Войти по паролю</a></p>
       </form>
 
       <form id="regForm" novalidate hidden>
@@ -105,6 +129,14 @@
     </div>
     <h2 class="acc-h2">Мои заказы</h2>
     <div id="orders" aria-live="polite"><p class="muted">Загружаем…</p></div>
+    <form class="panel link-code" id="linkForm" novalidate hidden>
+      <label for="linkCode"><b>Покупали у нас на складе?</b> Введите код из накладной — здесь появятся те заказы и оплаты.</label>
+      <div class="link-row">
+        <input id="linkCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+        <button class="btn btn-small" type="submit">Показать</button>
+      </div>
+      <p class="form-error" id="linkError" role="alert"></p>
+    </form>
   </div>
 </main>
 
@@ -132,10 +164,20 @@
     $('tabReg').setAttribute('aria-selected', reg);
     $('loginForm').hidden = reg;
     $('regForm').hidden = !reg;
+    $('codeForm').hidden = true;
     $('accTitle').textContent = reg ? 'Регистрация' : 'Вход в личный кабинет';
+  }
+  function showCodeForm(){
+    switchTab(false);
+    $('loginForm').hidden = true;
+    $('codeForm').hidden = false;
+    $('accTitle').textContent = 'Вход по коду из накладной';
+    if ($('loginPhone').value && !$('codePhone').value) $('codePhone').value = $('loginPhone').value;
   }
   $('tabLogin').onclick = () => switchTab(false);
   $('tabReg').onclick = () => switchTab(true);
+  $('toCode').onclick = e => { e.preventDefault(); showCodeForm(); };
+  $('backLogin').onclick = e => { e.preventDefault(); switchTab(false); };
 
   function afterLogin(res){
     setSession({ token: res.token, name: res.user.name, phone: res.user.phone });
@@ -173,6 +215,30 @@
           : !$('regConsent').checked ? 'Отметьте согласие на обработку данных' : '');
   });
 
+  $('codeForm').addEventListener('submit', e => {
+    e.preventDefault();
+    submit($('codeForm'), $('codeError'), 'claim',
+      () => ({ phone: $('codePhone').value, code: $('codeCode').value, password: $('codePass').value, consent: $('codeConsent').checked }),
+      () => $('codePhone').value.replace(/\D/g,'').length < 10 ? 'Проверьте номер телефона'
+          : $('codeCode').value.replace(/\D/g,'').length !== 6 ? 'Код — 6 цифр из накладной'
+          : $('codePass').value.length < 6 ? 'Пароль — не короче 6 символов'
+          : !$('codeConsent').checked ? 'Отметьте согласие на обработку данных' : '');
+  });
+
+  $('linkForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const err = $('linkError'), code = $('linkCode').value.replace(/\D/g,'');
+    err.textContent = '';
+    if (code.length !== 6){ err.textContent = 'Код — 6 цифр из накладной'; return; }
+    const btn = $('linkForm').querySelector('button');
+    btn.disabled = true;
+    const res = await api('link', { token: getSession().token, code });
+    btn.disabled = false;
+    if (!res.ok){ err.textContent = res.error; return; }
+    $('linkCode').value = '';
+    openCabinet();
+  });
+
   $('logoutBtn').onclick = async () => {
     const s = getSession();
     setSession(null);
@@ -180,7 +246,16 @@
     show('auth'); switchTab(false);
   };
 
-  const STATUS_CLASS = { 'Новый': 'st-new', 'Подтверждён': 'st-ok', 'Выполнен': 'st-done', 'Отменён': 'st-cancel' };
+  const STATUS_CLASS = { 'Новый': 'st-new', 'Принят': 'st-ok', 'Подтверждён': 'st-ok', 'Выдан': 'st-done', 'Выполнен': 'st-done', 'Отменён': 'st-cancel' };
+
+  // Оплачено / осталось — из таблицы, где менеджер отмечает оплаты
+  function payLine(o){
+    if (o.paid == null || o.status === 'Отменён') return '';
+    const issued = o.issuedDate ? '<span class="muted">выдан ' + esc(o.issuedDate) + '</span>' : '';
+    if (o.total > 0 && o.left === 0) return '<div class="order-pay paid-full"><span>Оплачено полностью</span>' + issued + '</div>';
+    return '<div class="order-pay"><span>Оплачено <b>' + rub(o.paid) + '</b></span>'
+      + '<span>Осталось <b>' + rub(o.left) + '</b></span>' + issued + '</div>';
+  }
 
   function renderOrders(orders){
     if (!orders.length){
@@ -192,12 +267,13 @@
       const date = isNaN(d) ? '' : d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
       const items = o.items.map(i => '<li><span>' + esc(i.name) + '</span><span>' + i.qty + ' шт × ' + i.price + ' ₽</span></li>').join('');
       return '<article class="panel order">'
-        + '<div class="order-top"><div><b>Заказ №' + o.number + '</b><span class="muted">' + date + '</span></div>'
+        + '<div class="order-top"><div><b>' + (o.shop ? 'Заказ на складе' : 'Заказ №' + o.number) + '</b><span class="muted">' + date + '</span></div>'
         + '<span class="status ' + (STATUS_CLASS[o.status] || 'st-new') + '">' + esc(o.status) + '</span></div>'
         + '<ul class="order-items">' + items + '</ul>'
         + (o.comment ? '<p class="muted order-comment">' + esc(o.comment.replace(/^\'/, '')) + '</p>' : '')
         + '<div class="order-bottom"><span class="num">' + rub(o.total) + '</span><span class="muted">' + o.qty + ' шт</span>'
         + '<button class="btn btn-ghost btn-small" type="button" data-repeat="' + idx + '">Повторить заказ</button></div>'
+        + payLine(o)
         + '</article>';
     }).join('');
     document.querySelectorAll('[data-repeat]').forEach(b => b.onclick = () => {
@@ -225,6 +301,7 @@
       return;
     }
     renderOrders(res.orders);
+    $('linkForm').hidden = !!res.verified;
   }
 
   if (!apiEnabled()) show('off');
