@@ -48,6 +48,7 @@ function onEdit(e) {
   var r = e && e.range;
   if (!r) return;
   var sh = r.getSheet();
+  if (sh.getName() === ORDER_SHEET) { guardOrderSheet(e); return; }
   if (sh.getName() !== SITE_SHEET) return;
   if (r.getColumn() > STATUS_COL || r.getLastColumn() < STATUS_COL || r.getLastRow() < 2) return;
   var lock = LockService.getDocumentLock();
@@ -56,6 +57,48 @@ function onEdit(e) {
     for (var row = Math.max(2, r.getRow()); row <= r.getLastRow(); row++) syncRow(sh, row);
   } finally {
     lock.releaseLock();
+  }
+  // Сняли статус «Подтверждён» (очистили ячейку) — заказ остаётся на «Заказе», предупреждаем
+  if (r.getNumRows() === 1 && r.getColumn() === STATUS_COL && e.oldValue === 'Подтверждён' && !r.getValue()) {
+    warn('Статус снят, но заказ остался на листе «Заказ»',
+      'Заказ с сайта уже перенесён на лист «Заказ» и продолжает вычитаться из остатков.\n\n' +
+      'Чтобы убрать его из заказов — выберите статус «Отменён» (количества обнулятся).\n' +
+      'Чтобы вернуть как было — снова выберите «Подтверждён».');
+  }
+}
+
+// Защита служебной заметки «Сайт №…» (строка 59 листа «Заказ»)
+function guardOrderSheet(e) {
+  var r = e.range;
+  if (r.getRow() > NOTE_ROW || r.getLastRow() < NOTE_ROW || r.getLastColumn() < FIRST_COL) return;
+  var msg = 'По заметке «Сайт №…» таблица связывает этот столбец с заказом с сайта.\n\n' +
+    'Если её удалить или изменить:\n' +
+    '• статус «Отменён» на листе «Заказы с сайта» больше не обнулит этот заказ;\n' +
+    '• «Перенести подтверждённые заказы» создаст заказ ЗАНОВО в новом столбце — он посчитается дважды и остатки уменьшатся лишний раз.\n\n' +
+    'Свою пометку можно дописать ПОСЛЕ текста «Сайт №…».';
+  if (r.getNumRows() === 1 && r.getNumColumns() === 1) {
+    var old = String(e.oldValue || '');
+    var m = old.match(/^Сайт №\d+/);
+    if (!m) return;
+    var now = String(r.getValue() || '');
+    if (now.indexOf(m[0]) === 0 && !/\d/.test(now.charAt(m[0].length))) return; // начало сохранено — ок
+    r.setValue(now ? old + ' ' + now : old); // возвращаем, текст пользователя дописываем в конец
+    warn('Эту заметку удалять нельзя — восстановлена', msg);
+    return;
+  }
+  // Очистили сразу несколько ячеек — старых значений не видно; предупреждаем, только если заметки стали пустыми
+  var c0 = Math.max(r.getColumn(), FIRST_COL);
+  var vals = r.getSheet().getRange(NOTE_ROW, c0, 1, r.getLastColumn() - c0 + 1).getValues()[0];
+  if (vals.some(function (x) { return String(x).trim() !== ''; })) return;
+  warn('Внимание: затронута строка 59 (заметки)', msg +
+    '\n\nЕсли стёрли заметку «Сайт №…» — нажмите Ctrl+Z, чтобы вернуть.');
+}
+
+function warn(title, text) {
+  try {
+    SpreadsheetApp.getUi().alert(title, text, SpreadsheetApp.getUi().ButtonSet.OK);
+  } catch (err) {
+    SpreadsheetApp.getActive().toast(text, title, 20);
   }
 }
 
