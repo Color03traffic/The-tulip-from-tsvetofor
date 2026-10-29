@@ -114,9 +114,9 @@ ld = f'''
   </script>'''
 
 index = head('Тюльпаны оптом в Улан-Удэ от 81 ₽ — предзаказ к 8 Марта | Тюльпан03',
-  'Краснодарские тюльпаны оптом в Улан-Удэ от бренда «Цветофор»: 13 расцветок, крупный бутон 5–7 см, стебель 45–60 см. Цена от 81 ₽ за штуку, предзаказ от 100 шт. Договор, любые способы оплаты.',
+  'Краснодарские тюльпаны оптом в Улан-Удэ от бренда «Цветофор»: 15 расцветок, крупный бутон 5–7 см, стебель 45–60 см. Цена от 81 ₽ за штуку, предзаказ от 100 шт. Договор, любые способы оплаты.',
   '', ld, og_title='Тюльпаны оптом в Улан-Удэ — Тюльпан03',
-  og_desc='Краснодарские тюльпаны оптом от 81 ₽ за штуку. 13 расцветок, предзаказ к 8 Марта.') + header('index.html') + f'''
+  og_desc='Краснодарские тюльпаны оптом от 81 ₽ за штуку. 15 расцветок, предзаказ к 8 Марта.') + header('index.html') + f'''
 <main>
   <section class="hero">
     <div class="wrap hero-grid">
@@ -234,14 +234,16 @@ cards = [
   ('smooth','one','Белый','white','white.jpg','Белый тюльпан', 354, 472),
   ('smooth','one','Кремовый','cream','cream.jpg','Кремовый тюльпан', 800, 800),
   ('smooth','one','Розовый','pink','pink.jpg','Розовый тюльпан', 640, 800),
+  ('smooth','one','Нежно-розовый','softpink','softpink.jpg','Нежно-розовый тюльпан', 640, 800),
   ('smooth','one','Красный','red','red.jpg','Красный тюльпан', 640, 800),
+  ('smooth','one','Оранжевый','orange','orange-own.jpg','Оранжевый тюльпан', 640, 800),
   ('smooth','two','Красно-жёлтый','redyellow','redyellow.jpg','Красно-жёлтый тюльпан', 640, 800),
   ('smooth','two','Красно-белый','redwhite','redwhite.jpg','Красно-белый тюльпан', 640, 800),
   ('smooth','two','Бело-сиреневый','whiteviolet','whiteviolet.jpg','Бело-сиреневый тюльпан', 600, 800),
   ('smooth','two','Бело-розовый','whitepink','whitepink.jpg','Бело-розовый тюльпан', 640, 800),
   ('smooth','one','Фиолетовый','violet','violet.jpg','Фиолетовый тюльпан', 640, 800),
-  ('terry','terry','Махровый жёлтый','mah-yellow','mahrovy-yellow.jpg','Махровый жёлтый тюльпан', 427, 320),
   ('terry','terry','Махровый розовый','mah-pink','mahrovy-rozovyj.jpg','Махровый розовый тюльпан', 640, 800),
+  ('terry','terry','Махровый фиолетовый','mah-violet','mahrovy-violet.jpg','Махровый фиолетовый тюльпан', 640, 800),
   ('mix','mix','Микс','mix', None, 'Микс тюльпанов разных цветов', 0, 0),
 ]
 static = {'smooth':(106,82),'terry':(116,92),'mix':(105,81)}
@@ -250,7 +252,10 @@ card_html = []
 for i,(t,g,name,id_,img,alt,w,h) in enumerate(cards):
     lazy = '' if i < 4 else ' loading="lazy"'
     r,o = static[t]
-    if img:
+    if img and not os.path.exists(os.path.join(OUT, img)):
+        # Своего фото пока нет — заглушка; положите файл img в корень сайта и пересоберите
+        photo = f'<div class="card-photo no-photo" role="img" aria-label="{alt}"><span class="tag{" terry" if g=="terry" else ""}">{group_tag[g]}</span><div class="no-photo-text">{name}<small>Фото скоро</small></div></div>'
+    elif img:
         photo = f'<div class="card-photo"><img src="{img}" alt="{alt}" width="{w}" height="{h}"{lazy}><span class="tag{" terry" if g=="terry" else ""}">{group_tag[g]}</span></div>'
     else:
         photo = f'''<div class="card-photo mix-photo" role="img" aria-label="{alt}">
@@ -276,9 +281,9 @@ for i,(t,g,name,id_,img,alt,w,h) in enumerate(cards):
 ''')
 
 catalog = head('Каталог тюльпанов оптом — цены от 81 ₽ | Тюльпан03, Улан-Удэ',
-  '13 расцветок тюльпанов оптом в Улан-Удэ: однотонные, двухцветные, махровые и микс. Цена от 81 ₽ за штуку, скидки за объём. Предзаказ к 8 Марта.',
+  '15 расцветок тюльпанов оптом в Улан-Удэ: однотонные, двухцветные, махровые и микс. Цена от 81 ₽ за штуку, скидки за объём. Предзаказ к 8 Марта.',
   'catalog.html', og_title='Каталог тюльпанов оптом — Тюльпан03',
-  og_desc='13 расцветок, цена от 81 ₽ за штуку, скидки за объём. Улан-Удэ.') + header('catalog.html') + f'''
+  og_desc='15 расцветок, цена от 81 ₽ за штуку, скидки за объём. Улан-Удэ.') + header('catalog.html') + f'''
 <main class="wrap">
   <section class="page-head">
     <h1>Каталог тюльпанов</h1>
@@ -386,7 +391,7 @@ catalog = head('Каталог тюльпанов оптом — цены от 8
 '''
 
 # ======================= КОРЗИНА =======================
-photos = {name: img for (t,g,name,id_,img,alt,w,h) in cards if img}
+photos = {name: (img if os.path.exists(os.path.join(OUT, img)) else 'tulips-new.jpg') for (t,g,name,id_,img,alt,w,h) in cards if img}
 photos['Микс'] = 'mix-thumb'
 photos_js = '{' + ', '.join(f"'{k}': '{v}'" for k,v in photos.items()) + '}'
 
@@ -492,7 +497,8 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
   if (MAX_PROFILE_URL) document.getElementById('maxBtn').hidden = false;
   const PHOTOS = {photos_js};
 
-  let cart = loadCart();
+  // Убираем из корзины сорта, которых больше нет в каталоге
+  let cart = loadCart().filter(i => PHOTOS[i.name]);
   let pendingChannel = null;
   let pendingText = '';
   let pendingClient = null;

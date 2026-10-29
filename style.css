@@ -329,6 +329,17 @@ h3{ font-size:18px; font-weight:600; }
 .card-actions .stepper input{ flex:1; min-width:0; }
 .card-actions .btn{ min-height:46px; padding:0 14px; font-size:15px; }
 
+/* Карточка без своего фото — заглушка до появления фото */
+.no-photo{
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  background:linear-gradient(160deg, var(--blush) 0%, #F6D9E3 100%);
+}
+.no-photo-text{
+  display:flex; flex-direction:column; gap:6px; padding:0 16px;
+  font-family:var(--display); font-weight:600; font-size:20px; color:var(--ink);
+}
+.no-photo-text small{ font-family:inherit; font-weight:500; font-size:14px; color:var(--ink-soft); }
+
 /* Карточка «Микс» — мозаика из фото */
 .mix-photo{
   display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr 1fr;
