@@ -8,42 +8,47 @@ const QTY_STEP = 20;        // шаг количества, шт.
 const PREORDER_MIN = 100;   // минимальный предзаказ, шт.
 
 // Цена за штуку зависит от ОБЩЕГО количества тюльпанов в заказе.
-// max: Infinity — значит «и больше».
-const PRICE_TIERS = {
-  // Все сорта, кроме махровых и микса
-  smooth: [
-    {min: 20,    max: 499,      price: 106},
-    {min: 500,   max: 999,      price: 95},
-    {min: 1000,  max: 1999,     price: 87},
-    {min: 2000,  max: 2999,     price: 86},
-    {min: 3000,  max: 4999,     price: 85},
-    {min: 5000,  max: 9999,     price: 84},
-    {min: 10000, max: 49999,    price: 83},
-    {min: 50000, max: Infinity, price: 82}
-  ],
-  // Махровые
-  terry: [
-    {min: 20,    max: 499,      price: 116},
-    {min: 500,   max: 999,      price: 105},
-    {min: 1000,  max: 1999,     price: 97},
-    {min: 2000,  max: 2999,     price: 96},
-    {min: 3000,  max: 4999,     price: 95},
-    {min: 5000,  max: 9999,     price: 94},
-    {min: 10000, max: 49999,    price: 93},
-    {min: 50000, max: Infinity, price: 92}
-  ],
-  // Микс
-  mix: [
-    {min: 20,    max: 499,      price: 105},
-    {min: 500,   max: 999,      price: 94},
-    {min: 1000,  max: 1999,     price: 86},
-    {min: 2000,  max: 2999,     price: 85},
-    {min: 3000,  max: 4999,     price: 84},
-    {min: 5000,  max: 9999,     price: 83},
-    {min: 10000, max: 49999,    price: 82},
-    {min: 50000, max: Infinity, price: 81}
-  ]
-};
+// Пороги количества — одинаковые для всех периодов.
+const PRICE_STEPS = [20, 500, 1000, 2000, 3000, 5000, 10000, 50000];
+
+// ГРАФИК ЦЕН. Сайт сам переключается на новые цены в 00:00 по Иркутску
+// в день «from». Цены совпадают с листом «Градация цен» в таблице 2027 —
+// меняете там, меняйте и здесь (и наоборот).
+// Порядок цен в каждом ряду — по порогам PRICE_STEPS (от 20 шт … от 50 000 шт).
+const PRICE_SCHEDULE = [
+  { from: '',           // до 1 января 2027
+    smooth: [106, 95, 87, 86, 85, 84, 83, 82],   // гладкие
+    terry:  [116, 105, 97, 96, 95, 94, 93, 92],  // махровые
+    mix:    [105, 94, 86, 85, 84, 83, 82, 81] }, // микс
+  { from: '2027-01-01', // с 1 января по 15 февраля 2027 включительно
+    smooth: [112, 101, 93, 92, 91, 90, 89, 88],
+    terry:  [122, 111, 103, 102, 101, 100, 99, 98],
+    mix:    [110, 99, 91, 90, 89, 88, 87, 86] },
+  { from: '2027-02-16', // с 16 февраля 2027
+    smooth: [118, 107, 99, 98, 97, 96, 95, 94],
+    terry:  [128, 117, 109, 108, 107, 106, 105, 104],
+    mix:    [115, 104, 96, 95, 94, 93, 92, 91] }
+];
+
+// Сегодняшняя дата по Иркутску (UTC+8, без перехода на летнее время), вида 2027-01-01
+function priceToday(){
+  return new Date(Date.now() + 8 * 3600 * 1000).toISOString().slice(0, 10);
+}
+
+function tiersOf(period){
+  const make = prices => prices.map((price, i) => ({
+    min: PRICE_STEPS[i],
+    max: i + 1 < PRICE_STEPS.length ? PRICE_STEPS[i + 1] - 1 : Infinity,
+    price: price
+  }));
+  return { smooth: make(period.smooth), terry: make(period.terry), mix: make(period.mix) };
+}
+
+// Действующий сегодня период и его цены (их используют каталог, корзина и сервер)
+const PRICE_PERIOD = PRICE_SCHEDULE.filter(p => p.from <= priceToday()).pop();
+const PRICE_TIERS = tiersOf(PRICE_PERIOD);
+// Следующая смена цен (или null), например для надписи «с 1 января цены …»
+const NEXT_PRICE_PERIOD = PRICE_SCHEDULE.find(p => p.from > priceToday()) || null;
 
 /* ---------- Функции, которые используют страницы ---------- */
 
