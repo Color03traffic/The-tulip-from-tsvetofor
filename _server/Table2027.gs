@@ -16,6 +16,7 @@ var ITEMS_SHEET = 'С сайта — позиции';
 var ORDER_SHEET = 'Заказ';
 var FIRST_COL = 7;     // G — первый покупатель
 var LAST_COL = 391;    // OA
+var ISSUED_ROW = 1, ISSUED_DATE_ROW = 66; // галочка «Выдан» и дата выдачи
 var NAME_ROW = 2, DATE_ROW = 3, FIRST_ROW = 4, LAST_ROW = 41, NOTE_ROW = 59;
 var STATUS_COL = 11, NOTE_COL = 12; // K, L на листе «Заказы с сайта»
 
@@ -48,7 +49,7 @@ function onEdit(e) {
   var r = e && e.range;
   if (!r) return;
   var sh = r.getSheet();
-  if (sh.getName() === ORDER_SHEET) { guardOrderSheet(e); return; }
+  if (sh.getName() === ORDER_SHEET) { stampIssued(e); guardOrderSheet(e); return; }
   if (sh.getName() !== SITE_SHEET) return;
   if (r.getColumn() > STATUS_COL || r.getLastColumn() < STATUS_COL || r.getLastRow() < 2) return;
   var lock = LockService.getDocumentLock();
@@ -65,6 +66,22 @@ function onEdit(e) {
       'Чтобы убрать его из заказов — выберите статус «Отменён» (количества обнулятся).\n' +
       'Чтобы вернуть как было — снова выберите «Подтверждён».');
   }
+}
+
+// Галочка «Выдан» (строка 1) → дата выдачи (строка 66): поставили — сегодняшняя дата, сняли — очищаем
+function stampIssued(e) {
+  var r = e.range;
+  if (r.getRow() !== ISSUED_ROW || r.getLastColumn() < FIRST_COL) return;
+  var sh = r.getSheet();
+  var c0 = Math.max(r.getColumn(), FIRST_COL), n = r.getLastColumn() - c0 + 1;
+  var marks = sh.getRange(ISSUED_ROW, c0, 1, n).getValues()[0];
+  var dates = sh.getRange(ISSUED_DATE_ROW, c0, 1, n).getValues()[0];
+  var t = new Date(), today = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  var out = marks.map(function (m, i) {
+    if (m === true) return [dates[i] instanceof Date ? dates[i] : today][0];
+    return '';
+  });
+  sh.getRange(ISSUED_DATE_ROW, c0, 1, n).setValues([out]);
 }
 
 // Защита служебной заметки «Сайт №…» (строка 59 листа «Заказ»)
