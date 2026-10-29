@@ -76,7 +76,7 @@ function stampIssued(e) {
   var c0 = Math.max(r.getColumn(), FIRST_COL), n = r.getLastColumn() - c0 + 1;
   var marks = sh.getRange(ISSUED_ROW, c0, 1, n).getValues()[0];
   var dates = sh.getRange(ISSUED_DATE_ROW, c0, 1, n).getValues()[0];
-  var t = new Date(), today = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  var today = dayOf(new Date(), sh.getParent());
   var out = marks.map(function (m, i) {
     if (m === true) return [dates[i] instanceof Date ? dates[i] : today][0];
     return '';
@@ -190,7 +190,7 @@ function syncRow(sh, row) {
     if (unknown.length) note += ' | НЕ РАЗНЕСЕНО: ' + unknown.join(', ');
 
     ord.getRange(NAME_ROW, col).setValue(name);
-    ord.getRange(DATE_ROW, col).setValue(new Date(d.getFullYear(), d.getMonth(), d.getDate()));
+    ord.getRange(DATE_ROW, col).setValue(dayOf(d, ss));
     ord.getRange(FIRST_ROW, col, nRows, 1).setValues(out);
     ord.getRange(NOTE_ROW, col).setValue(note);
     setMark(sh, row, v, '→ «Заказ», столбец ' + colLetter(col) + (unknown.length ? ' (есть неразнесённые цвета!)' : ''));
@@ -215,6 +215,11 @@ function setMark(sh, row, v, text) {
   var i = cur.indexOf('→');
   var mine = (i >= 0 ? cur.slice(0, i) : cur).trim();
   sh.getRange(row, NOTE_COL).setValue(mine ? mine + ' ' + text : text);
+}
+
+// Дата без времени по часовому поясу таблицы (Иркутск), строкой — таблица сама поймёт её как дату
+function dayOf(d, ss) {
+  return Utilities.formatDate(d, ss.getSpreadsheetTimeZone(), 'dd.MM.yyyy');
 }
 
 function colLetter(c) {
