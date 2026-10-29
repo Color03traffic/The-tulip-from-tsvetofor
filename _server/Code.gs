@@ -35,6 +35,11 @@ var SESSION_DAYS = 365;        // сколько помнить вход на у
 var HASH_ROUNDS = 3000;        // сколько раз перемешивать пароль
 var MAX_LOGIN_FAILS = 6;       // попыток входа за 15 минут
 
+// Статусы заказов ведутся в таблице 2027 (лист «Заказы с сайта», столбец K).
+// Личный кабинет показывает статус оттуда; если таблица недоступна — из столбца K «Заказов».
+var STATUS_BOOK_ID = '1i8uQUIClrDEoUFOIzj9FilPLQnqNrmeA5bT-jpF9gCw';
+var STATUS_SHEET = 'Заказы с сайта';
+
 var SH_ORDERS = 'Заказы', SH_ITEMS = 'Позиции', SH_USERS = 'Покупатели', SH_SESSIONS = 'Сессии';
 
 /* =================== Точка входа =================== */
@@ -123,6 +128,7 @@ function apiOrders(b) {
   if (!/^\+7 \d{3} \d{3}-\d{2}-\d{2}$/.test(user.phone)) return fail('Войдите снова', 'auth');
   var orders = rows(SH_ORDERS).filter(function (r) { return r[3] === user.phone; });
   var items = rows(SH_ITEMS);
+  var st = statusMap2027();
   var list = orders.map(function (r) {
     var num = Number(r[0]);
     return {
@@ -130,7 +136,7 @@ function apiOrders(b) {
       date: toIso(r[1]),
       total: Number(r[6]) || 0,
       qty: Number(r[5]) || 0,
-      status: r[10] || 'Новый',
+      status: (st ? st[num] : r[10]) || 'Новый',
       comment: r[7] || '',
       items: items.filter(function (i) { return Number(i[0]) === num; }).map(function (i) {
         return { name: i[2], type: PRODUCTS[i[2]] || 'smooth', qty: Number(i[4]), price: Number(i[5]) };
@@ -274,6 +280,22 @@ function sheet(name) {
   var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name);
   if (!sh) throw new Error('Нет листа «' + name + '»');
   return sh;
+}
+
+function statusMap2027() {
+  try {
+    var sh = SpreadsheetApp.openById(STATUS_BOOK_ID).getSheetByName(STATUS_SHEET);
+    var n = sh.getLastRow() - 1;
+    if (n < 1) return {};
+    var map = {};
+    sh.getRange(2, 1, n, 11).getValues().forEach(function (r) {
+      var s = String(r[10] || '').trim();
+      if (r[0] !== '' && s) map[Number(r[0])] = s;
+    });
+    return map;
+  } catch (e) {
+    return null;
+  }
 }
 
 function rows(name) {
