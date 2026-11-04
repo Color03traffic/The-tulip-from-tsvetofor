@@ -577,6 +577,16 @@ body.has-cart-bar{ padding-bottom:96px; }
 .order-bottom{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-top:14px; }
 .order-bottom .num{ font-size:20px; }
 .order-bottom .btn{ margin-left:auto; }
+.order-pay{ display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 18px; margin-top:12px; padding:10px 14px; border-radius:12px; background:#FFF3CC; color:#7A5A00; font-size:15px; }
+.order-pay b{ font-variant-numeric:tabular-nums; }
+.order-pay .muted{ margin-left:auto; font-size:14px; }
+.order-pay.paid-full{ background:#DDF3E3; color:#17733A; font-weight:600; }
+.link-code{ margin-top:18px; }
+.link-code label{ display:block; font-size:15px; line-height:1.45; }
+.link-row{ display:flex; gap:10px; margin-top:12px; }
+.link-row input{ flex:1; min-width:0; max-width:200px; font:inherit; font-size:18px; letter-spacing:.15em; padding:10px 14px; border:1.5px solid var(--line); border-radius:12px; background:#fff; }
+.link-row input:focus{ border-color:var(--ink); outline:none; }
+.link-code .form-error{ margin:8px 0 0; }
 
 /* Текстовые страницы */
 .prose{ max-width:820px; margin-top:clamp(24px, 4vw, 44px); }

@@ -6,7 +6,8 @@
  *  Расширения → Apps Script. Делает четыре вещи:
  *    1. регистрация и вход покупателей (телефон, ФИО, пароль);
  *    2. приём заказов с сайта в таблицу (листы «Заказы» и «Позиции»);
- *    3. история заказов для личного кабинета;
+ *    3. личный кабинет: история заказов, оплачено/осталось и выдача (из таблицы 2027),
+ *       заказы из магазина — после ввода кода из накладной;
  *    4. уведомления о новом заказе в Telegram и MAX.
  *
  *  Ключи ботов НЕ пишутся в этот код. Они хранятся в
@@ -35,6 +36,26 @@ var SESSION_DAYS = 365;        // сколько помнить вход на у
 var HASH_ROUNDS = 3000;        // сколько раз перемешивать пароль
 var MAX_LOGIN_FAILS = 6;       // попыток входа за 15 минут
 
+// Статусы заказов ведутся в таблице 2027 (лист «Заказы с сайта», столбец K).
+// Личный кабинет показывает статус оттуда; если таблица недоступна — из столбца K «Заказов».
+var STATUS_BOOK_ID = '1i8uQUIClrDEoUFOIzj9FilPLQnqNrmeA5bT-jpF9gCw';
+var STATUS_SHEET = 'Заказы с сайта';
+
+// Лист «Заказ» таблицы 2027: покупатель = столбец G..OA. Отсюда кабинет берёт оплаты,
+// выдачу и заказы, сделанные в магазине (по телефону и коду из накладной).
+var BOOK_ORDER_SHEET = 'Заказ';
+var BK = { firstCol: 7, cols: 385, rows: 68, issued: 1, name: 2, date: 3, first: 4, last: 41,
+           priceSmooth: 45, priceTerry: 46, priceMix: 47, total: 52, payFirst: 53, payLast: 55,
+           note: 59, issuedDate: 66, phone: 67, code: 68 };
+// Строки сортов на «Заказе» → цвет на сайте (как в сводке «Остатка от закупа»)
+var BOOK_COLOR_ROWS = {
+  'Жёлтый': [4], 'Белый': [5, 6, 7], 'Кремовый': [8, 9, 10], 'Розовый': [11, 12, 13, 14, 15, 16, 17],
+  'Нежно-розовый': [18], 'Красный': [19, 20, 21, 22, 23, 24], 'Бело-сиреневый': [25], 'Оранжевый': [26, 27],
+  'Красно-жёлтый': [28, 29], 'Красно-белый': [30, 31, 32], 'Фиолетовый': [33, 34], 'Бело-розовый': [35, 36, 37],
+  'Махровый розовый': [38, 39], 'Махровый фиолетовый': [40], 'Микс': [41]
+};
+var USER_VERIFIED_COL = 9; // I «Код из магазина подтверждён» на листе «Покупатели»
+
 var SH_ORDERS = 'Заказы', SH_ITEMS = 'Позиции', SH_USERS = 'Покупатели', SH_SESSIONS = 'Сессии';
 
 /* =================== Точка входа =================== */
@@ -45,7 +66,8 @@ function doPost(e) {
     var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     var handlers = {
       register: apiRegister, login: apiLogin, me: apiMe,
-      logout: apiLogout, orders: apiOrders, order: apiOrder
+      logout: apiLogout, orders: apiOrders, order: apiOrder,
+      claim: apiClaim, link: apiLink
     };
     var fn = handlers[body.action];
     res = fn ? fn(body) : { ok: false, error: 'Неизвестное действие' };
@@ -123,21 +145,162 @@ function apiOrders(b) {
   if (!/^\+7 \d{3} \d{3}-\d{2}-\d{2}$/.test(user.phone)) return fail('Войдите снова', 'auth');
   var orders = rows(SH_ORDERS).filter(function (r) { return r[3] === user.phone; });
   var items = rows(SH_ITEMS);
+  var st = statusMap2027();
+  var book = bookColumns(); // null — таблица 2027 недоступна, показываем без оплат
   var list = orders.map(function (r) {
     var num = Number(r[0]);
-    return {
+    var o = {
       number: num,
       date: toIso(r[1]),
       total: Number(r[6]) || 0,
       qty: Number(r[5]) || 0,
-      status: r[10] || 'Новый',
+      status: (st ? st[num] : r[10]) || 'Новый',
       comment: r[7] || '',
       items: items.filter(function (i) { return Number(i[0]) === num; }).map(function (i) {
         return { name: i[2], type: PRODUCTS[i[2]] || 'smooth', qty: Number(i[4]), price: Number(i[5]) };
       })
     };
-  }).reverse();
-  return { ok: true, orders: list };
+    var c = book && book.filter(function (b) { return b.siteNum === num; })[0];
+    if (c && o.status !== 'Отменён') {
+      o.total = c.total || o.total;
+      o.paid = c.paid;
+      o.left = Math.max(0, o.total - c.paid);
+      if (c.issued) { o.status = 'Выдан'; o.issuedDate = c.issuedDate; }
+    }
+    return o;
+  });
+
+  // Заказы из магазина — только если покупатель подтвердил телефон кодом из накладной
+  if (book && user.verified) {
+    book.filter(function (b) { return !b.siteNum && b.phone === user.phone && b.qty > 0; }).forEach(function (b) {
+      list.push({
+        number: 0, shop: true, date: b.date, total: b.total, qty: b.qty,
+        paid: b.paid, left: Math.max(0, b.total - b.paid),
+        status: b.issued ? 'Выдан' : 'Принят', issuedDate: b.issuedDate, comment: '', items: b.items
+      });
+    });
+  }
+  list.sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+  return { ok: true, orders: list, verified: !!user.verified };
+}
+
+// Вход по коду из накладной: покупатель из магазина сам создаёт кабинет (или задаёт новый пароль)
+function apiClaim(b) {
+  var phone = normPhone(b.phone);
+  var code = String(b.code || '').replace(/\D/g, '');
+  var password = String(b.password || '');
+  if (!phone) return fail('Проверьте номер телефона');
+  if (code.length !== 6) return fail('Код — 6 цифр, он напечатан в накладной');
+  if (password.length < 6) return fail('Пароль — не короче 6 символов');
+  if (!b.consent) return fail('Нужно согласие на обработку персональных данных');
+
+  var match = checkCode(phone, code);
+  if (match.error) return fail(match.error);
+
+  return withLock(function () {
+    var salt = randomHex(16);
+    var now = new Date();
+    var found = findUserRow(phone);
+    var name;
+    if (found) {
+      name = String(found.values[1]);
+      var sh = sheet(SH_USERS);
+      sh.getRange(found.row, 4).setValue(now);
+      sh.getRange(found.row, 7, 1, 3).setValues([[hashPassword(password, salt), salt, now]]);
+      dropSessions(phone); // пароль сменился — старые входы на других устройствах больше не действуют
+    } else {
+      name = clean(match.name, 120) || 'Покупатель';
+      sheet(SH_USERS).appendRow([asText(phone), name, now, now, 0, 0, hashPassword(password, salt), salt, now]);
+    }
+    return { ok: true, token: createSession(phone), user: { name: name, phone: phone } };
+  });
+}
+
+// Уже есть кабинет — вводит код из накладной, и в кабинете появляются заказы из магазина
+function apiLink(b) {
+  var user = userByToken(b.token);
+  if (!user) return fail('Войдите снова', 'auth');
+  var code = String(b.code || '').replace(/\D/g, '');
+  if (code.length !== 6) return fail('Код — 6 цифр, он напечатан в накладной');
+  var match = checkCode(user.phone, code);
+  if (match.error) return fail(match.error);
+  var u = findUserRow(user.phone);
+  if (u) sheet(SH_USERS).getRange(u.row, USER_VERIFIED_COL).setValue(new Date());
+  return { ok: true };
+}
+
+// Есть ли на «Заказе» покупатель с этим телефоном и кодом. Ограничение попыток — как у входа.
+function checkCode(phone, code) {
+  var cache = CacheService.getScriptCache();
+  var key = 'codefails_' + phone;
+  var fails = Number(cache.get(key) || 0);
+  if (fails >= MAX_LOGIN_FAILS) return { error: 'Слишком много попыток. Подождите 15 минут.' };
+  var book = bookColumns();
+  if (!book) return { error: 'Не удалось проверить код. Попробуйте через минуту.' };
+  var hit = book.filter(function (c) { return c.phone === phone && c.code && c.code === code; })[0];
+  if (!hit) {
+    cache.put(key, String(fails + 1), 15 * 60);
+    return { error: 'Неверный телефон или код. Проверьте накладную или напишите нам.' };
+  }
+  cache.remove(key);
+  return { name: hit.name };
+}
+
+// Все покупатели с листа «Заказ» таблицы 2027
+function bookColumns() {
+  try {
+    var sh = SpreadsheetApp.openById(STATUS_BOOK_ID).getSheetByName(BOOK_ORDER_SHEET);
+    var v = sh.getRange(1, BK.firstCol, BK.rows, BK.cols).getValues();
+    var tz = sh.getParent().getSpreadsheetTimeZone();
+    var out = [];
+    for (var j = 0; j < BK.cols; j++) {
+      var cell = function (row) { return v[row - 1][j]; };
+      var rawName = String(cell(BK.name) || '').trim();
+      if (!rawName) continue;
+      var note = String(cell(BK.note) || '');
+      var m = note.match(/^Сайт №(\d+)/);
+      var phone = normPhone(cell(BK.phone)) || phoneFromText(rawName);
+      var items = [], qty = 0;
+      Object.keys(BOOK_COLOR_ROWS).forEach(function (color) {
+        var q = BOOK_COLOR_ROWS[color].reduce(function (s, r) { return s + (Number(cell(r)) || 0); }, 0);
+        if (!q) return;
+        var type = PRODUCTS[color] || 'smooth';
+        var price = Number(cell(type === 'terry' ? BK.priceTerry : type === 'mix' ? BK.priceMix : BK.priceSmooth)) || 0;
+        items.push({ name: color, type: type, qty: q, price: price });
+        qty += q;
+      });
+      var paid = 0;
+      for (var r = BK.payFirst; r <= BK.payLast; r++) paid += Number(cell(r)) || 0;
+      var d = cell(BK.date), di = cell(BK.issuedDate);
+      out.push({
+        siteNum: m ? Number(m[1]) : 0,
+        name: rawName.replace(/[,;\s]*(\+?[78]|9)[\d\s\-()]{9,}\d.*$/, '').trim(),
+        phone: phone,
+        code: String(cell(BK.code) || '').replace(/\D/g, ''),
+        date: d instanceof Date ? d.toISOString() : '',
+        issued: cell(BK.issued) === true,
+        issuedDate: di instanceof Date ? Utilities.formatDate(di, tz, 'dd.MM.yyyy') : '',
+        total: Number(cell(BK.total)) || 0,
+        paid: paid, qty: qty, items: items
+      });
+    }
+    return out;
+  } catch (e) {
+    console.warn('Таблица 2027: ' + e);
+    return null;
+  }
+}
+
+// Телефон, вписанный в одну ячейку с именем: «Иванова, 8 914 000-00-00»
+function phoneFromText(s) {
+  var m = String(s).match(/(\+?\d[\d\s\-()]{8,}\d)/);
+  return m ? normPhone(m[1]) : '';
+}
+
+function dropSessions(phone) {
+  var sh = sheet(SH_SESSIONS);
+  var all = rows(SH_SESSIONS);
+  for (var i = all.length - 1; i >= 0; i--) if (String(all[i][1]) === phone) sh.deleteRow(i + 2);
 }
 
 function apiOrder(b) {
@@ -276,6 +439,22 @@ function sheet(name) {
   return sh;
 }
 
+function statusMap2027() {
+  try {
+    var sh = SpreadsheetApp.openById(STATUS_BOOK_ID).getSheetByName(STATUS_SHEET);
+    var n = sh.getLastRow() - 1;
+    if (n < 1) return {};
+    var map = {};
+    sh.getRange(2, 1, n, 11).getValues().forEach(function (r) {
+      var s = String(r[10] || '').trim();
+      if (r[0] !== '' && s) map[Number(r[0])] = s;
+    });
+    return map;
+  } catch (e) {
+    return null;
+  }
+}
+
 function rows(name) {
   var sh = sheet(name);
   var n = sh.getLastRow() - 1;
@@ -329,7 +508,7 @@ function userByToken(token) {
   if (!u) return null;
   // Отмечаем использование не чаще раза в сутки, чтобы не писать в таблицу на каждый запрос
   if (Date.now() - lastUsed.getTime() > 864e5) sheet(SH_SESSIONS).getRange(s.row, 4).setValue(new Date());
-  return { phone: String(u.values[0]), name: String(u.values[1]) };
+  return { phone: String(u.values[0]), name: String(u.values[1]), verified: !!u.values[USER_VERIFIED_COL - 1] };
 }
 
 function loadPrices() {
