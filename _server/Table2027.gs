@@ -55,7 +55,7 @@ function onEdit(e) {
   var r = e && e.range;
   if (!r) return;
   var sh = r.getSheet();
-  if (sh.getName() === ORDER_SHEET) { stampIssued(e); stampOrderDate(e); stampPayments(e); stampPhoneCode(e); guardOrderSheet(e); return; }
+  if (sh.getName() === ORDER_SHEET) { checkQty(e); stampIssued(e); stampOrderDate(e); stampPayments(e); stampPhoneCode(e); guardOrderSheet(e); return; }
   if (sh.getName() !== SITE_SHEET) return;
   if (r.getColumn() > STATUS_COL || r.getLastColumn() < STATUS_COL || r.getLastRow() < 2) return;
   var lock = LockService.getDocumentLock();
@@ -76,6 +76,44 @@ function onEdit(e) {
       'Чтобы убрать его из заказов — выберите статус «Отменён» (количества обнулятся).\n' +
       'Чтобы вернуть как было — снова выберите «Подтверждён».');
   }
+}
+
+// Количества (строки 4–41): только пачками по 20 и не больше «Осталось».
+// Срабатывает и на вставку (Ctrl+V), протягивание и ввод с телефона — там проверка данных Google не останавливает.
+function checkQty(e) {
+  var r = e.range;
+  if (r.getLastRow() < FIRST_ROW || r.getRow() > LAST_ROW || r.getLastColumn() < FIRST_COL) return;
+  var sh = r.getSheet();
+  var r0 = Math.max(r.getRow(), FIRST_ROW), r1 = Math.min(r.getLastRow(), LAST_ROW);
+  var c0 = Math.max(r.getColumn(), FIRST_COL), c1 = Math.min(r.getLastColumn(), LAST_COL);
+  var rng = sh.getRange(r0, c0, r1 - r0 + 1, c1 - c0 + 1);
+  var vals = rng.getValues();
+  SpreadsheetApp.flush();
+  var left = sh.getRange(r0, 6, r1 - r0 + 1, 1).getValues(); // F «Осталось» уже с учётом введённого
+  var single = r.getNumRows() === 1 && r.getNumColumns() === 1;
+  var bad = [], over = [], changed = false;
+  for (var i = 0; i < vals.length; i++) {
+    var rowNo = r0 + i;
+    for (var j = 0; j < vals[i].length; j++) {
+      var v = vals[i][j];
+      if (v === '' || v === null) continue;
+      var n = Number(String(v).replace(/\s/g, '').replace(',', '.'));
+      var a1 = colLetter(c0 + j) + rowNo;
+      var isBad = !(typeof v === 'number' || /^\s*[\d\s]+\s*$/.test(String(v))) || !(n > 0) || n % 20 !== 0;
+      var isOver = !isBad && rowNo < LAST_ROW && Number(left[i][0]) < 0;
+      if (!isBad && !isOver) { if (typeof v !== 'number') { vals[i][j] = n; changed = true; } continue; }
+      (isBad ? bad : over).push(a1 + ' (' + v + ')');
+      vals[i][j] = single && e.oldValue !== undefined ? Number(e.oldValue) || e.oldValue : '';
+      changed = true;
+    }
+  }
+  if (!changed) return;
+  rng.setValues(vals);
+  if (!bad.length && !over.length) return;
+  var msg = '';
+  if (bad.length) msg += 'Только пачками по 20 шт: 20, 40, 60, … 500, 520, 540…\nНе принято: ' + bad.join(', ') + '\n\n';
+  if (over.length) msg += 'Больше, чем осталось этого сорта (столбец «Осталось»).\nНе принято: ' + over.join(', ') + '\n\n';
+  warn('Количество не принято', msg + (single ? 'В ячейке оставлено прежнее значение.' : 'Эти ячейки очищены.'));
 }
 
 // Галочка «Выдан» (строка 1) → дата выдачи (строка 66): поставили — сегодняшняя дата, сняли — очищаем
