@@ -885,6 +885,7 @@ account = head('Личный кабинет — Тюльпан03', None, 'accoun
       </div>
     </div>
     <h2 class="acc-h2">Мои заказы</h2>
+    <p class="muted orders-note" id="ordersNote" hidden></p>
     <div id="orders" aria-live="polite"><p class="muted">Загружаем…</p></div>
     <form class="panel link-code" id="linkForm" novalidate hidden>
       <label for="linkCode"><b>Покупали у нас на складе?</b> Введите код из накладной — здесь появятся те заказы и оплаты.</label>
@@ -990,6 +991,7 @@ account = head('Личный кабинет — Тюльпан03', None, 'accoun
 
   $('logoutBtn').onclick = async () => {{
     const s = getSession();
+    if (s) dropOrdersCache(s.phone);
     setSession(null);
     if (s) api('logout', {{ token: s.token }});
     show('auth'); switchTab(false);
@@ -1043,14 +1045,40 @@ account = head('Личный кабинет — Тюльпан03', None, 'accoun
     $('accTitle').textContent = 'Личный кабинет';
     $('accName').textContent = s.name;
     $('accPhone').textContent = s.phone;
+    // Сначала — заказы, сохранённые в браузере с прошлого раза (мгновенно), потом свежие с сервера
+    const cached = readOrdersCache(s.phone);
+    const note = $('ordersNote');
+    if (cached){{
+      renderOrders(cached.orders);
+      $('linkForm').hidden = !!cached.verified;
+      note.textContent = 'Обновляем данные…';
+      note.hidden = false;
+    }}
     const res = await api('orders', {{ token: s.token }});
     if (!res.ok){{
-      if (res.code === 'auth'){{ setSession(null); show('auth'); switchTab(false); $('loginError').textContent = 'Войдите снова, пожалуйста.'; return; }}
+      if (res.code === 'auth'){{ dropOrdersCache(s.phone); setSession(null); show('auth'); switchTab(false); $('loginError').textContent = 'Войдите снова, пожалуйста.'; return; }}
+      if (cached){{ note.textContent = 'Не удалось обновить — показаны данные на ' + cached.at + '.'; return; }}
       $('orders').innerHTML = '<p class="form-error">' + esc(res.error) + '</p>';
       return;
     }}
+    note.hidden = true;
     renderOrders(res.orders);
     $('linkForm').hidden = !!res.verified;
+    writeOrdersCache(s.phone, res.orders, res.verified);
+  }}
+
+  // Последние заказы — в памяти этого браузера (по телефону), чтобы кабинет открывался сразу
+  const ORDERS_CACHE = 'tulpan_orders_';
+  function readOrdersCache(phone){{
+    try {{ const c = JSON.parse(localStorage.getItem(ORDERS_CACHE + phone) || 'null'); return c && Array.isArray(c.orders) ? c : null; }}
+    catch(e){{ return null; }}
+  }}
+  function writeOrdersCache(phone, orders, verified){{
+    const at = new Date().toLocaleString('ru-RU', {{ day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }});
+    try {{ localStorage.setItem(ORDERS_CACHE + phone, JSON.stringify({{ orders, verified: !!verified, at }})); }} catch(e){{}}
+  }}
+  function dropOrdersCache(phone){{
+    try {{ localStorage.removeItem(ORDERS_CACHE + phone); }} catch(e){{}}
   }}
 
   if (!apiEnabled()) show('off');
