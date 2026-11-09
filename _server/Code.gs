@@ -253,8 +253,9 @@ function checkCode(phone, code) {
 
 // Все покупатели с листа «Заказ» таблицы 2027
 // Данные таблицы 2027 (статусы + покупатели «Заказа») — таблица открывается один раз,
-// результат хранится в кэше BOOK_CACHE_SEC секунд (оплаты и статусы видны в кабинете с задержкой до минуты).
-var BOOK_CACHE_SEC = 60, BOOK_CACHE_KEY = 'book2027_v1';
+// результат хранится в кэше BOOK_CACHE_SEC секунд. Триггер warmBook2027 (каждые 5 минут) обновляет кэш заранее,
+// поэтому оплаты и статусы видны в кабинете с задержкой до 5 минут, а кабинет не ждёт таблицу 2027.
+var BOOK_CACHE_SEC = 600, BOOK_CACHE_KEY = 'book2027_v1';
 var _book = null;
 function book2027(fresh) {
   if (_book && (!fresh || _book.fresh)) return _book;
@@ -271,6 +272,9 @@ function book2027(fresh) {
   }
   return _book;
 }
+
+// Запускается по расписанию (Триггеры → warmBook2027 → по времени, каждые 5 минут)
+function warmBook2027() { book2027(true); }
 
 function bookColumns(fresh) { return book2027(fresh).cols; }
 function statusMap2027() { return book2027().st; }
