@@ -237,7 +237,12 @@ function checkCode(phone, code) {
   if (fails >= MAX_LOGIN_FAILS) return { error: 'Слишком много попыток. Подождите 15 минут.' };
   var book = bookColumns();
   if (!book) return { error: 'Не удалось проверить код. Попробуйте через минуту.' };
-  var hit = book.filter(function (c) { return c.phone === phone && c.code && c.code === code; })[0];
+  var match = function (c) { return c.phone === phone && c.code && c.code === code; };
+  var hit = book.filter(match)[0];
+  if (!hit && !book2027().fresh) { // покупателя могли вписать только что — проверяем по свежим данным
+    book = bookColumns(true);
+    hit = book && book.filter(match)[0];
+  }
   if (!hit) {
     cache.put(key, String(fails + 1), 15 * 60);
     return { error: 'Неверный телефон или код. Проверьте накладную или напишите нам.' };
@@ -247,13 +252,41 @@ function checkCode(phone, code) {
 }
 
 // Все покупатели с листа «Заказ» таблицы 2027
-function bookColumns() {
+// Данные таблицы 2027 (статусы + покупатели «Заказа») — таблица открывается один раз,
+// результат хранится в кэше BOOK_CACHE_SEC секунд (оплаты и статусы видны в кабинете с задержкой до минуты).
+var BOOK_CACHE_SEC = 60, BOOK_CACHE_KEY = 'book2027_v1';
+var _book = null;
+function book2027(fresh) {
+  if (_book && (!fresh || _book.fresh)) return _book;
+  var cache = CacheService.getScriptCache();
+  if (!fresh) {
+    var hit = cache.get(BOOK_CACHE_KEY);
+    if (hit) { try { _book = JSON.parse(hit); return _book; } catch (e) {} }
+  }
+  var ss;
+  try { ss = SpreadsheetApp.openById(STATUS_BOOK_ID); } catch (e) { console.warn('Таблица 2027: ' + e); return { st: null, cols: null }; }
+  _book = { st: readStatusMap(ss), cols: readBookColumns(ss), fresh: true };
+  if (_book.st && _book.cols) {
+    try { cache.put(BOOK_CACHE_KEY, JSON.stringify({ st: _book.st, cols: _book.cols }), BOOK_CACHE_SEC); } catch (e) {}
+  }
+  return _book;
+}
+
+function bookColumns(fresh) { return book2027(fresh).cols; }
+function statusMap2027() { return book2027().st; }
+
+function readBookColumns(ss) {
   try {
-    var sh = SpreadsheetApp.openById(STATUS_BOOK_ID).getSheetByName(BOOK_ORDER_SHEET);
-    var v = sh.getRange(1, BK.firstCol, BK.rows, BK.cols).getValues();
-    var tz = sh.getParent().getSpreadsheetTimeZone();
+    var sh = ss.getSheetByName(BOOK_ORDER_SHEET);
+    // читаем только до последнего столбца с именем покупателя
+    var names = sh.getRange(BK.name, BK.firstCol, 1, BK.cols).getValues()[0];
+    var used = 0;
+    for (var k = names.length - 1; k >= 0; k--) if (String(names[k]).trim() !== '') { used = k + 1; break; }
+    if (!used) return [];
+    var v = sh.getRange(1, BK.firstCol, BK.rows, used).getValues();
+    var tz = ss.getSpreadsheetTimeZone();
     var out = [];
-    for (var j = 0; j < BK.cols; j++) {
+    for (var j = 0; j < used; j++) {
       var cell = function (row) { return v[row - 1][j]; };
       var rawName = String(cell(BK.name) || '').trim();
       if (!rawName) continue;
@@ -439,9 +472,9 @@ function sheet(name) {
   return sh;
 }
 
-function statusMap2027() {
+function readStatusMap(ss) {
   try {
-    var sh = SpreadsheetApp.openById(STATUS_BOOK_ID).getSheetByName(STATUS_SHEET);
+    var sh = ss.getSheetByName(STATUS_SHEET);
     var n = sh.getLastRow() - 1;
     if (n < 1) return {};
     var map = {};
