@@ -5,8 +5,10 @@
  *   «Подтверждён» → заказ сам появляется на листе «Заказ» новым покупателем
  *                   (первый свободный столбец): имя и телефон, дата, количества по сортам.
  *                   Цвет с сайта раскладывается в сорт этого цвета, где больше «Осталось».
- *   «Отменён»     → у этого покупателя на «Заказе» количества обнуляются,
- *                   в заметке пишется «отменён».
+ *   «Отменён»     → если по заказу ещё не было оплат и он не выдан — его столбец на «Заказе»
+ *                   очищается целиком и освобождается для следующего заказа;
+ *                   если оплаты уже есть — количества обнуляются, в заметке «ОТМЕНЁН».
+ * При открытии таблицы скрипт сам догоняет подтверждённые, но не перенесённые заказы.
  * Связь заказа и столбца — заметка (строка 59) «Сайт №1001 …». Её не стирать.
  * Меню «Тюльпан03 → Перенести подтверждённые заказы» — догнать вручную, если что-то пропущено.
  */
@@ -46,6 +48,7 @@ function onOpen() {
     .addItem('Перенести подтверждённые заказы', 'syncAll')
     .addItem('Проставить телефоны и коды кабинета', 'fillAllCodes')
     .addToUi();
+  try { syncAll(true); } catch (err) { /* не мешаем открытию таблицы */ }
 }
 
 function onEdit(e) {
@@ -58,7 +61,11 @@ function onEdit(e) {
   var lock = LockService.getDocumentLock();
   lock.waitLock(20000);
   try {
-    for (var row = Math.max(2, r.getRow()); row <= r.getLastRow(); row++) syncRow(sh, row);
+    for (var row = Math.max(2, r.getRow()); row <= r.getLastRow(); row++) {
+      try { syncRow(sh, row); }
+      catch (err) { warn('Заказ в строке ' + row + ' не перенесён', String(err && err.message || err) +
+        '\n\nПопробуйте меню «Тюльпан03 → Перенести подтверждённые заказы».'); }
+    }
   } finally {
     lock.releaseLock();
   }
@@ -249,18 +256,23 @@ function warn(title, text) {
   }
 }
 
-function syncAll() {
+function syncAll(quiet) {
+  quiet = quiet === true;
   var ss = SpreadsheetApp.getActive();
   var sh = ss.getSheetByName(SITE_SHEET);
   var lock = LockService.getDocumentLock();
-  lock.waitLock(20000);
-  var n = 0;
+  if (!lock.tryLock(quiet ? 5000 : 20000)) return;
+  var n = 0, errs = [];
   try {
-    for (var row = 2; row <= sh.getLastRow(); row++) if (syncRow(sh, row)) n++;
+    for (var row = 2; row <= sh.getLastRow(); row++) {
+      try { if (syncRow(sh, row)) n++; }
+      catch (err) { errs.push('строка ' + row + ': ' + (err && err.message || err)); }
+    }
   } finally {
     lock.releaseLock();
   }
-  ss.toast('Обработано заказов: ' + n, 'Тюльпан03');
+  if (errs.length) warn('Не все заказы перенесены', errs.join('\n'));
+  if (!quiet || n) ss.toast('Обработано заказов с сайта: ' + n, 'Тюльпан03');
 }
 
 // Возвращает true, если что-то поменялось на листе «Заказ»
@@ -286,10 +298,7 @@ function syncRow(sh, row) {
       var cur = ord.getRange(FIRST_ROW, col, nRows, 1).getValues();
       if (cur.some(function (c) { return Number(c[0]) > 0; })) return false; // уже перенесён
     } else {
-      var names = ord.getRange(NAME_ROW, FIRST_COL, 1, width).getValues()[0];
-      for (var j = 0; j < names.length; j++) {
-        if (String(names[j]).trim() === '' && String(notes[j]).trim() === '') { col = FIRST_COL + j; break; }
-      }
+      col = freeColumn(ord, notes);
       if (!col) throw new Error('На листе «Заказ» нет свободного столбца');
     }
 
@@ -319,6 +328,8 @@ function syncRow(sh, row) {
     var note = tag + ' (с сайта)' + (v[7] ? ': ' + String(v[7]).trim() : '');
     if (unknown.length) note += ' | НЕ РАЗНЕСЕНО: ' + unknown.join(', ');
 
+    var pc = ord.getRange(PHONE_ROW, col, 2, 1).getValues();
+    if (normPhone(pc[0][0]) !== normPhone(v[3])) ord.getRange(PHONE_ROW, col, 2, 1).clearContent(); // чужой телефон/код
     ord.getRange(NAME_ROW, col).setValue(name);
     ord.getRange(DATE_ROW, col).setValue(dayOf(d, ss));
     ord.getRange(FIRST_ROW, col, nRows, 1).setValues(out);
@@ -329,6 +340,19 @@ function syncRow(sh, row) {
   }
 
   if (status === 'Отменён' && col) {
+    var paid = ord.getRange(PAY_FIRST_ROW, col, PAY_LAST_ROW - PAY_FIRST_ROW + 1, 1).getValues()
+      .some(function (p) { return Number(p[0]) > 0; });
+    var issued = ord.getRange(ISSUED_ROW, col).getValue() === true;
+    if (!paid && !issued) {
+      // Оплат не было — освобождаем столбец целиком, следующий заказ встанет сюда
+      ord.getRange(NAME_ROW, col, 2, 1).clearContent();
+      ord.getRange(FIRST_ROW, col, nRows, 1).clearContent();
+      ord.getRange(NOTE_ROW, col).clearContent();
+      ord.getRange(ISSUED_DATE_ROW, col).clearContent();
+      ord.getRange(PHONE_ROW, col, 2, 1).clearContent();
+      setMark(sh, row, v, '→ отменён, столбец ' + colLetter(col) + ' на «Заказе» освобождён');
+      return true;
+    }
     var empty = [];
     for (var m = 0; m < nRows; m++) empty.push(['']);
     ord.getRange(FIRST_ROW, col, nRows, 1).setValues(empty);
@@ -338,6 +362,21 @@ function syncRow(sh, row) {
     return true;
   }
   return false;
+}
+
+// Первый полностью пустой столбец покупателя: нет имени, заметки, количеств, телефона и кода
+function freeColumn(ord, notes) {
+  var width = LAST_COL - FIRST_COL + 1;
+  var names = ord.getRange(NAME_ROW, FIRST_COL, 1, width).getValues()[0];
+  var qty = ord.getRange(FIRST_ROW, FIRST_COL, LAST_ROW - FIRST_ROW + 1, width).getValues();
+  var pc = ord.getRange(PHONE_ROW, FIRST_COL, 2, width).getValues();
+  var blank = function (x) { return String(x).trim() === ''; };
+  for (var j = 0; j < width; j++) {
+    if (!blank(names[j]) || !blank(notes[j]) || !blank(pc[0][j]) || !blank(pc[1][j])) continue;
+    if (qty.some(function (r) { return !blank(r[j]); })) continue;
+    return FIRST_COL + j;
+  }
+  throw new Error('На листе «Заказ» нет свободного столбца');
 }
 
 // Пометка в «Заметке менеджера»: свою заметку менеджера не затираем, только служебную «→ …»
