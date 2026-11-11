@@ -612,10 +612,12 @@ function notifyCustomers() {
   var s = snapAll();
   var chats = {};
   rows(SH_USERS).forEach(function (u) { if (u[USER_TG_COL - 1]) chats[String(u[0])] = String(u[USER_TG_COL - 1]); });
-  var updates = [];
-  rows(SH_ORDERS).forEach(function (r) {
+  var updates = [], shOrders = sheet(SH_ORDERS);
+  rows(SH_ORDERS).forEach(function (r, i) {
     var num = Number(r[0]);
     if (!num) return;
+    // Статус из таблицы 2027 → столбец K «Заказов» (для «Сводки» и чтобы лист показывал правду)
+    if (book.st[num] && String(r[10]) !== book.st[num]) shOrders.getRange(i + 2, 11).setValue(book.st[num]);
     var c = book.cols.filter(function (x) { return x.siteNum === num; })[0];
     var cur = { st: book.st[num] || 'Новый', paid: c ? c.paid : 0, issued: c ? c.issued : false, total: c ? c.total : Number(r[6]) || 0 };
     var old = s.map[num];
