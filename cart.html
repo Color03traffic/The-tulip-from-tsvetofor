@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=ee5c1708">
+  <link rel="stylesheet" href="style.css?v=a011eb8d">
   <script src="prices.js?v=3326b2bc"></script>
   <script src="common.js?v=33b75004"></script>
 </head>
@@ -83,11 +83,18 @@
       </label>
 
       <div class="send">
-        <button class="btn btn-wa" type="button" onclick="startSend('whatsapp')"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>Отправить в WhatsApp</button>
-        <button class="btn btn-tg" type="button" onclick="startSend('telegram')"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.2 2.9 11.3c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.8-1.4-1.4zM9 14.3l9.4-5.9c.4-.3.8-.1.5.2l-7.8 7-.3 3.3z"/></svg>Отправить в Telegram</button>
-        <button class="btn btn-max" type="button" id="maxBtn" onclick="startSend('max')" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5a9.5 9.5 0 0 0-8.3 14.1L2.5 21.5l5-1.2A9.5 9.5 0 1 0 12 2.5zm-4 13V8.6h1.7l2.3 3.3 2.3-3.3H16v6.9h-1.7v-4.2L12 14.4l-2.3-3.1v4.2z"/></svg>Отправить в MAX</button>
+        <button class="btn" type="button" id="sendBtn" onclick="startSend()">Отправить заказ</button>
       </div>
       <p class="form-note" id="formNote">Без имени и телефона заказ не отправится.</p>
+
+      <div class="ask-us">
+        <span>Есть вопросы? Напишите нам:</span>
+        <div class="round-links">
+          <a class="round-btn btn-wa" href="https://wa.me/79148416115" target="_blank" rel="noopener" aria-label="Написать в WhatsApp" title="WhatsApp" onclick="goal('contact_whatsapp')"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg></a>
+          <a class="round-btn btn-tg" href="https://t.me/tulpan03" target="_blank" rel="noopener" aria-label="Написать в Telegram" title="Telegram" onclick="goal('contact_telegram')"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.2 2.9 11.3c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.8-1.4-1.4zM9 14.3l9.4-5.9c.4-.3.8-.1.5.2l-7.8 7-.3 3.3z"/></svg></a>
+          <a class="round-btn btn-max" href="https://max.ru/u/f9LHodD0cOJhlWPM-F5Y0uNLTh9gBpeIXjgkH4iijE8xP8P8b7anbxYKv4s" target="_blank" rel="noopener" aria-label="Написать в MAX" title="MAX" onclick="goal('contact_max')"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5a9.5 9.5 0 0 0-8.3 14.1L2.5 21.5l5-1.2A9.5 9.5 0 1 0 12 2.5zm-4 13V8.6h1.7l2.3 3.3 2.3-3.3H16v6.9h-1.7v-4.2L12 14.4l-2.3-3.1v4.2z"/></svg></a>
+        </div>
+      </div>
     </aside>
   </div>
 </main>
@@ -116,31 +123,24 @@
       </div>
     </div>
     <div id="modalStep2" hidden>
-      <div class="modal-title" id="step2Title">Заказ готов к отправке</div>
+      <div class="modal-ok" aria-hidden="true">✓</div>
+      <div class="modal-title" id="step2Title">Ваш заказ отправлен</div>
       <p class="modal-text">
-        Нажмите кнопку ниже — откроется чат с нами в <span id="step2App">Telegram</span>, а текст заказа скопируется.<br>
-        Если поле сообщения пустое, нажмите в нём <strong>«Вставить»</strong> и отправьте.
+        Заказ <strong>ждёт подтверждения</strong>. Как только мы его примем, статус сменится на <strong>«Принят»</strong>.<br><br>
+        Следите за статусом и оплатой в личном кабинете.
       </p>
       <div class="modal-actions">
-        <button class="btn btn-tg btn-small" type="button" id="openChatBtn" onclick="openChat()">Открыть Telegram</button>
+        <a class="btn btn-small" href="account.html">Перейти в личный кабинет</a>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  const WHATSAPP_PHONE = '79148416115';
-  const TELEGRAM_USER  = 'tulpan03';
-  // Ссылка на личный профиль в MAX (Настройки → Пригласить друзей → Скопировать ссылку).
-  // Пока пусто — кнопка «Отправить в MAX» скрыта.
-  const MAX_PROFILE_URL = 'https://max.ru/u/f9LHodD0cOJhlWPM-F5Y0uNLTh9gBpeIXjgkH4iijE8xP8P8b7anbxYKv4s';
-  if (MAX_PROFILE_URL) document.getElementById('maxBtn').hidden = false;
   const PHOTOS = {'Жёлтый': 'yellow.jpg', 'Белый': 'white.jpg', 'Кремовый': 'cream.jpg', 'Розовый': 'pink.jpg', 'Нежно-розовый': 'softpink.jpg', 'Красный': 'red.jpg', 'Оранжевый': 'orange-own.jpg', 'Красно-жёлтый': 'redyellow.jpg', 'Красно-белый': 'redwhite.jpg', 'Бело-сиреневый': 'whiteviolet.jpg', 'Бело-розовый': 'whitepink.jpg', 'Фиолетовый': 'violet.jpg', 'Махровый розовый': 'mahrovy-rozovyj.jpg', 'Махровый фиолетовый': 'mahrovy-violet.jpg', 'Микс': 'mix-thumb'};
 
   // Убираем из корзины сорта, которых больше нет в каталоге
   let cart = loadCart().filter(i => PHOTOS[i.name]);
-  let pendingChannel = null;
-  let pendingText = '';
   let pendingClient = null;
   const session = apiEnabled() ? getSession() : null;
 
@@ -256,110 +256,48 @@
     return {name, phone, comment};
   }
 
-  function buildMessage(client, number){
-    const totalQty = cartTotalQty(cart);
-    let total = 0;
-    const lines = [(number ? 'Заказ №' + number : 'Заказ') + ' с сайта Тюльпан03', '-----------------',
-                   'Имя: ' + client.name, 'Телефон: ' + client.phone, '-----------------'];
-    cart.forEach(i => {
-      const price = priceFor(i.type, totalQty);
-      const sum = price * i.qty;
-      total += sum;
-      lines.push(i.name + ': ' + i.qty + ' шт × ' + price + ' ₽ = ' + rub(sum));
-    });
-    lines.push('-----------------');
-    lines.push('Всего: ' + totalQty + ' шт, ' + rub(total));
-    if (client.comment) lines.push('Комментарий: ' + client.comment);
-    return lines.join('\n');
-  }
-
-  function startSend(channel){
+  function startSend(){
     const client = validateClient();
     if (!client) return;
-    pendingChannel = channel;
+    if (!apiEnabled()){ toast('Отправка заказов временно недоступна — напишите нам в мессенджер'); return; }
     pendingClient = client;
-    pendingText = buildMessage(client);
     document.getElementById('modalStep1').hidden = false;
     document.getElementById('modalStep2').hidden = true;
     document.getElementById('warningModal').classList.add('show');
   }
-  // Сохраняем заказ в таблицу (если сервер подключён), потом открываем мессенджер.
-  // Если сервер недоступен — заказ всё равно уходит в мессенджер, чтобы не потерять покупателя.
-  async function saveOrder(){
-    if (!apiEnabled()) return null;
-    const res = await api('order', {
-      token: session ? session.token : undefined,
-      name: pendingClient.name, phone: pendingClient.phone, comment: pendingClient.comment,
-      consent: !session, channel: pendingChannel,
-      items: cart.map(i => ({name: i.name, type: i.type, qty: i.qty}))
-    }, 12000);
-    if (res.ok) return res.number;
-    if (res.code === 'auth'){ setSession(null); }
-    if (res.code !== 'network' && res.code !== 'auth' && !/сервер/i.test(res.error || '')){
-      throw new Error(res.error || 'Не удалось оформить заказ');
-    }
-    return null;
-  }
 
+  // Заказ сохраняется в таблицу; менеджеру приходит уведомление в Telegram.
+  // Статус «Новый» (ждёт подтверждения) покупатель видит в личном кабинете.
   async function confirmSend(){
     const btn = document.getElementById('confirmBtn');
     btn.disabled = true;
-    btn.textContent = 'Оформляем…';
-    let number = null;
-    try {
-      number = await saveOrder();
-    } catch(e){
-      btn.disabled = false; btn.textContent = 'Понятно, отправить';
-      closeModal(); toast(e.message);
-      return;
-    }
-    pendingText = buildMessage(pendingClient, number);
-    if (number){ cart = []; updateCart(); }
+    btn.textContent = 'Отправляем…';
+    const res = await api('order', {
+      token: session ? session.token : undefined,
+      name: pendingClient.name, phone: pendingClient.phone, comment: pendingClient.comment,
+      consent: !session, channel: 'site',
+      items: cart.map(i => ({name: i.name, type: i.type, qty: i.qty}))
+    }, 20000);
     btn.disabled = false; btn.textContent = 'Понятно, отправить';
-
-    if (pendingChannel === 'whatsapp'){
-      goal('order_whatsapp');
+    if (!res.ok){
       closeModal();
-      location.href = 'https://wa.me/' + WHATSAPP_PHONE + '?text=' + encodeURIComponent(pendingText);
+      if (res.code === 'auth' || (session && /согласие/i.test(res.error || ''))){
+        setSession(null);
+        toast('Войдите в кабинет ещё раз — корзина сохранится');
+        setTimeout(() => location.href = 'account.html?next=cart', 1500);
+        return;
+      }
+      toast(res.code === 'network'
+        ? 'Не удалось отправить заказ — проверьте интернет и попробуйте ещё раз'
+        : (res.error || 'Не удалось отправить заказ'));
       return;
     }
-    goal(pendingChannel === 'max' ? 'order_max' : 'order_telegram');
-    const app = pendingChannel === 'max' ? 'MAX' : 'Telegram';
-    document.getElementById('step2App').textContent = app;
-    const ob = document.getElementById('openChatBtn');
-    ob.textContent = 'Открыть ' + app;
-    ob.className = 'btn btn-small ' + (pendingChannel === 'max' ? 'btn-max' : 'btn-tg');
-    if (number) document.getElementById('step2Title').textContent = 'Заказ №' + number + ' принят';
+    goal('order_site');
+    cart = []; updateCart();
+    document.getElementById('clientComment').value = '';
+    document.getElementById('step2Title').textContent = 'Ваш заказ №' + res.number + ' отправлен';
     document.getElementById('modalStep1').hidden = true;
     document.getElementById('modalStep2').hidden = false;
-  }
-  function openChat(){
-    if (pendingChannel === 'max'){
-      // MAX не умеет подставлять текст в личный чат — заказ уже скопирован, покупатель вставит его сам
-      copyText(pendingText);
-      closeModal();
-      location.href = MAX_PROFILE_URL;
-      return;
-    }
-    openTelegram();
-  }
-  function openTelegram(){
-    // Telegram не всегда подставляет текст из ссылки — копируем заказ в буфер (по нажатию, иначе браузер не даст)
-    copyText(pendingText);
-    closeModal();
-    location.href = 'https://t.me/' + TELEGRAM_USER + '?text=' + encodeURIComponent(pendingText);
-  }
-  function copyText(text){
-    if (navigator.clipboard && window.isSecureContext){
-      navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
-    } else { fallbackCopy(text); }
-  }
-  function fallbackCopy(text){
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); } catch(e){}
-    ta.remove();
   }
   // Крестик, «Отмена», клик по фону и Esc — просто закрывают окно
   function closeModal(){ document.getElementById('warningModal').classList.remove('show'); }
