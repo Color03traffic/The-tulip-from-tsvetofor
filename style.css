@@ -426,6 +426,11 @@ body.has-cart-bar{ padding-bottom:96px; }
 .form-note{ font-size:13px; color:var(--ink-soft); margin:10px 0 0; text-align:center; }
 .add-btn.in-cart{ background:var(--leaf); }
 .add-btn.in-cart:hover{ background:#178a3f; }
+.tg-box{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:16px; }
+.tg-box.on{ background:#EAF7EF; }
+.tg-text{ display:flex; flex-direction:column; gap:4px; }
+.tg-text span{ font-size:14px; color:var(--ink-soft); }
+.cancel-btn{ color:var(--pink-deep); margin-left:auto; }
 .send #sendBtn{ min-height:58px; font-size:17px; }
 
 /* Связаться с нами — маленькие круглые кнопки мессенджеров в корзине */

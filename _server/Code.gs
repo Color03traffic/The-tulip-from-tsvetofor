@@ -8,7 +8,9 @@
  *    2. приём заказов с сайта в таблицу (листы «Заказы» и «Позиции»);
  *    3. личный кабинет: история заказов, оплачено/осталось и выдача (из таблицы 2027),
  *       заказы из магазина — после ввода кода из накладной;
- *    4. уведомления о новом заказе в Telegram и MAX.
+ *    4. уведомления о новом заказе в Telegram и MAX;
+ *    5. отмена заказа покупателем (пока не подтверждён), лист «Покупатели до 100 шт»;
+ *    6. уведомления покупателям в Telegram (заказ принят / оплата / выдан) — через того же бота.
  *
  *  Ключи ботов НЕ пишутся в этот код. Они хранятся в
  *  «Настройки проекта → Свойства скрипта»:
@@ -57,6 +59,10 @@ var BOOK_COLOR_ROWS = {
 var USER_VERIFIED_COL = 9; // I «Код из магазина подтверждён» на листе «Покупатели»
 
 var SH_ORDERS = 'Заказы', SH_ITEMS = 'Позиции', SH_USERS = 'Покупатели', SH_SESSIONS = 'Сессии';
+var SH_LEADS = 'Покупатели до 100 шт', SH_NOTIFY = 'Уведомления';
+var MIN_ORDER = 100;          // минимальный предзаказ, шт
+var USER_TG_COL = 10;         // J «Telegram (chat_id)» на листе «Покупатели»
+var SITE_URL = 'https://xn--03-6kc7blkt5fq.xn--p1ai/account.html';
 
 /* =================== Точка входа =================== */
 
@@ -67,7 +73,8 @@ function doPost(e) {
     var handlers = {
       register: apiRegister, login: apiLogin, me: apiMe,
       logout: apiLogout, orders: apiOrders, order: apiOrder,
-      claim: apiClaim, link: apiLink
+      claim: apiClaim, link: apiLink,
+      cancel: apiCancel, lead: apiLead, tgLink: apiTgLink, tgCheck: apiTgCheck
     };
     var fn = handlers[body.action];
     res = fn ? fn(body) : { ok: false, error: 'Неизвестное действие' };
@@ -181,7 +188,7 @@ function apiOrders(b) {
     });
   }
   list.sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
-  return { ok: true, orders: list, verified: !!user.verified };
+  return { ok: true, orders: list, verified: !!user.verified, tg: !!user.tg };
 }
 
 // Вход по коду из накладной: покупатель из магазина сам создаёт кабинет (или задаёт новый пароль)
@@ -274,7 +281,11 @@ function book2027(fresh) {
 }
 
 // Запускается по расписанию (Триггеры → warmBook2027 → по времени, каждые 5 минут)
-function warmBook2027() { book2027(true); }
+function warmBook2027() {
+  book2027(true);
+  try { tgPoll(); } catch (e) { console.warn('tgPoll: ' + e); }
+  try { notifyCustomers(); } catch (e) { console.warn('notifyCustomers: ' + e); }
+}
 
 function bookColumns(fresh) { return book2027(fresh).cols; }
 function statusMap2027() { return book2027().st; }
@@ -363,6 +374,7 @@ function apiOrder(b) {
   var tiers = loadPrices();
   var totalQty = names.reduce(function (s, n) { return s + merged[n]; }, 0);
   if (totalQty > 200000) return fail('Слишком большое количество — свяжитесь с нами напрямую');
+  if (totalQty < MIN_ORDER) return fail('Минимальный предзаказ — ' + MIN_ORDER + ' шт');
 
   var lines = names.map(function (n) {
     var price = priceFor(tiers, PRODUCTS[n], totalQty);
@@ -384,11 +396,255 @@ function apiOrder(b) {
     var shI = sheet(SH_ITEMS);
     shI.getRange(shI.getLastRow() + 1, 1, itemRows.length, 7).setValues(itemRows);
     if (user) updateUserStats(phone);
+    try { snapSet(num, { st: 'Новый', paid: 0, issued: false }); } catch (e) { console.warn(e); }
     return num;
   });
 
   notifyOwner(number, name, phone, lines, totalQty, total, comment, channel, !!user);
   return { ok: true, number: number, total: total, qty: totalQty };
+}
+
+/* =================== Отмена заказа покупателем =================== */
+
+// Покупатель отменяет свой заказ, пока менеджер его не подтвердил.
+// Статус «Отменён» ставится в таблице 2027 (лист «Заказы с сайта», K) и в таблице сайта (K).
+function apiCancel(b) {
+  var user = userByToken(b.token);
+  if (!user) return fail('Войдите снова', 'auth');
+  var num = Number(b.number);
+  var mine = rows(SH_ORDERS).map(function (r, i) { return { r: r, row: i + 2 }; })
+    .filter(function (x) { return Number(x.r[0]) === num && String(x.r[3]) === user.phone; })[0];
+  if (!mine) return fail('Заказ не найден');
+
+  var res = withLock(function () {
+    var ss = SpreadsheetApp.openById(STATUS_BOOK_ID);
+    var sh = ss.getSheetByName(STATUS_SHEET);
+    var n = sh.getLastRow() - 1;
+    var ids = n > 0 ? sh.getRange(2, 1, n, 1).getValues() : [];
+    var at = -1;
+    for (var i = 0; i < ids.length; i++) if (Number(ids[i][0]) === num) { at = i + 2; break; }
+    if (at < 0) return fail('Заказ ещё не дошёл до менеджера — попробуйте через минуту');
+    var cur = String(sh.getRange(at, 11).getValue() || '').trim();
+    if (cur === 'Отменён') return { ok: true };
+    if (cur && cur !== 'Новый') return fail('Заказ уже принят — чтобы изменить или отменить его, напишите нам');
+    sh.getRange(at, 11, 1, 2).setValues([['Отменён', 'Отменён покупателем на сайте']]);
+    sheet(SH_ORDERS).getRange(mine.row, 11).setValue('Отменён');
+    return { ok: true, done: true };
+  });
+  if (!res.ok || !res.done) return res;
+
+  try { snapSet(num, { st: 'Отменён', paid: 0, issued: false }); } catch (e) {}
+  CacheService.getScriptCache().remove(BOOK_CACHE_KEY);
+  _book = null;
+  var p = PropertiesService.getScriptProperties();
+  sendTelegram(p.getProperty('TELEGRAM_TOKEN'), p.getProperty('TELEGRAM_CHAT_ID'),
+    '❌ <b>Покупатель отменил заказ №' + num + '</b>\n👤 ' + esc(user.name) + '\n📞 ' + esc(user.phone) +
+    '\n' + fmt(Number(mine.r[5]) || 0) + ' шт, ' + fmt(Number(mine.r[6]) || 0) + ' ₽');
+  return { ok: true };
+}
+
+/* =================== Покупатели до 100 шт =================== */
+
+// Покупатель нажал «Отправить заказ», но в корзине меньше 100 шт — заказ не уходит,
+// а покупатель попадает на лист «Покупатели до 100 шт» (одна строка на телефон).
+// wantContact — нажал «Хочу по наличию — свяжитесь со мной»: отметка + сообщение менеджеру.
+function apiLead(b) {
+  var user = userByToken(b.token);
+  if (!user) return fail('Войдите снова', 'auth');
+  var tiers = loadPrices();
+  var merged = {};
+  (b.items || []).forEach(function (it) {
+    var nm = String(it.name || ''), qty = Math.floor(Number(it.qty));
+    if (PRODUCTS[nm] && qty > 0) merged[nm] = (merged[nm] || 0) + Math.ceil(qty / 20) * 20;
+  });
+  var names = Object.keys(merged);
+  var totalQty = names.reduce(function (s, n) { return s + merged[n]; }, 0);
+  var total = names.reduce(function (s, n) { return s + priceFor(tiers, PRODUCTS[n], totalQty) * merged[n]; }, 0);
+  var summary = names.map(function (n) { return n + ' — ' + merged[n] + ' шт'; }).join('\n');
+  var want = !!b.wantContact;
+  var now = new Date();
+  var comment = clean(b.comment, 500);
+
+  var first = withLock(function () {
+    var sh = leadsSheet();
+    var all = rows(SH_LEADS);
+    for (var i = 0; i < all.length; i++) {
+      if (String(all[i][0]) !== user.phone) continue;
+      var r = i + 2;
+      var wasWant = !!all[i][8];
+      sh.getRange(r, 2, 1, 7).setValues([[user.name, all[i][2], now, summary, totalQty, total,
+                                           want ? all[i][7] : (Number(all[i][7]) || 0) + 1]]);
+      if (want) sh.getRange(r, 9, 1, 2).setValues([[now, comment]]);
+      return want && !wasWant ? 'want' : want ? 'again' : '';
+    }
+    sh.appendRow([asText(user.phone), user.name, now, now, summary, totalQty, total, 1, want ? now : '', want ? comment : '']);
+    return want ? 'want' : '';
+  });
+
+  if (first) {
+    var p = PropertiesService.getScriptProperties();
+    sendTelegram(p.getProperty('TELEGRAM_TOKEN'), p.getProperty('TELEGRAM_CHAT_ID'),
+      '📞 <b>Просит связаться (меньше ' + MIN_ORDER + ' шт, по наличию)</b>\n👤 ' + esc(user.name) + '\n📞 ' + esc(user.phone) +
+      '\n\n' + esc(summary) + '\n\n<b>Всего: ' + totalQty + ' шт, ' + fmt(total) + ' ₽</b>' + (comment ? '\n💬 ' + esc(comment) : ''));
+  }
+  return { ok: true };
+}
+
+function leadsSheet() {
+  var ss = SpreadsheetApp.getActive();
+  var sh = ss.getSheetByName(SH_LEADS);
+  if (sh) return sh;
+  sh = ss.insertSheet(SH_LEADS);
+  sh.getRange(1, 1, 1, 10).setValues([['Телефон', 'ФИО', 'Первый раз', 'Последний раз', 'Что выбрал',
+    'Всего, шт', 'Сумма, ₽', 'Попыток', 'Просит связаться', 'Комментарий']]).setFontWeight('bold');
+  sh.setFrozenRows(1);
+  sh.getRange('A:A').setNumberFormat('@');
+  sh.getRange('C:D').setNumberFormat('dd.MM.yyyy H:mm');
+  sh.getRange('I:I').setNumberFormat('dd.MM.yyyy H:mm');
+  sh.getRange('G:G').setNumberFormat('#,##0 ₽');
+  sh.getRange('E:E').setWrap(true);
+  sh.setColumnWidth(5, 260);
+  return sh;
+}
+
+/* =================== Уведомления покупателям в Telegram =================== */
+
+// Кабинет → «Получать уведомления в Telegram»: даём ссылку t.me/<бот>?start=<код>.
+// Покупатель нажимает «Старт» — бот получает код, и мы запоминаем его chat_id (лист «Покупатели», J).
+function apiTgLink(b) {
+  var user = userByToken(b.token);
+  if (!user) return fail('Войдите снова', 'auth');
+  var bot = tgBotName();
+  if (!bot) return fail('Уведомления временно недоступны');
+  var code = randomHex(8);
+  CacheService.getScriptCache().put('tglink_' + code, user.phone, 3600);
+  return { ok: true, url: 'https://t.me/' + bot + '?start=' + code };
+}
+
+// Кабинет спрашивает, подключился ли покупатель (после нажатия «Старт» в боте)
+function apiTgCheck(b) {
+  var user = userByToken(b.token);
+  if (!user) return fail('Войдите снова', 'auth');
+  if (!user.tg) { try { tgPoll(); } catch (e) { console.warn(e); } }
+  var u = findUserRow(user.phone);
+  return { ok: true, tg: !!(u && u.values[USER_TG_COL - 1]) };
+}
+
+function tgBotName() {
+  var p = PropertiesService.getScriptProperties();
+  var name = p.getProperty('TELEGRAM_BOT_NAME');
+  if (name) return name;
+  var token = p.getProperty('TELEGRAM_TOKEN');
+  if (!token) return '';
+  try {
+    var r = JSON.parse(UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/getMe', { muteHttpExceptions: true }).getContentText());
+    name = r.ok ? r.result.username : '';
+    if (name) p.setProperty('TELEGRAM_BOT_NAME', name);
+  } catch (e) { console.warn('getMe: ' + e); }
+  return name || '';
+}
+
+// Читаем новые сообщения боту (getUpdates). Нужны только «/start <код>» от покупателей.
+function tgPoll() {
+  var p = PropertiesService.getScriptProperties();
+  var token = p.getProperty('TELEGRAM_TOKEN');
+  if (!token) return;
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(5000)) return;
+  try {
+    var offset = Number(p.getProperty('TG_OFFSET') || 0);
+    var r = JSON.parse(UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/getUpdates?timeout=0&offset=' + offset +
+      '&allowed_updates=' + encodeURIComponent('["message"]'), { muteHttpExceptions: true }).getContentText());
+    if (!r.ok) { console.warn('getUpdates: ' + JSON.stringify(r)); return; }
+    var cache = CacheService.getScriptCache();
+    r.result.forEach(function (u) {
+      offset = Math.max(offset, u.update_id + 1);
+      var m = u.message;
+      if (!m || !m.chat || m.chat.type !== 'private') return;
+      var mt = String(m.text || '').match(/^\/start\s+([0-9a-f]{16})$/);
+      if (!mt) return;
+      var phone = cache.get('tglink_' + mt[1]);
+      if (!phone) {
+        sendTelegram(token, m.chat.id, 'Ссылка устарела. Откройте личный кабинет на сайте и нажмите «Получать уведомления в Telegram» ещё раз.');
+        return;
+      }
+      cache.remove('tglink_' + mt[1]);
+      var found = findUserRow(phone);
+      if (!found) return;
+      sheet(SH_USERS).getRange(found.row, USER_TG_COL).setValue(String(m.chat.id));
+      sendTelegram(token, m.chat.id, '🌷 Готово! Сюда будут приходить уведомления о ваших заказах Тюльпан03: ' +
+        'когда заказ примут, когда поступит оплата и когда заказ будет выдан.');
+    });
+    p.setProperty('TG_OFFSET', String(offset));
+  } finally { lock.releaseLock(); }
+}
+
+// Лист «Уведомления»: последнее, о чём покупатель уже знает (статус, оплачено, выдан).
+// Раз в 5 минут (warmBook2027) сравниваем с таблицей 2027 и пишем покупателю, что изменилось.
+function snapSheet() {
+  var ss = SpreadsheetApp.getActive();
+  var sh = ss.getSheetByName(SH_NOTIFY);
+  if (sh) return { sh: sh, fresh: false };
+  sh = ss.insertSheet(SH_NOTIFY);
+  sh.getRange(1, 1, 1, 4).setValues([['№ заказа', 'Статус', 'Оплачено', 'Выдан']]).setFontWeight('bold');
+  sh.hideSheet();
+  return { sh: sh, fresh: true };
+}
+function snapAll() {
+  var o = snapSheet(), map = {};
+  var n = o.sh.getLastRow() - 1;
+  if (n > 0) o.sh.getRange(2, 1, n, 4).getValues().forEach(function (r, i) {
+    map[Number(r[0])] = { row: i + 2, st: String(r[1]), paid: Number(r[2]) || 0, issued: r[3] === true };
+  });
+  return { sh: o.sh, fresh: o.fresh, map: map };
+}
+function snapSet(num, v) {
+  var s = snapAll();
+  var row = s.map[num] ? s.map[num].row : s.sh.getLastRow() + 1;
+  s.sh.getRange(row, 1, 1, 4).setValues([[num, v.st, v.paid, !!v.issued]]);
+}
+
+function notifyCustomers() {
+  var book = book2027();
+  if (!book.st || !book.cols) return;
+  var p = PropertiesService.getScriptProperties();
+  var token = p.getProperty('TELEGRAM_TOKEN');
+  var s = snapAll();
+  var chats = {};
+  rows(SH_USERS).forEach(function (u) { if (u[USER_TG_COL - 1]) chats[String(u[0])] = String(u[USER_TG_COL - 1]); });
+  var updates = [];
+  rows(SH_ORDERS).forEach(function (r) {
+    var num = Number(r[0]);
+    if (!num) return;
+    var c = book.cols.filter(function (x) { return x.siteNum === num; })[0];
+    var cur = { st: book.st[num] || 'Новый', paid: c ? c.paid : 0, issued: c ? c.issued : false, total: c ? c.total : Number(r[6]) || 0 };
+    var old = s.map[num];
+    if (old && old.st === cur.st && old.paid === cur.paid && old.issued === cur.issued) return;
+    updates.push([num, cur.st, cur.paid, cur.issued, old ? old.row : 0]);
+    var chat = chats[String(r[3])];
+    if (!old || s.fresh || !chat || !token) return; // первый запуск — только запоминаем, ничего не шлём
+    var msgs = [];
+    if (old.st !== cur.st && cur.st === 'Подтверждён') {
+      msgs.push('✅ <b>Заказ №' + num + ' принят!</b>\nСумма: ' + fmt(cur.total) + ' ₽.\n' +
+        'Предоплата 50%, остальное — при получении. Самовывоз: Улан-Удэ, ул. Тобольская, 167А.');
+    }
+    if (old.st !== cur.st && cur.st === 'Отменён') {
+      msgs.push('Заказ №' + num + ' отменён. Если это ошибка — напишите нам в Telegram @tulpan03.');
+    }
+    if (cur.paid > old.paid && cur.st !== 'Отменён') {
+      var left = Math.max(0, cur.total - cur.paid);
+      msgs.push('💳 <b>Оплата по заказу №' + num + ' получена.</b>\nОплачено: ' + fmt(cur.paid) + ' ₽' +
+        (left ? ', осталось: ' + fmt(left) + ' ₽.' : ' — заказ оплачен полностью.'));
+    }
+    if (cur.issued && !old.issued) {
+      msgs.push('🌷 <b>Заказ №' + num + ' выдан.</b> Спасибо, что выбрали Тюльпан03!');
+    }
+    if (msgs.length) sendTelegram(token, chat, msgs.join('\n\n') + '\n\nВсе заказы — в личном кабинете: ' + SITE_URL);
+  });
+  updates.forEach(function (u) {
+    var row = u[4] || s.sh.getLastRow() + 1;
+    s.sh.getRange(row, 1, 1, 4).setValues([[u[0], u[1], u[2], u[3]]]);
+  });
 }
 
 /* =================== Уведомления =================== */
@@ -545,7 +801,8 @@ function userByToken(token) {
   if (!u) return null;
   // Отмечаем использование не чаще раза в сутки, чтобы не писать в таблицу на каждый запрос
   if (Date.now() - lastUsed.getTime() > 864e5) sheet(SH_SESSIONS).getRange(s.row, 4).setValue(new Date());
-  return { phone: String(u.values[0]), name: String(u.values[1]), verified: !!u.values[USER_VERIFIED_COL - 1] };
+  return { phone: String(u.values[0]), name: String(u.values[1]), verified: !!u.values[USER_VERIFIED_COL - 1],
+           tg: String(u.values[USER_TG_COL - 1] || ''), row: u.row };
 }
 
 function loadPrices() {

@@ -514,11 +514,22 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
       <div class="modal-title" id="modalTitle1">Обратите внимание</div>
       <p class="modal-text">
         Минимальный предзаказ — от <strong>100 шт</strong>, не все цвета могут быть в наличии.<br><br>
-        Если в заказе меньше 100 шт, продажа идёт <strong>по наличию</strong>.
+        В вашем заказе <strong id="okQty"></strong> на сумму <strong id="okSum"></strong>. После отправки заказ ждёт подтверждения менеджера.
       </p>
       <div class="modal-actions">
         <button class="btn btn-ghost btn-small" type="button" onclick="closeModal()">Отмена</button>
         <button class="btn btn-small" type="button" id="confirmBtn" onclick="confirmSend()">Понятно, отправить</button>
+      </div>
+    </div>
+    <div id="modalSmall" hidden>
+      <div class="modal-title">Минимальный предзаказ — 100 шт</div>
+      <p class="modal-text" id="smallText">
+        Сейчас в корзине <strong id="smallQty"></strong> — добавьте ещё <strong id="smallNeed"></strong> любых сортов, и заказ можно будет отправить.<br><br>
+        Нужно меньше? Продаём <strong>по наличию</strong> — оставьте заявку, мы свяжемся с вами.
+      </p>
+      <div class="modal-actions" id="smallActions">
+        <button class="btn btn-ghost btn-small" type="button" id="wantBtn" onclick="wantContact()">Хочу по наличию — свяжитесь со мной</button>
+        <a class="btn btn-small" href="catalog.html">Добавить сорта</a>
       </div>
     </div>
     <div id="modalStep2" hidden>
@@ -655,14 +666,47 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
     return {{name, phone, comment}};
   }}
 
+  const MIN_ORDER = 100;
+  const SMALL_HTML = [document.getElementById('smallText').innerHTML, document.getElementById('smallActions').innerHTML];
+  function cartItems(){{ return cart.map(i => ({{name: i.name, type: i.type, qty: i.qty}})); }}
+
   function startSend(){{
     const client = validateClient();
     if (!client) return;
     if (!apiEnabled()){{ toast('Отправка заказов временно недоступна — напишите нам в мессенджер'); return; }}
     pendingClient = client;
-    document.getElementById('modalStep1').hidden = false;
+    const qty = cartTotalQty(cart);
     document.getElementById('modalStep2').hidden = true;
+    if (qty < MIN_ORDER){{
+      // Меньше 100 шт — заказ не отправляем, покупатель попадает в базу «Покупатели до 100 шт»
+      document.getElementById('modalStep1').hidden = true;
+      document.getElementById('modalSmall').hidden = false;
+      document.getElementById('smallText').innerHTML = SMALL_HTML[0];
+      document.getElementById('smallActions').innerHTML = SMALL_HTML[1];
+      document.getElementById('smallQty').textContent = qty + ' шт';
+      document.getElementById('smallNeed').textContent = (MIN_ORDER - qty) + ' шт';
+      api('lead', {{ token: session.token, items: cartItems(), comment: client.comment }});
+      goal('lead_small');
+    }} else {{
+      document.getElementById('modalSmall').hidden = true;
+      document.getElementById('modalStep1').hidden = false;
+      const total = cart.reduce((s, i) => s + priceFor(i.type, qty) * i.qty, 0);
+      document.getElementById('okQty').textContent = qty + ' шт';
+      document.getElementById('okSum').textContent = rub(total);
+    }}
     document.getElementById('warningModal').classList.add('show');
+  }}
+
+  async function wantContact(){{
+    const btn = document.getElementById('wantBtn');
+    btn.disabled = true; btn.textContent = 'Отправляем…';
+    const res = await api('lead', {{ token: session.token, items: cartItems(), comment: pendingClient.comment, wantContact: true }});
+    btn.disabled = false; btn.textContent = 'Хочу по наличию — свяжитесь со мной';
+    if (!res.ok){{ toast(res.error || 'Не получилось — попробуйте ещё раз'); return; }}
+    goal('lead_contact');
+    document.getElementById('smallText').textContent = 'Спасибо! Заявка у менеджера — мы свяжемся с вами по телефону '
+      + session.phone + ' и расскажем, что есть в наличии.';
+    document.getElementById('smallActions').innerHTML = '<button class="btn btn-small" type="button" onclick="closeModal()">Хорошо</button>';
   }}
 
   // Заказ сохраняется в таблицу; менеджеру приходит уведомление в Telegram.
@@ -675,7 +719,7 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
       token: session ? session.token : undefined,
       name: pendingClient.name, phone: pendingClient.phone, comment: pendingClient.comment,
       consent: !session, channel: 'site',
-      items: cart.map(i => ({{name: i.name, type: i.type, qty: i.qty}}))
+      items: cartItems()
     }}, 20000);
     btn.disabled = false; btn.textContent = 'Понятно, отправить';
     if (!res.ok){{
@@ -861,6 +905,10 @@ account = head('Личный кабинет — Тюльпан03', None, 'accoun
         <button class="btn btn-ghost btn-small" type="button" id="logoutBtn">Выйти</button>
       </div>
     </div>
+    <div class="panel tg-box" id="tgBox" hidden>
+      <div class="tg-text" id="tgText"><b>Уведомления в Telegram</b><span>Напишем, когда заказ примут, когда поступит оплата и когда заказ будет выдан.</span></div>
+      <button class="btn btn-tg btn-small" type="button" id="tgBtn">{ICON['tg']}Подключить</button>
+    </div>
     <h2 class="acc-h2">Мои заказы</h2>
     <p class="muted orders-note" id="ordersNote" hidden></p>
     <div id="orders" aria-live="polite"><p class="muted">Загружаем…</p></div>
@@ -1002,10 +1050,22 @@ account = head('Личный кабинет — Тюльпан03', None, 'accoun
         + '<ul class="order-items">' + items + '</ul>'
         + (o.comment ? '<p class="muted order-comment">' + esc(o.comment.replace(/^\\'/, '')) + '</p>' : '')
         + '<div class="order-bottom"><span class="num">' + rub(o.total) + '</span><span class="muted">' + o.qty + ' шт</span>'
+        + (o.status === 'Новый' && !o.shop ? '<button class="link-btn cancel-btn" type="button" data-cancel="' + o.number + '">Отменить заказ</button>' : '')
         + '<button class="btn btn-ghost btn-small" type="button" data-repeat="' + idx + '">Повторить заказ</button></div>'
         + payLine(o)
         + '</article>';
     }}).join('');
+    document.querySelectorAll('[data-cancel]').forEach(b => b.onclick = async () => {{
+      const num = b.dataset.cancel;
+      if (!confirm('Отменить заказ №' + num + '? Отменить отмену будет нельзя — только оформить заново.')) return;
+      const s = getSession();
+      b.disabled = true; b.textContent = 'Отменяем…';
+      const res = await api('cancel', {{ token: s.token, number: Number(num) }}, 20000);
+      if (!res.ok){{ b.disabled = false; b.textContent = 'Отменить заказ'; toast(res.error || 'Не получилось отменить'); return; }}
+      toast('Заказ №' + num + ' отменён');
+      dropOrdersCache(s.phone);
+      openCabinet();
+    }});
     document.querySelectorAll('[data-repeat]').forEach(b => b.onclick = () => {{
       const o = orders[Number(b.dataset.repeat)];
       const cart = loadCart();
@@ -1042,9 +1102,33 @@ account = head('Личный кабинет — Тюльпан03', None, 'accoun
     }}
     note.hidden = true;
     renderOrders(res.orders);
+    renderTg(res.tg);
     $('linkForm').hidden = !!res.verified;
     writeOrdersCache(s.phone, res.orders, res.verified);
   }}
+
+  // Уведомления в Telegram: ссылка на бота с одноразовым кодом, потом ждём «Старт»
+  function renderTg(on){{
+    $('tgBox').hidden = false;
+    $('tgBox').classList.toggle('on', !!on);
+    $('tgBtn').hidden = !!on;
+    if (on) $('tgText').innerHTML = '<b>Уведомления в Telegram включены ✓</b><span>Сообщения о заказах будут приходить от нашего бота.</span>';
+  }}
+  $('tgBtn').onclick = async () => {{
+    const s = getSession();
+    const w = window.open('', '_blank');
+    $('tgBtn').disabled = true;
+    const res = await api('tgLink', {{ token: s.token }});
+    $('tgBtn').disabled = false;
+    if (!res.ok){{ if (w) w.close(); toast(res.error || 'Не получилось — попробуйте ещё раз'); return; }}
+    if (w) w.location = res.url; else location.href = res.url;
+    $('tgText').innerHTML = '<b>Нажмите «Старт» в Telegram</b><span>Как только нажмёте — здесь появится «Уведомления включены».</span>';
+    for (let i = 0; i < 30; i++){{
+      await new Promise(r => setTimeout(r, 4000));
+      const c = await api('tgCheck', {{ token: s.token }});
+      if (c.ok && c.tg){{ renderTg(true); goal('tg_connected'); return; }}
+    }}
+  }};
 
   // Последние заказы — в памяти этого браузера (по телефону), чтобы кабинет открывался сразу
   const ORDERS_CACHE = 'tulpan_orders_';
