@@ -271,10 +271,10 @@ for i,(t,g,name,id_,img,alt,w,h) in enumerate(cards):
           <div class="card-actions">
             <div class="stepper">
               <button type="button" aria-label="Меньше" onclick="changeQty('qty-{id_}',-QTY_STEP)">−</button>
-              <input id="qty-{id_}" value="20" inputmode="numeric" aria-label="{name}: количество, шт" onblur="handleManual('qty-{id_}')">
+              <input id="qty-{id_}" value="0" inputmode="numeric" aria-label="{name}: количество, шт" onblur="handleManual('qty-{id_}')" oninput="refreshCards()">
               <button type="button" aria-label="Больше" onclick="changeQty('qty-{id_}',QTY_STEP)">+</button>
             </div>
-            <button class="btn" type="button" onclick="addToCart('{t}','{name}','qty-{id_}')">В корзину</button>
+            <button class="btn add-btn" type="button" data-qty="qty-{id_}" data-name="{name}" data-type="{t}" onclick="addToCart('{t}','{name}','qty-{id_}')">В корзину</button>
           </div>
         </div>
       </article>
@@ -352,25 +352,64 @@ catalog = head('Каталог тюльпанов оптом — цены от 8
     }});
   }});
 
+  // Счётчик на карточке = сколько этого сорта в корзине (0 — нет в корзине).
+  // «В корзину» ставит в корзину ровно это количество, а не прибавляет.
+  function qtyOrZero(v){{
+    v = parseInt(v, 10);
+    if (isNaN(v) || v <= 0) return 0;
+    return Math.ceil(v / QTY_STEP) * QTY_STEP;
+  }}
+  function inCart(name, type){{
+    const it = loadCart().find(i => i.name === name && i.type === type);
+    return it ? it.qty : 0;
+  }}
   function changeQty(inputId, delta){{
     const el = document.getElementById(inputId);
-    el.value = Math.max(QTY_STEP, normalizeQty(el.value) + delta);
+    el.value = Math.max(0, qtyOrZero(el.value) + delta);
+    refreshCards();
   }}
   function handleManual(inputId){{
     const el = document.getElementById(inputId);
-    el.value = normalizeQty(el.value);
+    el.value = qtyOrZero(el.value);
+    refreshCards();
   }}
 
   function addToCart(type, name, inputId){{
-    const qty = normalizeQty(document.getElementById(inputId).value);
+    const el = document.getElementById(inputId);
+    const qty = qtyOrZero(el.value);
+    el.value = qty;
     const cart = loadCart();
-    const existing = cart.find(i => i.name === name && i.type === type);
-    if (existing) existing.qty += qty; else cart.push({{name, type, qty}});
-    saveCart(cart);
-    toast('✓ ' + name + ': +' + qty + ' шт');
-    goal('add_to_cart');
+    const idx = cart.findIndex(i => i.name === name && i.type === type);
+    if (!qty){{
+      if (idx < 0){{ toast('Выберите количество кнопкой «+»'); return; }}
+      cart.splice(idx, 1);
+      saveCart(cart);
+      toast(name + ' убран из корзины');
+    }} else {{
+      if (idx >= 0) cart[idx].qty = qty; else cart.push({{name, type, qty}});
+      saveCart(cart);
+      toast('✓ ' + name + ': ' + qty + ' шт в корзине');
+      goal('add_to_cart');
+    }}
     updateBar();
+    refreshCards();
   }}
+
+  // Надпись на кнопке: «В корзину» / «В корзине ✓» / «Обновить корзину»
+  function refreshCards(sync){{
+    document.querySelectorAll('.add-btn').forEach(b => {{
+      const el = document.getElementById(b.dataset.qty);
+      const have = inCart(b.dataset.name, b.dataset.type);
+      if (sync) el.value = have;
+      const want = qtyOrZero(el.value);
+      const done = have > 0 && want === have;
+      b.classList.toggle('in-cart', done);
+      b.textContent = done ? 'В корзине ✓' : (have > 0 ? (want ? 'Обновить корзину' : 'Убрать из корзины') : 'В корзину');
+    }});
+  }}
+  refreshCards(true);
+  // Вернулись в каталог кнопкой «Назад» — показать актуальную корзину
+  window.addEventListener('pageshow', e => {{ if (e.persisted){{ refreshCards(true); updateBar(); }} }});
 
   // Нижняя панель: сколько штук и на какую сумму
   function updateBar(){{
