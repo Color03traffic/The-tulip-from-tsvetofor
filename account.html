@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=1144a2f6">
+  <link rel="stylesheet" href="style.css?v=1d65e059">
   <script src="prices.js?v=3326b2bc"></script>
   <script src="common.js?v=33b75004"></script>
 </head>
@@ -126,6 +126,10 @@
         <a class="btn btn-small" href="catalog.html">Новый заказ</a>
         <button class="btn btn-ghost btn-small" type="button" id="logoutBtn">Выйти</button>
       </div>
+    </div>
+    <div class="panel tg-box" id="tgBox" hidden>
+      <div class="tg-text" id="tgText"><b>Уведомления в Telegram</b><span>Напишем, когда заказ примут, когда поступит оплата и когда заказ будет выдан.</span></div>
+      <button class="btn btn-tg btn-small" type="button" id="tgBtn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.4 4.2 2.9 11.3c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.8-1.4-1.4zM9 14.3l9.4-5.9c.4-.3.8-.1.5.2l-7.8 7-.3 3.3z"/></svg>Подключить</button>
     </div>
     <h2 class="acc-h2">Мои заказы</h2>
     <p class="muted orders-note" id="ordersNote" hidden></p>
@@ -276,10 +280,22 @@
         + '<ul class="order-items">' + items + '</ul>'
         + (o.comment ? '<p class="muted order-comment">' + esc(o.comment.replace(/^\'/, '')) + '</p>' : '')
         + '<div class="order-bottom"><span class="num">' + rub(o.total) + '</span><span class="muted">' + o.qty + ' шт</span>'
+        + (o.status === 'Новый' && !o.shop ? '<button class="link-btn cancel-btn" type="button" data-cancel="' + o.number + '">Отменить заказ</button>' : '')
         + '<button class="btn btn-ghost btn-small" type="button" data-repeat="' + idx + '">Повторить заказ</button></div>'
         + payLine(o)
         + '</article>';
     }).join('');
+    document.querySelectorAll('[data-cancel]').forEach(b => b.onclick = async () => {
+      const num = b.dataset.cancel;
+      if (!confirm('Отменить заказ №' + num + '? Отменить отмену будет нельзя — только оформить заново.')) return;
+      const s = getSession();
+      b.disabled = true; b.textContent = 'Отменяем…';
+      const res = await api('cancel', { token: s.token, number: Number(num) }, 20000);
+      if (!res.ok){ b.disabled = false; b.textContent = 'Отменить заказ'; toast(res.error || 'Не получилось отменить'); return; }
+      toast('Заказ №' + num + ' отменён');
+      dropOrdersCache(s.phone);
+      openCabinet();
+    });
     document.querySelectorAll('[data-repeat]').forEach(b => b.onclick = () => {
       const o = orders[Number(b.dataset.repeat)];
       const cart = loadCart();
@@ -316,9 +332,33 @@
     }
     note.hidden = true;
     renderOrders(res.orders);
+    renderTg(res.tg);
     $('linkForm').hidden = !!res.verified;
     writeOrdersCache(s.phone, res.orders, res.verified);
   }
+
+  // Уведомления в Telegram: ссылка на бота с одноразовым кодом, потом ждём «Старт»
+  function renderTg(on){
+    $('tgBox').hidden = false;
+    $('tgBox').classList.toggle('on', !!on);
+    $('tgBtn').hidden = !!on;
+    if (on) $('tgText').innerHTML = '<b>Уведомления в Telegram включены ✓</b><span>Сообщения о заказах будут приходить от нашего бота.</span>';
+  }
+  $('tgBtn').onclick = async () => {
+    const s = getSession();
+    const w = window.open('', '_blank');
+    $('tgBtn').disabled = true;
+    const res = await api('tgLink', { token: s.token });
+    $('tgBtn').disabled = false;
+    if (!res.ok){ if (w) w.close(); toast(res.error || 'Не получилось — попробуйте ещё раз'); return; }
+    if (w) w.location = res.url; else location.href = res.url;
+    $('tgText').innerHTML = '<b>Нажмите «Старт» в Telegram</b><span>Как только нажмёте — здесь появится «Уведомления включены».</span>';
+    for (let i = 0; i < 30; i++){
+      await new Promise(r => setTimeout(r, 4000));
+      const c = await api('tgCheck', { token: s.token });
+      if (c.ok && c.tg){ renderTg(true); goal('tg_connected'); return; }
+    }
+  };
 
   // Последние заказы — в памяти этого браузера (по телефону), чтобы кабинет открывался сразу
   const ORDERS_CACHE = 'tulpan_orders_';

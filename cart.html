@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=1144a2f6">
+  <link rel="stylesheet" href="style.css?v=1d65e059">
   <script src="prices.js?v=3326b2bc"></script>
   <script src="common.js?v=33b75004"></script>
 </head>
@@ -115,11 +115,22 @@
       <div class="modal-title" id="modalTitle1">Обратите внимание</div>
       <p class="modal-text">
         Минимальный предзаказ — от <strong>100 шт</strong>, не все цвета могут быть в наличии.<br><br>
-        Если в заказе меньше 100 шт, продажа идёт <strong>по наличию</strong>.
+        В вашем заказе <strong id="okQty"></strong> на сумму <strong id="okSum"></strong>. После отправки заказ ждёт подтверждения менеджера.
       </p>
       <div class="modal-actions">
         <button class="btn btn-ghost btn-small" type="button" onclick="closeModal()">Отмена</button>
         <button class="btn btn-small" type="button" id="confirmBtn" onclick="confirmSend()">Понятно, отправить</button>
+      </div>
+    </div>
+    <div id="modalSmall" hidden>
+      <div class="modal-title">Минимальный предзаказ — 100 шт</div>
+      <p class="modal-text" id="smallText">
+        Сейчас в корзине <strong id="smallQty"></strong> — добавьте ещё <strong id="smallNeed"></strong> любых сортов, и заказ можно будет отправить.<br><br>
+        Нужно меньше? Продаём <strong>по наличию</strong> — оставьте заявку, мы свяжемся с вами.
+      </p>
+      <div class="modal-actions" id="smallActions">
+        <button class="btn btn-ghost btn-small" type="button" id="wantBtn" onclick="wantContact()">Хочу по наличию — свяжитесь со мной</button>
+        <a class="btn btn-small" href="catalog.html">Добавить сорта</a>
       </div>
     </div>
     <div id="modalStep2" hidden>
@@ -256,14 +267,47 @@
     return {name, phone, comment};
   }
 
+  const MIN_ORDER = 100;
+  const SMALL_HTML = [document.getElementById('smallText').innerHTML, document.getElementById('smallActions').innerHTML];
+  function cartItems(){ return cart.map(i => ({name: i.name, type: i.type, qty: i.qty})); }
+
   function startSend(){
     const client = validateClient();
     if (!client) return;
     if (!apiEnabled()){ toast('Отправка заказов временно недоступна — напишите нам в мессенджер'); return; }
     pendingClient = client;
-    document.getElementById('modalStep1').hidden = false;
+    const qty = cartTotalQty(cart);
     document.getElementById('modalStep2').hidden = true;
+    if (qty < MIN_ORDER){
+      // Меньше 100 шт — заказ не отправляем, покупатель попадает в базу «Покупатели до 100 шт»
+      document.getElementById('modalStep1').hidden = true;
+      document.getElementById('modalSmall').hidden = false;
+      document.getElementById('smallText').innerHTML = SMALL_HTML[0];
+      document.getElementById('smallActions').innerHTML = SMALL_HTML[1];
+      document.getElementById('smallQty').textContent = qty + ' шт';
+      document.getElementById('smallNeed').textContent = (MIN_ORDER - qty) + ' шт';
+      api('lead', { token: session.token, items: cartItems(), comment: client.comment });
+      goal('lead_small');
+    } else {
+      document.getElementById('modalSmall').hidden = true;
+      document.getElementById('modalStep1').hidden = false;
+      const total = cart.reduce((s, i) => s + priceFor(i.type, qty) * i.qty, 0);
+      document.getElementById('okQty').textContent = qty + ' шт';
+      document.getElementById('okSum').textContent = rub(total);
+    }
     document.getElementById('warningModal').classList.add('show');
+  }
+
+  async function wantContact(){
+    const btn = document.getElementById('wantBtn');
+    btn.disabled = true; btn.textContent = 'Отправляем…';
+    const res = await api('lead', { token: session.token, items: cartItems(), comment: pendingClient.comment, wantContact: true });
+    btn.disabled = false; btn.textContent = 'Хочу по наличию — свяжитесь со мной';
+    if (!res.ok){ toast(res.error || 'Не получилось — попробуйте ещё раз'); return; }
+    goal('lead_contact');
+    document.getElementById('smallText').textContent = 'Спасибо! Заявка у менеджера — мы свяжемся с вами по телефону '
+      + session.phone + ' и расскажем, что есть в наличии.';
+    document.getElementById('smallActions').innerHTML = '<button class="btn btn-small" type="button" onclick="closeModal()">Хорошо</button>';
   }
 
   // Заказ сохраняется в таблицу; менеджеру приходит уведомление в Telegram.
@@ -276,7 +320,7 @@
       token: session ? session.token : undefined,
       name: pendingClient.name, phone: pendingClient.phone, comment: pendingClient.comment,
       consent: !session, channel: 'site',
-      items: cart.map(i => ({name: i.name, type: i.type, qty: i.qty}))
+      items: cartItems()
     }, 20000);
     btn.disabled = false; btn.textContent = 'Понятно, отправить';
     if (!res.ok){
