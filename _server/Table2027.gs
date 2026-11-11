@@ -8,7 +8,6 @@
  *   «Отменён»     → если по заказу ещё не было оплат и он не выдан — его столбец на «Заказе»
  *                   очищается целиком и освобождается для следующего заказа;
  *                   если оплаты уже есть — количества обнуляются, в заметке «ОТМЕНЁН».
- * При открытии таблицы скрипт сам догоняет подтверждённые, но не перенесённые заказы.
  * Связь заказа и столбца — заметка (строка 59) «Сайт №1001 …». Её не стирать.
  * Меню «Тюльпан03 → Перенести подтверждённые заказы» — догнать вручную, если что-то пропущено.
  */
@@ -48,7 +47,6 @@ function onOpen() {
     .addItem('Перенести подтверждённые заказы', 'syncAll')
     .addItem('Проставить телефоны и коды кабинета', 'fillAllCodes')
     .addToUi();
-  try { syncAll(true); } catch (err) { /* не мешаем открытию таблицы */ }
 }
 
 function onEdit(e) {
@@ -78,42 +76,38 @@ function onEdit(e) {
   }
 }
 
-// Количества (строки 4–41): только пачками по 20 и не больше «Осталось».
+// Количества (строки 4–41): только пачками по 20.
 // Срабатывает и на вставку (Ctrl+V), протягивание и ввод с телефона — там проверка данных Google не останавливает.
+// Проверяется только введённое число — без пересчёта таблицы, чтобы ввод не тормозил.
+// «Не больше, чем осталось» проверяет сама таблица (проверка данных) при обычном вводе.
 function checkQty(e) {
   var r = e.range;
   if (r.getLastRow() < FIRST_ROW || r.getRow() > LAST_ROW || r.getLastColumn() < FIRST_COL) return;
-  var sh = r.getSheet();
+  var single = r.getNumRows() === 1 && r.getNumColumns() === 1;
+  var ok = function (v) {
+    if (v === '' || v === null || v === undefined) return true;
+    var n = Number(String(v).replace(/\s/g, ''));
+    return n > 0 && n % 20 === 0;
+  };
+  if (single) {
+    if (ok(e.value)) return;
+    r.setValue(e.oldValue !== undefined ? (Number(e.oldValue) || e.oldValue) : '');
+    warn('Количество не принято', 'Только пачками по 20 шт: 20, 40, 60, … 500, 520, 540…\nВведено: ' + e.value +
+      '\n\nВ ячейке оставлено прежнее значение.');
+    return;
+  }
   var r0 = Math.max(r.getRow(), FIRST_ROW), r1 = Math.min(r.getLastRow(), LAST_ROW);
   var c0 = Math.max(r.getColumn(), FIRST_COL), c1 = Math.min(r.getLastColumn(), LAST_COL);
-  var rng = sh.getRange(r0, c0, r1 - r0 + 1, c1 - c0 + 1);
-  var vals = rng.getValues();
-  SpreadsheetApp.flush();
-  var left = sh.getRange(r0, 6, r1 - r0 + 1, 1).getValues(); // F «Осталось» уже с учётом введённого
-  var single = r.getNumRows() === 1 && r.getNumColumns() === 1;
-  var bad = [], over = [], changed = false;
-  for (var i = 0; i < vals.length; i++) {
-    var rowNo = r0 + i;
-    for (var j = 0; j < vals[i].length; j++) {
-      var v = vals[i][j];
-      if (v === '' || v === null) continue;
-      var n = Number(String(v).replace(/\s/g, '').replace(',', '.'));
-      var a1 = colLetter(c0 + j) + rowNo;
-      var isBad = !(typeof v === 'number' || /^\s*[\d\s]+\s*$/.test(String(v))) || !(n > 0) || n % 20 !== 0;
-      var isOver = !isBad && rowNo < LAST_ROW && Number(left[i][0]) < 0;
-      if (!isBad && !isOver) { if (typeof v !== 'number') { vals[i][j] = n; changed = true; } continue; }
-      (isBad ? bad : over).push(a1 + ' (' + v + ')');
-      vals[i][j] = single && e.oldValue !== undefined ? Number(e.oldValue) || e.oldValue : '';
-      changed = true;
-    }
+  var rng = r.getSheet().getRange(r0, c0, r1 - r0 + 1, c1 - c0 + 1);
+  var vals = rng.getValues(), bad = [];
+  for (var i = 0; i < vals.length; i++) for (var j = 0; j < vals[i].length; j++) {
+    if (ok(vals[i][j])) continue;
+    bad.push(colLetter(c0 + j) + (r0 + i) + ' (' + vals[i][j] + ')');
+    vals[i][j] = '';
   }
-  if (!changed) return;
+  if (!bad.length) return;
   rng.setValues(vals);
-  if (!bad.length && !over.length) return;
-  var msg = '';
-  if (bad.length) msg += 'Только пачками по 20 шт: 20, 40, 60, … 500, 520, 540…\nНе принято: ' + bad.join(', ') + '\n\n';
-  if (over.length) msg += 'Больше, чем осталось этого сорта (столбец «Осталось»).\nНе принято: ' + over.join(', ') + '\n\n';
-  warn('Количество не принято', msg + (single ? 'В ячейке оставлено прежнее значение.' : 'Эти ячейки очищены.'));
+  warn('Количество не принято', 'Только пачками по 20 шт.\nОчищено: ' + bad.join(', '));
 }
 
 // Галочка «Выдан» (строка 1) → дата выдачи (строка 66): поставили — сегодняшняя дата, сняли — очищаем
