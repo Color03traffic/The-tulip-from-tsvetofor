@@ -451,11 +451,18 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
       </label>
 
       <div class="send">
-        <button class="btn btn-wa" type="button" onclick="startSend('whatsapp')">{ICON['wa']}Отправить в WhatsApp</button>
-        <button class="btn btn-tg" type="button" onclick="startSend('telegram')">{ICON['tg']}Отправить в Telegram</button>
-        <button class="btn btn-max" type="button" id="maxBtn" onclick="startSend('max')" hidden>{ICON['max']}Отправить в MAX</button>
+        <button class="btn" type="button" id="sendBtn" onclick="startSend()">Отправить заказ</button>
       </div>
       <p class="form-note" id="formNote">Без имени и телефона заказ не отправится.</p>
+
+      <div class="ask-us">
+        <span>Есть вопросы? Напишите нам:</span>
+        <div class="round-links">
+          <a class="round-btn btn-wa" href="{WA}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp" title="WhatsApp" onclick="goal('contact_whatsapp')">{ICON['wa']}</a>
+          <a class="round-btn btn-tg" href="{TG}" target="_blank" rel="noopener" aria-label="Написать в Telegram" title="Telegram" onclick="goal('contact_telegram')">{ICON['tg']}</a>
+          <a class="round-btn btn-max" href="{MAXU}" target="_blank" rel="noopener" aria-label="Написать в MAX" title="MAX" onclick="goal('contact_max')">{ICON['max']}</a>
+        </div>
+      </div>
     </aside>
   </div>
 </main>
@@ -476,31 +483,24 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
       </div>
     </div>
     <div id="modalStep2" hidden>
-      <div class="modal-title" id="step2Title">Заказ готов к отправке</div>
+      <div class="modal-ok" aria-hidden="true">✓</div>
+      <div class="modal-title" id="step2Title">Ваш заказ отправлен</div>
       <p class="modal-text">
-        Нажмите кнопку ниже — откроется чат с нами в <span id="step2App">Telegram</span>, а текст заказа скопируется.<br>
-        Если поле сообщения пустое, нажмите в нём <strong>«Вставить»</strong> и отправьте.
+        Заказ <strong>ждёт подтверждения</strong>. Как только мы его примем, статус сменится на <strong>«Принят»</strong>.<br><br>
+        Следите за статусом и оплатой в личном кабинете.
       </p>
       <div class="modal-actions">
-        <button class="btn btn-tg btn-small" type="button" id="openChatBtn" onclick="openChat()">Открыть Telegram</button>
+        <a class="btn btn-small" href="account.html">Перейти в личный кабинет</a>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  const WHATSAPP_PHONE = '79148416115';
-  const TELEGRAM_USER  = 'tulpan03';
-  // Ссылка на личный профиль в MAX (Настройки → Пригласить друзей → Скопировать ссылку).
-  // Пока пусто — кнопка «Отправить в MAX» скрыта.
-  const MAX_PROFILE_URL = '{MAXU}';
-  if (MAX_PROFILE_URL) document.getElementById('maxBtn').hidden = false;
   const PHOTOS = {photos_js};
 
   // Убираем из корзины сорта, которых больше нет в каталоге
   let cart = loadCart().filter(i => PHOTOS[i.name]);
-  let pendingChannel = null;
-  let pendingText = '';
   let pendingClient = null;
   const session = apiEnabled() ? getSession() : null;
 
@@ -616,110 +616,48 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
     return {{name, phone, comment}};
   }}
 
-  function buildMessage(client, number){{
-    const totalQty = cartTotalQty(cart);
-    let total = 0;
-    const lines = [(number ? 'Заказ №' + number : 'Заказ') + ' с сайта Тюльпан03', '-----------------',
-                   'Имя: ' + client.name, 'Телефон: ' + client.phone, '-----------------'];
-    cart.forEach(i => {{
-      const price = priceFor(i.type, totalQty);
-      const sum = price * i.qty;
-      total += sum;
-      lines.push(i.name + ': ' + i.qty + ' шт × ' + price + ' ₽ = ' + rub(sum));
-    }});
-    lines.push('-----------------');
-    lines.push('Всего: ' + totalQty + ' шт, ' + rub(total));
-    if (client.comment) lines.push('Комментарий: ' + client.comment);
-    return lines.join('\\n');
-  }}
-
-  function startSend(channel){{
+  function startSend(){{
     const client = validateClient();
     if (!client) return;
-    pendingChannel = channel;
+    if (!apiEnabled()){{ toast('Отправка заказов временно недоступна — напишите нам в мессенджер'); return; }}
     pendingClient = client;
-    pendingText = buildMessage(client);
     document.getElementById('modalStep1').hidden = false;
     document.getElementById('modalStep2').hidden = true;
     document.getElementById('warningModal').classList.add('show');
   }}
-  // Сохраняем заказ в таблицу (если сервер подключён), потом открываем мессенджер.
-  // Если сервер недоступен — заказ всё равно уходит в мессенджер, чтобы не потерять покупателя.
-  async function saveOrder(){{
-    if (!apiEnabled()) return null;
-    const res = await api('order', {{
-      token: session ? session.token : undefined,
-      name: pendingClient.name, phone: pendingClient.phone, comment: pendingClient.comment,
-      consent: !session, channel: pendingChannel,
-      items: cart.map(i => ({{name: i.name, type: i.type, qty: i.qty}}))
-    }}, 12000);
-    if (res.ok) return res.number;
-    if (res.code === 'auth'){{ setSession(null); }}
-    if (res.code !== 'network' && res.code !== 'auth' && !/сервер/i.test(res.error || '')){{
-      throw new Error(res.error || 'Не удалось оформить заказ');
-    }}
-    return null;
-  }}
 
+  // Заказ сохраняется в таблицу; менеджеру приходит уведомление в Telegram.
+  // Статус «Новый» (ждёт подтверждения) покупатель видит в личном кабинете.
   async function confirmSend(){{
     const btn = document.getElementById('confirmBtn');
     btn.disabled = true;
-    btn.textContent = 'Оформляем…';
-    let number = null;
-    try {{
-      number = await saveOrder();
-    }} catch(e){{
-      btn.disabled = false; btn.textContent = 'Понятно, отправить';
-      closeModal(); toast(e.message);
-      return;
-    }}
-    pendingText = buildMessage(pendingClient, number);
-    if (number){{ cart = []; updateCart(); }}
+    btn.textContent = 'Отправляем…';
+    const res = await api('order', {{
+      token: session ? session.token : undefined,
+      name: pendingClient.name, phone: pendingClient.phone, comment: pendingClient.comment,
+      consent: !session, channel: 'site',
+      items: cart.map(i => ({{name: i.name, type: i.type, qty: i.qty}}))
+    }}, 20000);
     btn.disabled = false; btn.textContent = 'Понятно, отправить';
-
-    if (pendingChannel === 'whatsapp'){{
-      goal('order_whatsapp');
+    if (!res.ok){{
       closeModal();
-      location.href = 'https://wa.me/' + WHATSAPP_PHONE + '?text=' + encodeURIComponent(pendingText);
+      if (res.code === 'auth' || (session && /согласие/i.test(res.error || ''))){{
+        setSession(null);
+        toast('Войдите в кабинет ещё раз — корзина сохранится');
+        setTimeout(() => location.href = 'account.html?next=cart', 1500);
+        return;
+      }}
+      toast(res.code === 'network'
+        ? 'Не удалось отправить заказ — проверьте интернет и попробуйте ещё раз'
+        : (res.error || 'Не удалось отправить заказ'));
       return;
     }}
-    goal(pendingChannel === 'max' ? 'order_max' : 'order_telegram');
-    const app = pendingChannel === 'max' ? 'MAX' : 'Telegram';
-    document.getElementById('step2App').textContent = app;
-    const ob = document.getElementById('openChatBtn');
-    ob.textContent = 'Открыть ' + app;
-    ob.className = 'btn btn-small ' + (pendingChannel === 'max' ? 'btn-max' : 'btn-tg');
-    if (number) document.getElementById('step2Title').textContent = 'Заказ №' + number + ' принят';
+    goal('order_site');
+    cart = []; updateCart();
+    document.getElementById('clientComment').value = '';
+    document.getElementById('step2Title').textContent = 'Ваш заказ №' + res.number + ' отправлен';
     document.getElementById('modalStep1').hidden = true;
     document.getElementById('modalStep2').hidden = false;
-  }}
-  function openChat(){{
-    if (pendingChannel === 'max'){{
-      // MAX не умеет подставлять текст в личный чат — заказ уже скопирован, покупатель вставит его сам
-      copyText(pendingText);
-      closeModal();
-      location.href = MAX_PROFILE_URL;
-      return;
-    }}
-    openTelegram();
-  }}
-  function openTelegram(){{
-    // Telegram не всегда подставляет текст из ссылки — копируем заказ в буфер (по нажатию, иначе браузер не даст)
-    copyText(pendingText);
-    closeModal();
-    location.href = 'https://t.me/' + TELEGRAM_USER + '?text=' + encodeURIComponent(pendingText);
-  }}
-  function copyText(text){{
-    if (navigator.clipboard && window.isSecureContext){{
-      navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
-    }} else {{ fallbackCopy(text); }}
-  }}
-  function fallbackCopy(text){{
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    try {{ document.execCommand('copy'); }} catch(e){{}}
-    ta.remove();
   }}
   // Крестик, «Отмена», клик по фону и Esc — просто закрывают окно
   function closeModal(){{ document.getElementById('warningModal').classList.remove('show'); }}
@@ -998,6 +936,8 @@ account = head('Личный кабинет — Тюльпан03', None, 'accoun
   }};
 
   const STATUS_CLASS = {{ 'Новый': 'st-new', 'Принят': 'st-ok', 'Подтверждён': 'st-ok', 'Выдан': 'st-done', 'Выполнен': 'st-done', 'Отменён': 'st-cancel' }};
+  // Как статус называется для покупателя (в таблице — «Новый» / «Подтверждён»)
+  const STATUS_LABEL = {{ 'Новый': 'Ждёт подтверждения', 'Подтверждён': 'Принят' }};
 
   // Оплачено / осталось — из таблицы, где менеджер отмечает оплаты
   function payLine(o){{
@@ -1019,7 +959,7 @@ account = head('Личный кабинет — Тюльпан03', None, 'accoun
       const items = o.items.map(i => '<li><span>' + esc(i.name) + '</span><span>' + i.qty + ' шт × ' + i.price + ' ₽</span></li>').join('');
       return '<article class="panel order">'
         + '<div class="order-top"><div><b>' + (o.shop ? 'Заказ на складе' : 'Заказ №' + o.number) + '</b><span class="muted">' + date + '</span></div>'
-        + '<span class="status ' + (STATUS_CLASS[o.status] || 'st-new') + '">' + esc(o.status) + '</span></div>'
+        + '<span class="status ' + (STATUS_CLASS[o.status] || 'st-new') + '">' + esc(STATUS_LABEL[o.status] || o.status) + '</span></div>'
         + '<ul class="order-items">' + items + '</ul>'
         + (o.comment ? '<p class="muted order-comment">' + esc(o.comment.replace(/^\\'/, '')) + '</p>' : '')
         + '<div class="order-bottom"><span class="num">' + rub(o.total) + '</span><span class="muted">' + o.qty + ' шт</span>'

@@ -424,6 +424,18 @@ body.has-cart-bar{ padding-bottom:96px; }
 .send{ display:grid; gap:10px; margin-top:8px; }
 .send .btn{ width:100%; }
 .form-note{ font-size:13px; color:var(--ink-soft); margin:10px 0 0; text-align:center; }
+.send #sendBtn{ min-height:58px; font-size:17px; }
+
+/* Связаться с нами — маленькие круглые кнопки мессенджеров в корзине */
+.ask-us{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  margin-top:20px; padding-top:18px; border-top:1px solid var(--line); font-size:14px; color:var(--ink-soft); }
+.round-links{ display:flex; gap:10px; }
+.round-btn{ width:44px; height:44px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+  color:#fff; transition:transform .15s, background .15s; }
+.round-btn svg{ width:22px; height:22px; }
+.round-btn:hover{ transform:translateY(-2px); }
+.modal-ok{ width:56px; height:56px; border-radius:50%; background:var(--leaf); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:700; margin:0 0 14px; }
 
 /* Окно предупреждения */
 .modal-overlay{

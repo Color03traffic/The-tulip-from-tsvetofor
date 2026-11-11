@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="style.css?v=ee5c1708">
+  <link rel="stylesheet" href="style.css?v=a011eb8d">
   <script src="prices.js?v=3326b2bc"></script>
   <script src="common.js?v=33b75004"></script>
 </head>
@@ -249,6 +249,8 @@
   };
 
   const STATUS_CLASS = { 'Новый': 'st-new', 'Принят': 'st-ok', 'Подтверждён': 'st-ok', 'Выдан': 'st-done', 'Выполнен': 'st-done', 'Отменён': 'st-cancel' };
+  // Как статус называется для покупателя (в таблице — «Новый» / «Подтверждён»)
+  const STATUS_LABEL = { 'Новый': 'Ждёт подтверждения', 'Подтверждён': 'Принят' };
 
   // Оплачено / осталось — из таблицы, где менеджер отмечает оплаты
   function payLine(o){
@@ -270,7 +272,7 @@
       const items = o.items.map(i => '<li><span>' + esc(i.name) + '</span><span>' + i.qty + ' шт × ' + i.price + ' ₽</span></li>').join('');
       return '<article class="panel order">'
         + '<div class="order-top"><div><b>' + (o.shop ? 'Заказ на складе' : 'Заказ №' + o.number) + '</b><span class="muted">' + date + '</span></div>'
-        + '<span class="status ' + (STATUS_CLASS[o.status] || 'st-new') + '">' + esc(o.status) + '</span></div>'
+        + '<span class="status ' + (STATUS_CLASS[o.status] || 'st-new') + '">' + esc(STATUS_LABEL[o.status] || o.status) + '</span></div>'
         + '<ul class="order-items">' + items + '</ul>'
         + (o.comment ? '<p class="muted order-comment">' + esc(o.comment.replace(/^\'/, '')) + '</p>' : '')
         + '<div class="order-bottom"><span class="num">' + rub(o.total) + '</span><span class="muted">' + o.qty + ' шт</span>'
