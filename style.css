@@ -424,6 +424,8 @@ body.has-cart-bar{ padding-bottom:96px; }
 .send{ display:grid; gap:10px; margin-top:8px; }
 .send .btn{ width:100%; }
 .form-note{ font-size:13px; color:var(--ink-soft); margin:10px 0 0; text-align:center; }
+.add-btn.in-cart{ background:var(--leaf); }
+.add-btn.in-cart:hover{ background:#178a3f; }
 .send #sendBtn{ min-height:58px; font-size:17px; }
 
 /* Связаться с нами — маленькие круглые кнопки мессенджеров в корзине */
