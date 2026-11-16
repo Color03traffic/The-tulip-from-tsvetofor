@@ -331,6 +331,20 @@ catalog = head('Каталог тюльпанов оптом — цены от 8
     card.querySelector('.opt').textContent = 'опт — от ' + minPrice(t) + ' ₽/шт';
   }});
 
+  // Закончившиеся сорта (SOLD_OUT в prices.js): зачёркнуты, кнопка «Закончился»
+  document.querySelectorAll('.add-btn').forEach(b => {{
+    if (!isSoldOut(b.dataset.name)) return;
+    const card = b.closest('.card');
+    card.classList.add('sold-out');
+    card.querySelector('.card-photo').insertAdjacentHTML('beforeend', '<div class="sold-out-ribbon">Закончился</div>');
+    const st = card.querySelector('.stepper');
+    st.insertAdjacentHTML('afterend', '<div class="sold-out-note">Уже раскупили —<br>выберите другую расцветку</div>');
+    st.hidden = true;
+    b.disabled = true;
+    b.textContent = 'Закончился';
+    b.removeAttribute('onclick');
+  }});
+
   // Таблица цен за объём
   (function(){{
     const fmt = n => n.toLocaleString('ru-RU');
@@ -397,7 +411,7 @@ catalog = head('Каталог тюльпанов оптом — цены от 8
 
   // Надпись на кнопке: «В корзину» / «В корзине ✓» / «Обновить корзину»
   function refreshCards(sync){{
-    document.querySelectorAll('.add-btn').forEach(b => {{
+    document.querySelectorAll('.add-btn:not([disabled])').forEach(b => {{
       const el = document.getElementById(b.dataset.qty);
       const have = inCart(b.dataset.name, b.dataset.type);
       if (sync) el.value = have;
@@ -549,8 +563,13 @@ cart = head('Корзина — Тюльпан03', None, 'cart.html', robots='no
 <script>
   const PHOTOS = {photos_js};
 
-  // Убираем из корзины сорта, которых больше нет в каталоге
+  // Убираем из корзины сорта, которых больше нет в каталоге или которые закончились
+  const soldOutGone = loadCartRaw().filter(i => isSoldOut(i.name)).map(i => i.name);
   let cart = loadCart().filter(i => PHOTOS[i.name]);
+  if (soldOutGone.length){{
+    saveCart(cart);
+    setTimeout(() => toast((soldOutGone.length > 1 ? 'Закончились: ' : 'Закончился: ') + soldOutGone.join(', ') + ' — убрали из корзины'), 300);
+  }}
   let pendingClient = null;
   const session = apiEnabled() ? getSession() : null;
 

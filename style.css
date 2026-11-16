@@ -329,6 +329,34 @@ h3{ font-size:18px; font-weight:600; }
 .card-actions .stepper input{ flex:1; min-width:0; }
 .card-actions .btn{ min-height:46px; padding:0 14px; font-size:15px; }
 
+/* Сорт закончился (SOLD_OUT в prices.js): фото приглушено, поперёк — красная лента «Закончился» */
+.card.sold-out .card-photo img{ filter:grayscale(.85) brightness(1.08); }
+.card.sold-out:hover .card-photo img{ transform:none; }
+.card.sold-out .card-photo::before{
+  content:""; position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,.55));
+}
+.sold-out-ribbon{
+  position:absolute; left:-20%; right:-20%; top:50%; z-index:2;
+  transform:translateY(-50%) rotate(-14deg);
+  padding:11px 0; text-align:center;
+  background:linear-gradient(90deg, #C81E3A, #E54270 50%, #C81E3A);
+  color:#fff; font-family:var(--display); font-weight:600; font-size:17px;
+  letter-spacing:.14em; text-transform:uppercase;
+  box-shadow:0 8px 22px rgba(200,30,58,.35);
+  border-top:2px solid rgba(255,255,255,.75); border-bottom:2px solid rgba(255,255,255,.75);
+}
+.card.sold-out .tag{ z-index:3; }
+.card.sold-out h3{
+  color:var(--ink-soft);
+  text-decoration:line-through; text-decoration-color:#E54270; text-decoration-thickness:2px;
+}
+.card.sold-out .price-line{ opacity:.45; }
+.sold-out-note{ font-size:14px; color:var(--ink-soft); text-align:center; line-height:1.35; }
+.card.sold-out .add-btn[disabled]{
+  background:#FCE8EE; color:#C81E3A; box-shadow:none; opacity:1; cursor:not-allowed;
+}
+
 /* Карточка без своего фото — заглушка до появления фото */
 .no-photo{
   display:flex; align-items:center; justify-content:center; text-align:center;
