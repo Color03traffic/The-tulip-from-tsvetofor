@@ -336,8 +336,10 @@ catalog = head('Каталог тюльпанов оптом — цены от 8
     if (!isSoldOut(b.dataset.name)) return;
     const card = b.closest('.card');
     card.classList.add('sold-out');
-    card.querySelector('.card-photo').insertAdjacentHTML('beforeend', '<span class="sold-out-badge">Закончился</span>');
-    card.querySelector('.stepper').hidden = true;
+    card.querySelector('.card-photo').insertAdjacentHTML('beforeend', '<div class="sold-out-ribbon">Закончился</div>');
+    const st = card.querySelector('.stepper');
+    st.insertAdjacentHTML('afterend', '<div class="sold-out-note">Уже раскупили —<br>выберите другую расцветку</div>');
+    st.hidden = true;
     b.disabled = true;
     b.textContent = 'Закончился';
     b.removeAttribute('onclick');
