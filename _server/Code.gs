@@ -371,6 +371,11 @@ function apiOrder(b) {
   var names = Object.keys(merged);
   if (!names.length) return fail('Корзина пуста');
 
+  var soldOut = loadSoldOut();
+  var gone = names.filter(function (n) { return soldOut.indexOf(n) >= 0; });
+  if (gone.length) return fail((gone.length > 1 ? 'Закончились: ' : 'Закончился: ') + gone.join(', ') +
+    '. Обновите страницу корзины — эти сорта уберутся сами.');
+
   var tiers = loadPrices();
   var totalQty = names.reduce(function (s, n) { return s + merged[n]; }, 0);
   if (totalQty > 200000) return fail('Слишком большое количество — свяжитесь с нами напрямую');
@@ -807,17 +812,29 @@ function userByToken(token) {
            tg: String(u.values[USER_TG_COL - 1] || ''), row: u.row };
 }
 
-function loadPrices() {
+function pricesSource() {
   var cache = CacheService.getScriptCache();
   var src = cache.get('prices_js');
   if (!src) {
     src = UrlFetchApp.fetch(PRICES_URL).getContentText();
     cache.put('prices_js', src, 600);
   }
+  return src;
+}
+
+function loadPrices() {
   // prices.js — наш собственный файл из репозитория сайта
-  var tiers = new Function(src + '\n;return PRICE_TIERS;')();
+  var tiers = new Function(pricesSource() + '\n;return PRICE_TIERS;')();
   if (!tiers || !tiers.smooth) throw new Error('Не удалось прочитать цены');
   return tiers;
+}
+
+// Закончившиеся сорта — список SOLD_OUT в prices.js (как на сайте)
+function loadSoldOut() {
+  try {
+    var list = new Function(pricesSource() + '\n;return typeof SOLD_OUT === "undefined" ? [] : SOLD_OUT;')();
+    return Array.isArray(list) ? list.map(String) : [];
+  } catch (e) { console.warn(e); return []; }
 }
 
 function priceFor(tiers, type, totalQty) {

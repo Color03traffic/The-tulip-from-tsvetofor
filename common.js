@@ -41,9 +41,15 @@ function goal(name){
 /* ---------- Корзина ---------- */
 const CART_KEY = 'tulpan03_cart';
 
-function loadCart(){
+// Корзина как есть, вместе с закончившимися сортами
+function loadCartRaw(){
   try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
   catch(e){ return []; }
+}
+// Корзина без закончившихся сортов (список SOLD_OUT в prices.js)
+function loadCart(){
+  const cart = loadCartRaw();
+  return typeof isSoldOut === 'function' ? cart.filter(i => !isSoldOut(i.name)) : cart;
 }
 function saveCart(cart){
   try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch(e){}

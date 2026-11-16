@@ -329,6 +329,24 @@ h3{ font-size:18px; font-weight:600; }
 .card-actions .stepper input{ flex:1; min-width:0; }
 .card-actions .btn{ min-height:46px; padding:0 14px; font-size:15px; }
 
+/* Сорт закончился (SOLD_OUT в prices.js): фото бледное и перечёркнуто красной полосой */
+.card.sold-out .card-photo img{ filter:grayscale(.75); opacity:.55; }
+.card.sold-out:hover .card-photo img{ transform:none; }
+.card.sold-out .card-photo::after{
+  content:""; position:absolute; left:-15%; right:-15%; top:50%; height:6px;
+  background:#E02424; transform:rotate(-38deg); box-shadow:0 0 0 2px rgba(255,255,255,.7);
+}
+.sold-out-badge{
+  position:absolute; left:50%; bottom:14px; transform:translateX(-50%); z-index:1;
+  padding:6px 14px; border-radius:999px; background:#E02424; color:#fff;
+  font-size:14px; font-weight:700; white-space:nowrap;
+}
+.card.sold-out h3{ text-decoration:line-through; text-decoration-color:#E02424; text-decoration-thickness:3px; color:var(--ink-soft); }
+.card.sold-out .price-line{ opacity:.5; }
+.card.sold-out .add-btn[disabled]{
+  background:transparent; color:#E02424; box-shadow:inset 0 0 0 2px #E02424; opacity:1; cursor:not-allowed;
+}
+
 /* Карточка без своего фото — заглушка до появления фото */
 .no-photo{
   display:flex; align-items:center; justify-content:center; text-align:center;
